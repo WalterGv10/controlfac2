@@ -1,0 +1,474 @@
+/* 🌍 Estilos Globales Unificados — ControlFAC2 by Walter García */
+
+/* ============================================= */
+/* ====== 1. VARIABLES Y CONFIGURACIÓN BASE ====== */
+/* ============================================= */
+
+:root {
+  --color-bg: #0f1115;
+  --color-surface: #161a22;
+  --color-primary: #00d1b2;
+  --color-text: #e6e9ef;
+  --color-muted: #9aa4b2;
+  --radius: 12px;
+  --transition: all 0.25s ease;
+  --nav-height: 64px;
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, sans-serif;
+}
+
+/* ====================================== */
+/* ====== 2. RESET Y ESTILOS GLOBALES ====== */
+/* ====================================== */
+
+/* Reset básico */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+html, body, #root {
+  width: 100%;
+  height: 100%;
+}
+
+body {
+  background: radial-gradient(1000px 600px at 10% -10%, #0b1a1a 0%, var(--color-bg) 45%) no-repeat, var(--color-bg);
+  color: var(--color-text);
+  line-height: 1.5;
+  font-family: inherit; /* Hereda la fuente definida en :root */
+}
+
+/* Enlaces */
+a {
+  color: var(--color-primary);
+  text-decoration: none;
+  transition: var(--transition);
+}
+
+/* Botones básicos */
+button {
+  background-color: var(--color-primary);
+  color: #001311;
+  font-weight: 600;
+  border: none;
+  border-radius: var(--radius);
+  padding: 0.6rem 1.2rem;
+  cursor: pointer;
+  transition: var(--transition);
+  -webkit-tap-highlight-color: transparent; /* Evita el destello en móviles */
+}
+
+button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 0 10px rgba(0, 209, 178, 0.4);
+}
+
+button:active {
+  transform: translateY(0);
+}
+
+/* Textos */
+h1, h2, h3 {
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+
+/* Contenedores */
+.container {
+  width: min(1100px, 90%);
+  margin: 0 auto;
+  padding: 1rem 0;
+}
+
+/* Utilidad para centrado */
+.center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+/* Para evitar que el navbar tape el contenido al navegar con anclas */
+.main {
+  padding-top: var(--nav-height);
+}
+
+
+/* ================================== */
+/* ====== 3. COMPONENTES PRINCIPALES ====== */
+/* ================================== */
+
+/* ------ NAVBAR ------ */
+.navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: var(--nav-height);
+  backdrop-filter: blur(10px);
+  background: rgba(15, 17, 21, 0.6);
+  transition: transform 0.3s ease, background 0.3s ease;
+  z-index: 50;
+}
+
+.navbar.hidden {
+  transform: translateY(-100%);
+}
+
+.navbar .nav-inner {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.brand {
+  display: inline-flex;
+  align-items: baseline;
+  gap: .5rem;
+  color: var(--color-text);
+}
+
+.brand .logo {
+  font-size: 1.25rem;
+  font-weight: 700;
+  letter-spacing: .5px;
+}
+
+.nav-links {
+  display: flex;
+  gap: 1rem;
+  color: #cfd6e4;
+  font-size: .95rem;
+  list-style: none;
+}
+
+.nav-links a {
+  padding: .4rem .6rem;
+  border-radius: 8px;
+}
+
+.logout {
+  color: #ff5e5e;
+  background: none;
+  padding: .4rem .6rem;
+  font-weight: 600;
+}
+.logout:hover {
+  color: #ff8080;
+  background: rgba(255, 94, 94, 0.1);
+}
+
+/* ------ HERO (INICIO) ------ */
+.hero {
+  min-height: calc(100svh - var(--nav-height));
+  display: grid;
+  place-items: center;
+  text-align: center;
+  padding: 2rem 1rem;
+}
+
+.hero h2 {
+  font-size: clamp(2rem, 4vw + 1rem, 3.25rem);
+  color: var(--color-primary);
+  margin-bottom: .75rem;
+}
+
+.hero p {
+  max-width: 56ch;
+  color: var(--color-muted);
+  font-size: clamp(1rem, 1.2vw + .6rem, 1.2rem);
+}
+
+/* ------ SECTIONS ------ */
+.section {
+  padding: clamp(2rem, 4vw, 4rem) 0;
+  scroll-margin-top: var(--nav-height);
+}
+
+.section-header {
+  text-align: center;
+  margin-bottom: 1.25rem;
+}
+
+.section-header h3 {
+  font-size: clamp(1.4rem, 2.4vw, 2rem);
+  color: var(--color-primary);
+}
+
+.section-header p {
+  color: var(--color-muted);
+  margin-top: .25rem;
+}
+
+/* ------ GRID ------ */
+.grid {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+}
+
+/* ------ CARD ------ */
+.card {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: var(--radius);
+  padding: 1rem;
+  transition: var(--transition);
+}
+
+.card:hover {
+  transform: translateY(-2px);
+}
+
+.card h4 {
+  margin-bottom: .5rem;
+  color: #eaf3ff;
+}
+
+.card p {
+  color: var(--color-muted);
+  font-size: .95rem;
+}
+
+.card .actions {
+  margin-top: .75rem;
+  display: flex;
+  gap: .5rem;
+  flex-wrap: wrap;
+}
+
+/* ------ FOOTER ------ */
+footer {
+  background: var(--color-surface);
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  color: var(--color-muted);
+  padding: 2rem 1rem 1rem;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.footer-content {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  align-items: center;
+  justify-content: center;
+}
+
+@media (min-width: 768px) {
+  .footer-content {
+    flex-direction: row;
+    justify-content: space-between;
+    text-align: left;
+  }
+}
+
+.footer-brand h3 {
+  color: var(--color-primary);
+  margin-bottom: 0.5rem;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+
+.footer-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.footer-links a {
+  color: var(--color-text);
+  font-size: 0.95rem;
+  transition: var(--transition);
+}
+
+.footer-socials {
+  display: flex;
+  gap: 1rem;
+}
+
+.social-icon {
+  font-size: 1.1rem;
+  color: var(--color-primary);
+  transition: all 0.3s ease;
+}
+
+.social-icon:hover {
+  transform: translateY(-3px);
+  text-shadow: 0 0 8px rgba(0, 209, 178, 0.8);
+}
+
+.footer-bottom {
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  margin-top: 1.5rem;
+  padding-top: 1rem;
+  font-size: 0.85rem;
+  color: var(--color-muted);
+}
+
+/* ============================ */
+/* ====== 4. PÁGINA DE LOGIN ====== */
+/* ============================ */
+
+.login-container {
+  min-height: calc(100vh - var(--nav-height));
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  background: radial-gradient(circle at 20% 20%, rgba(0, 209, 178, 0.15) 0%, var(--color-bg) 70%);
+  text-align: center;
+}
+
+.login-card {
+  background: var(--color-surface);
+  border-radius: var(--radius);
+  padding: 2rem 1.5rem;
+  width: 100%;
+  max-width: 360px;
+  box-shadow: 0 10px 30px rgba(0,0,0,.35);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+  margin-top: 1.5rem;
+}
+
+.login-form input {
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: 1px solid rgba(255,255,255,.08);
+  background: #0f141c;
+  color: var(--color-text);
+  outline: none;
+  width: 100%;
+  transition: var(--transition);
+}
+
+.login-form input:focus {
+  border-color: rgba(0,209,178,.6);
+  box-shadow: 0 0 0 3px rgba(0,209,178,.15);
+}
+
+/* Botón de submit del formulario */
+.login-form button {
+  font-weight: 700;
+  margin-top: 0.5rem;
+}
+
+.divider {
+  margin: 1.25rem 0;
+  color: var(--color-muted);
+  font-size: 0.9rem;
+}
+
+.google-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  background-color: #4285f4;
+  color: #fff;
+  padding: 10px 12px;
+  border-radius: 8px;
+  font-weight: 600;
+  transition: .3s;
+}
+
+.google-btn:hover {
+  background-color: #357ae8;
+  box-shadow: 0 0 10px rgba(66, 133, 244, 0.4);
+}
+
+
+/* ======================================= */
+/* ====== 5. EFECTOS Y ANIMACIONES NEÓN ====== */
+/* ======================================= */
+
+/* ------ NAV LINK ACTIVO ------ */
+.nav-links a.active {
+  position: relative;
+  background: rgba(0, 209, 178, 0.1);
+  color: var(--color-primary);
+  font-weight: 600;
+  text-shadow: 0 0 8px rgba(0, 209, 178, 0.8);
+  transition: all 0.3s ease;
+}
+
+.nav-links a:hover {
+  background: rgba(255,255,255,.06);
+  color: var(--color-text);
+  text-shadow: none;
+}
+
+.nav-links a.active:hover {
+  background: rgba(0, 209, 178, 0.15);
+  color: var(--color-primary);
+}
+
+.nav-links a.active::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 10%;
+  width: 80%;
+  height: 2px;
+  background: var(--color-primary);
+  box-shadow: 0 0 8px rgba(0, 209, 178, 0.7), 0 0 20px rgba(0, 209, 178, 0.4);
+  border-radius: 4px;
+  animation: glow 1.8s ease-in-out infinite alternate;
+}
+
+@keyframes glow {
+  from {
+    opacity: 0.6;
+    transform: scaleX(0.95);
+    box-shadow: 0 0 6px rgba(0, 209, 178, 0.4);
+  }
+  to {
+    opacity: 1;
+    transform: scaleX(1.05);
+    box-shadow: 0 0 12px rgba(0, 209, 178, 0.9);
+  }
+}
+
+/* ------ LOGO NEÓN ------ */
+.logo {
+  position: relative;
+  color: var(--color-primary) !important;
+  font-weight: 700;
+  letter-spacing: 0.8px;
+  animation: breathe 2.8s ease-in-out infinite;
+  text-shadow:
+    0 0 6px rgba(0, 209, 178, 0.6),
+    0 0 15px rgba(0, 209, 178, 0.3);
+}
+
+@keyframes breathe {
+  0%, 100% {
+    text-shadow:
+      0 0 6px rgba(0, 209, 178, 0.5),
+      0 0 15px rgba(0, 209, 178, 0.2);
+    transform: scale(1);
+    opacity: 0.9;
+  }
+  50% {
+    text-shadow:
+      0 0 10px rgba(0, 209, 178, 0.8),
+      0 0 25px rgba(0, 209, 178, 0.5),
+      0 0 45px rgba(0, 209, 178, 0.3);
+    transform: scale(1.03);
+    opacity: 1;
+  }
+}

@@ -1,0 +1,163 @@
+/* -------------------------------------- */
+/* 🔹 Estilos Generales para Facturas */
+/* -------------------------------------- */
+
+.facturas-main {
+  padding: 3rem 1.5rem;
+  min-height: 100vh;
+}
+
+/* 🔹 Cabecera y Botón de Acción */
+.facturas-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+.facturas-header h1 {
+  font-size: 2rem;
+  color: #fff;
+  text-shadow: 0 0 5px var(--color-primary); /* Efecto neón en el título */
+}
+
+.create-button {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  background: var(--color-primary);
+  color: var(--color-bg-dark); /* Texto oscuro sobre neón */
+  border: none;
+  border-radius: var(--border-radius);
+  cursor: pointer;
+  font-weight: 700;
+  transition: all 0.3s ease;
+  box-shadow: 0 0 15px rgba(0, 255, 200, 0.6);
+}
+
+.create-button:hover {
+  background: var(--color-primary-light);
+  box-shadow: 0 0 20px var(--color-primary-light);
+  transform: translateY(-2px);
+}
+
+/* -------------------------------------- */
+/* 🔹 Filtros y Búsqueda */
+/* -------------------------------------- */
+
+.filters-container {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+}
+
+.filters-container input,
+.filters-container select {
+  padding: 0.6rem 1rem;
+  background: #1c1c1c;
+  border: 1px solid rgba(0, 255, 200, 0.3);
+  border-radius: var(--border-radius);
+  color: #fff;
+  font-size: 1rem;
+  flex-grow: 1;
+  min-width: 150px;
+}
+
+.filters-container input:focus,
+.filters-container select:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 8px rgba(0, 255, 200, 0.5);
+}
+
+/* -------------------------------------- */
+/* 🔹 Tabla de Facturas */
+/* -------------------------------------- */
+
+.facturas-table-wrapper {
+  overflow-x: auto; /* Permite desplazamiento en dispositivos pequeños */
+  background: #1c1c1c;
+  border-radius: var(--border-radius);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.facturas-table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 600px; /* Asegura que la tabla no se colapse demasiado */
+}
+
+.facturas-table thead th {
+  padding: 1rem;
+  text-align: left;
+  background: #252525;
+  color: var(--color-primary);
+  text-transform: uppercase;
+  font-size: 0.85rem;
+  letter-spacing: 0.05em;
+  border-bottom: 2px solid var(--color-primary);
+}
+
+.facturas-table tbody td {
+  padding: 1rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  color: #f0f0f0;
+  vertical-align: middle;
+}
+
+.facturas-table tbody tr:hover {
+  background: rgba(0, 255, 200, 0.05); /* Resaltado de fila al pasar el ratón */
+}
+
+.status-badge {
+  display: inline-block;
+  padding: 0.3rem 0.6rem;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+/* Colores para estados (Ejemplo) */
+.status-badge.paid {
+  background: rgba(0, 255, 0, 0.1);
+  color: #00ff00;
+  border: 1px solid #00ff00;
+}
+.status-badge.pending {
+  background: rgba(255, 165, 0, 0.1);
+  color: #ffa500;
+  border: 1px solid #ffa500;
+}
+
+.action-buttons button {
+  background: none;
+  border: none;
+  color: var(--color-primary);
+  cursor: pointer;
+  margin-left: 0.5rem;
+  transition: color 0.2s;
+}
+
+.action-buttons button:hover {
+  color: var(--color-primary-light);
+  filter: drop-shadow(0 0 3px var(--color-primary));
+}
+
+/* -------------------------------------- */
+/* 🔹 Media Queries para Responsividad */
+/* -------------------------------------- */
+
+@media (max-width: 768px) {
+  .facturas-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+
+  .create-button {
+    width: 100%;
+    justify-content: center;
+  }
+}

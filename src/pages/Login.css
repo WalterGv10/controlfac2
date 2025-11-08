@@ -1,0 +1,165 @@
+/* Estilos específicos para la página de Login */
+
+.login-wrap {
+  min-height: 100dvh; /* 100% de la altura de la vista */
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  /* Fondo degradado del body global */
+  position: relative;
+  overflow: hidden;
+}
+
+/* Decoración de fondo (luces) */
+.bg-decoration {
+  position: absolute;
+  inset: -20%;
+  background:
+    radial-gradient(600px 600px at 85% 20%, rgba(0, 209, 178, .08), transparent 60%),
+    radial-gradient(500px 500px at 10% 90%, rgba(0, 209, 178, .06), transparent 60%);
+  filter: blur(20px);
+  z-index: 0;
+}
+
+.login-card {
+  width: min(420px, 92vw);
+  padding: 32px 28px;
+  border-radius: 16px;
+  background: linear-gradient(180deg, rgba(22, 26, 34, .7), rgba(22, 26, 34, .55));
+  border: 1px solid rgba(255, 255, 255, .06);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, .45);
+  backdrop-filter: blur(10px);
+  position: relative; /* Para el z-index */
+  z-index: 1;
+  text-align: center;
+}
+
+/* Efecto 'Glass' opcional (si lo añades al card) */
+.login-card.glass::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 16px;
+  pointer-events: none;
+  background: linear-gradient(140deg, rgba(255, 255, 255, .06), rgba(255, 255, 255, 0) 40%);
+}
+
+/* Logo animado */
+.logo-ring {
+  position: relative;
+  height: 64px;
+  margin-bottom: 12px;
+}
+.logo-ring .ring {
+  position: absolute;
+  inset: 0;
+  margin: auto;
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  border: 2px solid rgba(0, 209, 178, .5);
+  box-shadow: 0 0 16px rgba(0, 209, 178, .35) inset;
+  animation: spin 8s linear infinite;
+}
+.logo-ring .dot {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: #00d1b2;
+  box-shadow: 0 0 18px #00d1b2;
+}
+
+/* Títulos del card */
+.title {
+  font-size: 1.6rem;
+  font-weight: 700;
+  letter-spacing: .5px;
+  margin: 0 0 4px;
+  color: var(--color-text);
+}
+.subtitle {
+  color: var(--color-muted);
+  margin-bottom: 22px;
+  font-size: .95rem;
+}
+
+/* Botón de Google (estilo oscuro) */
+.btn-google {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px; /* Más espacio para el ícono */
+  padding: 12px 14px;
+  border-radius: 12px;
+  font-weight: 600;
+  font-size: 1rem; /* Un poco más grande */
+  letter-spacing: .2px;
+  background: linear-gradient(180deg, #1a232e, #121821);
+  border: 1px solid rgba(255, 255, 255, .08);
+  color: var(--color-text);
+  cursor: pointer;
+  transition: transform .12s ease, box-shadow .12s ease, border-color .12s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-google:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 8px 24px rgba(0, 209, 178, .12);
+  border-color: rgba(0, 209, 178, .35);
+}
+
+.btn-google:disabled {
+  opacity: .7;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+/* Efecto de pulso (opcional pero genial) */
+.btn-google .pulse {
+  position: absolute;
+  inset: auto;
+  width: 120%;
+  height: 120%;
+  left: -10%;
+  top: -110%;
+  background: radial-gradient(200px 140px at 50% 50%, rgba(0, 209, 178, .18), transparent 60%);
+  animation: drop 1.2s ease forwards;
+  pointer-events: none;
+}
+
+.hint {
+  color: var(--color-muted);
+  margin-top: 14px;
+  font-size: .8rem;
+  text-align: center;
+}
+
+/* Animaciones */
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+@keyframes drop {
+  to { top: -10%; opacity: 0; }
+}
+
+
+.login-logo {
+  width: 120px;
+  height: auto;
+  margin: 0 auto 1.2rem;
+  display: block;
+  filter: drop-shadow(0 0 14px rgba(0, 255, 200, 0.6));
+  transition: transform 0.3s ease, filter 0.3s ease;
+}
+
+.login-logo:hover {
+  transform: scale(1.05);
+  filter: drop-shadow(0 0 18px rgba(0, 255, 220, 0.8));
+}

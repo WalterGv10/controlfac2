@@ -1,0 +1,501 @@
+/* 🌍 Estilos globales base — ControlFAC2 */
+
+/* Variables */
+:root {
+  --color-bg: #0f1115;
+  --color-surface: #161a22;
+  --color-primary: #00d1b2; /* Turquesa neón */
+  --color-text: #e6e9ef;
+  --color-muted: #9aa4b2;
+  --ring: #00d1b255; /* Sombra de anillo/focus */
+  --radius: 12px;
+  --shadow: 0 10px 30px #00000055;
+  --transition: all 0.25s ease;
+}
+
+/* Reset y base */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  /* Fuente base definida aquí */
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, sans-serif;
+  line-height: 1.5;
+  height: 100%;
+}
+
+body {
+  height: 100%;
+  width: 100%;
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  /* Mantenemos tu fondo degradado */
+  background:
+    radial-gradient(1000px 600px at 10% -10%, #0b1a1a 0%, var(--color-bg) 45%) no-repeat,
+    var(--color-bg);
+}
+
+#root {
+  height: 100%;
+  /* Permite que el layout principal crezca */
+  display: flex;
+  flex-direction: column;
+}
+
+/* Enlaces */
+a {
+  color: var(--color-primary);
+  text-decoration: none;
+  transition: var(--transition);
+}
+a:hover {
+  opacity: 0.85;
+}
+
+/* Botón base (usado por otros botones) */
+button {
+  font-family: inherit; /* Hereda la fuente */
+  font-weight: 600;
+  border: none;
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: var(--transition);
+  color: #001311;
+  background-color: var(--color-primary);
+  padding: 0.6rem 1.2rem;
+}
+button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 0 10px rgba(0, 209, 178, 0.4);
+}
+button:active {
+  transform: translateY(0);
+}
+button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+/* Títulos */
+h1,
+h2,
+h3 {
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+
+/* ---------- App Shell + Main Layout ---------- */
+/* .app-shell (eliminado, #root y .main lo manejan) */
+
+.main {
+  /* El contenido principal ocupa el espacio restante */
+  flex-grow: 1;
+  width: 100%;
+  max-width: 1100px;
+  padding: 24px;
+  margin: 0 auto;
+  display: grid;
+  gap: 18px;
+}
+
+/* Contenedor (opcional si usas .main) */
+.container {
+  width: min(1100px, 90%);
+  margin: 0 auto;
+  padding: 1rem 0;
+}
+
+/* ---------- Componentes Reutilizables ---------- */
+
+.card {
+  background: linear-gradient(180deg, rgba(255, 255, 255, .02), rgba(255, 255, 255, .00));
+  border: 1px solid #23293a;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 18px;
+}
+
+.field {
+  display: grid;
+  gap: 8px;
+  margin: 12px 0;
+}
+
+.field input {
+  background: #0d111a;
+  border: 1px solid #23293a;
+  color: var(--color-text);
+  padding: 10px 12px;
+  border-radius: 10px;
+  outline: none;
+  transition: var(--transition);
+  font-family: inherit;
+  font-size: 1rem;
+}
+
+.field input:focus {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 4px var(--ring);
+}
+
+.muted {
+  color: var(--color-muted);
+}
+.error-text {
+  color: #ff7676; /* Tono de error más brillante */
+  margin-top: 12px;
+  font-size: .9rem;
+}
+
+/* Variantes de botones */
+.btn-primary {
+  background: var(--color-primary);
+  color: #001a16;
+  border: none;
+  font-weight: 700;
+  padding: 10px 14px;
+}
+.btn-primary:hover {
+  filter: brightness(1.08);
+}
+
+.btn-ghost {
+  border: 1px solid #2a3040;
+  background: transparent;
+  color: var(--color-text);
+  padding: 8px 12px;
+  border-radius: 10px;
+}
+.btn-ghost:hover {
+  border-color: var(--color-primary);
+}
+
+/* ---------- Navbar ---------- */
+.navbar {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 18px;
+  background: rgba(22, 26, 34, .8);
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid #212634;
+  width: 100%;
+}
+
+.nav-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.brand {
+  font-weight: 700;
+  letter-spacing: .6px;
+}
+.brand-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--color-primary);
+  box-shadow: 0 0 10px var(--color-primary);
+}
+.nav-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.nav-link {
+  background: transparent;
+  border: 1px solid #2a3040;
+  padding: 8px 12px;
+  border-radius: 999px;
+  color: var(--color-text);
+  cursor: pointer;
+  transition: var(--transition);
+  /* Es un botón, no un 'a' */
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+.nav-link:hover,
+.nav-link.active {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 4px var(--ring);
+}
+.user-chip {
+  font-size: .9rem;
+  opacity: .9;
+}
+
+/* ---------- Footer básico ---------- */
+footer {
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  padding: 1rem;
+  text-align: center;
+  color: var(--color-muted);
+  /* Se pega al final si el contenido es corto */
+  margin-top: auto;
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 640px) {
+  .nav-right {
+    gap: 6px;
+  }
+  .nav-link {
+    padding: 6px 10px;
+  }
+  .main {
+    padding: 16px;
+  }
+}
+
+/* --- Añadir a global.css --- */
+
+/* Estilos para las páginas (Facturas, Reportes, Perfil) */
+.section {
+  display: grid;
+  gap: 24px;
+}
+
+.section-header {
+  padding: 12px 0;
+  border-bottom: 1px solid #23293a;
+  margin-bottom: 12px;
+}
+.section-header h3 {
+  font-size: 1.8rem;
+  color: var(--color-text);
+}
+.section-header p {
+  font-size: 1rem;
+  color: var(--color-muted);
+}
+
+/* Estilo de grilla para las tarjetas */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 20px;
+}
+
+/* Acciones dentro de las tarjetas (Facturas/Reportes) */
+.card .actions {
+  margin-top: 16px;
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap; /* Para responsive */
+}
+
+/* --- Estilos para Perfil.jsx (Dashboard) --- */
+
+.profile-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  background-color: var(--color-surface);
+  padding: 20px;
+  border-radius: var(--radius);
+  border: 1px solid #23293a;
+}
+.profile-header .avatar {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  border: 2px solid var(--color-primary);
+}
+.profile-header .profile-info {
+  flex-grow: 1;
+}
+.profile-header h4 {
+  font-size: 1.2rem;
+  margin: 0;
+  color: var(--color-text);
+}
+.profile-header .btn-logout {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background-color: #2a3040;
+}
+.profile-header .btn-logout:hover {
+  border-color: #ff7676;
+  color: #ff7676;
+}
+
+/* Tarjetas de navegación del dashboard */
+.dashboard-grid .card {
+  transition: var(--transition);
+  border-color: #23293a;
+}
+.dashboard-grid .card:hover {
+  transform: translateY(-4px);
+  border-color: var(--color-primary);
+  box-shadow: 0 0 15px var(--ring);
+}
+.card-link {
+  text-decoration: none;
+  color: inherit; /* Hereda el color del texto */
+}
+.card-icon {
+  color: var(--color-primary);
+  margin-bottom: 12px;
+}
+
+/* 🌐 Navbar — Opción 2: estilo Glass Flow Tech */
+.navbar {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 28px;
+  width: 100%;
+  background: linear-gradient(
+    135deg,
+    rgba(15, 17, 21, 0.85) 0%,
+    rgba(25, 28, 35, 0.7) 100%
+  );
+  backdrop-filter: blur(14px);
+  border-bottom: 1px solid rgba(0, 209, 178, 0.18);
+  box-shadow: 0 4px 30px rgba(0, 209, 178, 0.08);
+  transition: background 0.4s ease;
+}
+
+/* 🟦 Marca del sistema */
+.nav-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.nav-left .brand {
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  color: var(--color-text);
+  font-size: 1.1rem;
+  transition: var(--transition);
+}
+
+.nav-left .brand:hover {
+  color: var(--color-primary);
+  text-shadow: 0 0 8px var(--color-primary);
+}
+
+.brand-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--color-primary);
+  box-shadow: 0 0 10px var(--color-primary);
+  animation: pulseDot 3s infinite ease-in-out;
+}
+
+/* 🔁 Animación leve del punto */
+@keyframes pulseDot {
+  0%, 100% { opacity: 0.8; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.4); }
+}
+
+/* 🟩 Navegación derecha */
+.nav-right {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+/* 🔗 Links de navegación */
+.nav-link {
+  color: var(--color-text);
+  font-weight: 500;
+  padding: 6px 14px;
+  border-radius: 999px;
+  position: relative;
+  overflow: hidden;
+  border: 1px solid transparent;
+  background: rgba(255, 255, 255, 0.03);
+  transition: all 0.3s ease;
+}
+
+.nav-link:hover {
+  color: var(--color-primary);
+  border-color: rgba(0, 209, 178, 0.25);
+  box-shadow: inset 0 0 10px rgba(0, 209, 178, 0.2);
+}
+
+.nav-link.active {
+  background: rgba(0, 209, 178, 0.1);
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+  box-shadow: 0 0 10px var(--ring);
+}
+
+/* 👤 Usuario y botón */
+.user-area {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  margin-left: 1rem;
+}
+
+.user-chip {
+  font-size: 0.9rem;
+  color: var(--color-muted);
+  background: rgba(0, 0, 0, 0.25);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  padding: 6px 12px;
+  border-radius: 10px;
+  backdrop-filter: blur(8px);
+}
+
+.btn-logout {
+  background: rgba(0, 209, 178, 0.1);
+  border: 1px solid rgba(0, 209, 178, 0.4);
+  color: var(--color-primary);
+  padding: 6px 14px;
+  border-radius: 10px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.btn-logout:hover {
+  background-color: var(--color-primary);
+  color: #001311;
+  box-shadow: 0 0 12px var(--color-primary);
+  transform: translateY(-1px);
+}
+
+/* 📱 Responsive */
+@media (max-width: 640px) {
+  .navbar {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 12px 18px;
+  }
+  .nav-right {
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .nav-link {
+    font-size: 0.85rem;
+    padding: 5px 10px;
+  }
+}
+
+@keyframes fade-in {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.animate-fade-in {
+  animation: fade-in 0.6s ease-in-out;
+}

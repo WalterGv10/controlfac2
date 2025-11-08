@@ -1,0 +1,144 @@
+.nueva-factura-section {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh; /* ocupa toda la pantalla */
+  background: #0b0b0b;
+  overflow: hidden;
+}
+
+.nueva-factura-container {
+  position: relative;
+  width: 100%;
+  max-width: 620px;
+  background: rgba(26, 26, 26, 0.96);
+  border: 1px solid var(--color-primary, #00e6e6);
+  border-radius: 1.5rem;
+  padding: 2rem;
+  box-shadow: 0 0 25px rgba(0, 230, 230, 0.15);
+  animation: fadeIn 0.6s ease-in-out;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+/* ✖ Botón superior derecho */
+.close-btn {
+  position: absolute;
+  top: 12px;
+  right: 16px;
+  background: transparent;
+  border: none;
+  color: var(--color-primary, #00e6e6);
+  font-size: 1.3rem;
+  cursor: pointer;
+  transition: color 0.3s;
+}
+
+.close-btn:hover {
+  color: #14f0f0;
+}
+
+.nueva-factura-container h3 {
+  color: var(--color-primary, #00e6e6);
+  font-size: 1.8rem;
+  text-align: center;
+  margin-bottom: 1.2rem;
+  letter-spacing: 0.05em;
+}
+
+.nueva-factura-form {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem 1.2rem;
+}
+
+.nueva-factura-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.nueva-factura-group label {
+  color: #d1d1d1;
+  font-weight: 600;
+  font-size: 0.85rem;
+  margin-bottom: 0.3rem;
+}
+
+.nueva-factura-group input {
+  background: #111;
+  border: 1px solid #333;
+  border-radius: 0.6rem;
+  color: #fff;
+  padding: 0.55rem 0.8rem;
+  font-size: 0.95rem;
+  transition: border 0.3s, box-shadow 0.3s;
+}
+
+.nueva-factura-group input:focus {
+  border-color: var(--color-primary, #00e6e6);
+  box-shadow: 0 0 6px rgba(0, 230, 230, 0.4);
+  outline: none;
+}
+
+/* 🔹 Botones inferiores */
+.nueva-factura-buttons {
+  grid-column: 1 / -1;
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.8rem;
+  margin-top: 0.5rem;
+}
+
+.save-btn,
+.cancel-btn {
+  padding: 0.7rem 1.2rem;
+  border-radius: 0.6rem;
+  font-weight: 700;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: none;
+}
+
+.save-btn {
+  background: var(--color-primary, #00e6e6);
+  color: #000;
+}
+
+.save-btn:hover {
+  background: #14f0f0;
+  box-shadow: 0 0 10px rgba(0, 230, 230, 0.4);
+}
+
+.cancel-btn {
+  background: transparent;
+  border: 1px solid var(--color-primary, #00e6e6);
+  color: var(--color-primary, #00e6e6);
+}
+
+.cancel-btn:hover {
+  background: rgba(0, 230, 230, 0.1);
+}
+
+/* 🔹 Responsive */
+@media (max-width: 640px) {
+  .nueva-factura-form {
+    grid-template-columns: 1fr;
+  }
+  .nueva-factura-container {
+    padding: 1.5rem;
+  }
+}
+
+/* ✨ Animación */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

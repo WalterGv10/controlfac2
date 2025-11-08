@@ -1,0 +1,82 @@
+.glass-bg::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background: url("../assets/logo.png") center no-repeat;
+  background-size: 90%;
+  opacity: 0.08;
+  filter: blur(4px);
+  animation: zoom 12s ease-in-out infinite alternate;
+  z-index: -1;
+}
+
+@keyframes zoom {
+  from { background-size: 85%; opacity: 0.07; }
+  to { background-size: 95%; opacity: 0.1; }
+}
+
+.profile-panel {
+  max-width: 700px;
+  margin: 5vh auto;
+  background: rgba(30, 30, 30, 0.6);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(0, 255, 200, 0.2);
+  border-radius: 1.5rem;
+  padding: 2rem;
+  text-align: center;
+  position: relative;
+  box-shadow: 0 0 30px rgba(0, 255, 200, 0.15);
+}
+
+.logout-btn {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: transparent;
+  border: none;
+  color: #ff4d4d;
+  cursor: pointer;
+  transition: 0.3s;
+}
+.logout-btn:hover { color: #ff6b6b; transform: scale(1.1); }
+
+.avatar-wrap {
+  display: inline-block;
+  border-radius: 50%;
+  padding: 5px;
+  background: radial-gradient(circle, #00ffc8 0%, transparent 70%);
+  animation: pulse 4s infinite ease-in-out;
+}
+@keyframes pulse {
+  0%, 100% { transform: scale(1); opacity: 0.9; }
+  50% { transform: scale(1.05); opacity: 1; }
+}
+
+.avatar {
+  width: 90px;
+  height: 90px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid #00ffc8;
+}
+
+.cards-wrap {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
+  gap: 1.5rem;
+  margin-top: 2rem;
+}
+
+.card.glass {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(0, 255, 200, 0.1);
+  border-radius: 1rem;
+  padding: 1.5rem;
+  color: white;
+  transition: 0.3s;
+}
+.card.glass:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 0 20px rgba(0, 255, 200, 0.3);
+  border-color: rgba(0, 255, 200, 0.5);
+}
