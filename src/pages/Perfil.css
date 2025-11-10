@@ -1,82 +1,226 @@
-.glass-bg::before {
+:root {
+  --neon-color: #00ffc8;
+  --dark-bg: #0d1117;
+  --glow-shadow: 0 0 10px var(--neon-color), 0 0 20px rgba(0, 255, 200, 0.5);
+  --danger-color: #ff6347;
+}
+
+/* Fondo general */
+body {
+  background-color: var(--dark-bg);
+  color: white;
+  overflow-x: hidden;
+}
+
+.futuristic-bg {
+  position: relative;
+  min-height: 100vh;
+}
+
+/* --- Fondo con logo animado --- */
+.futuristic-bg::before {
   content: "";
   position: fixed;
   inset: 0;
-  background: url("../assets/logo.png") center no-repeat;
-  background-size: 90%;
-  opacity: 0.08;
-  filter: blur(4px);
-  animation: zoom 12s ease-in-out infinite alternate;
+  background: url("../assets/logo.png") center/70% no-repeat;
+  opacity: 0.06;
+  filter: blur(5px);
+  animation: zoom 14s ease-in-out infinite alternate;
   z-index: -1;
 }
 
 @keyframes zoom {
-  from { background-size: 85%; opacity: 0.07; }
-  to { background-size: 95%; opacity: 0.1; }
+  from { background-size: 65%; opacity: 0.05; }
+  to { background-size: 75%; opacity: 0.09; }
 }
 
-.profile-panel {
+/* --- Panel Principal --- */
+.profile-container {
   max-width: 700px;
-  margin: 5vh auto;
-  background: rgba(30, 30, 30, 0.6);
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(0, 255, 200, 0.2);
+  margin: 6vh auto;
+  background: rgba(18, 24, 33, 0.85);
+  backdrop-filter: blur(18px);
+  border: 1px solid rgba(0, 255, 200, 0.3);
   border-radius: 1.5rem;
-  padding: 2rem;
+  padding: 3rem 2rem;
   text-align: center;
-  position: relative;
-  box-shadow: 0 0 30px rgba(0, 255, 200, 0.15);
+  box-shadow: 0 6px 25px rgba(0, 255, 200, 0.08);
+  transition: all 0.3s ease;
+  animation: fadeIn 0.7s ease;
 }
 
-.logout-btn {
-  position: absolute;
-  top: 1rem;
-  right: 1rem;
-  background: transparent;
-  border: none;
-  color: #ff4d4d;
-  cursor: pointer;
-  transition: 0.3s;
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
 }
-.logout-btn:hover { color: #ff6b6b; transform: scale(1.1); }
 
-.avatar-wrap {
+/* --- Loader --- */
+.loader {
+  font-size: 1rem;
+  color: var(--neon-color);
+  text-shadow: 0 0 10px var(--neon-color);
+  animation: pulse-glow 1.5s ease-in-out infinite alternate;
+}
+
+/* --- Encabezado --- */
+.profile-header h1 {
+  font-size: 2rem;
+  margin-bottom: 0.3rem;
+}
+.neon-text-main {
+  color: var(--neon-color);
+  text-shadow:
+    0 0 5px var(--neon-color),
+    0 0 10px var(--neon-color),
+    0 0 20px rgba(0, 255, 200, 0.8);
+}
+.sub-text {
+  color: #8d8d8d;
+  font-size: 0.9rem;
+  margin-bottom: 2rem;
+}
+
+/* --- Avatar --- */
+.glow-border {
   display: inline-block;
-  border-radius: 50%;
   padding: 5px;
-  background: radial-gradient(circle, #00ffc8 0%, transparent 70%);
-  animation: pulse 4s infinite ease-in-out;
+  margin-bottom: 0.8rem;
+  border-radius: 50%;
+  box-shadow: 0 0 15px rgba(0, 255, 200, 0.2);
+  animation: pulse-glow 2s ease-in-out infinite alternate;
 }
-@keyframes pulse {
-  0%, 100% { transform: scale(1); opacity: 0.9; }
-  50% { transform: scale(1.05); opacity: 1; }
-}
-
 .avatar {
   width: 90px;
   height: 90px;
   border-radius: 50%;
   object-fit: cover;
-  border: 3px solid #00ffc8;
+  border: 2px solid rgba(0, 255, 200, 0.3);
+}
+.avatar-placeholder {
+  width: 90px;
+  height: 90px;
+  border-radius: 50%;
+  background: rgba(0, 255, 200, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+  color: var(--neon-color);
+  text-shadow: 0 0 10px var(--neon-color);
 }
 
-.cards-wrap {
+@keyframes pulse-glow {
+  0% { box-shadow: 0 0 6px var(--neon-color), 0 0 15px rgba(0, 255, 200, 0.3); }
+  100% { box-shadow: 0 0 10px var(--neon-color), 0 0 25px rgba(0, 255, 200, 0.6); }
+}
+
+/* --- Botón Cerrar Sesión --- */
+.neon-logout-btn {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: none;
+  border: none;
+  color: var(--danger-color);
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+.neon-logout-btn span {
+  display: none;
+}
+.neon-logout-btn:hover {
+  transform: scale(1.08);
+  text-shadow: 0 0 8px var(--danger-color);
+}
+
+/* --- Tarjetas de Navegación --- */
+.navigation-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
+  grid-template-columns: 1fr;
   gap: 1.5rem;
-  margin-top: 2rem;
+  margin-top: 2.5rem;
 }
 
-.card.glass {
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(0, 255, 200, 0.1);
+.nav-card {
+  display: flex;
+  align-items: center;
+  background: rgba(20, 25, 30, 0.75);
+  border: 2px solid rgba(0, 255, 200, 0.25);
   border-radius: 1rem;
-  padding: 1.5rem;
+  padding: 1.8rem 1.4rem;
+  text-decoration: none;
   color: white;
-  transition: 0.3s;
+  transition: all 0.4s ease;
+  backdrop-filter: blur(12px);
+  position: relative;
+  overflow: hidden;
 }
-.card.glass:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 0 20px rgba(0, 255, 200, 0.3);
-  border-color: rgba(0, 255, 200, 0.5);
+
+/* Efecto glow animado */
+.nav-card::before {
+  content: "";
+  position: absolute;
+  top: -100%;
+  left: 0;
+  width: 100%;
+  height: 300%;
+  background: linear-gradient(
+    120deg,
+    transparent,
+    rgba(0, 255, 200, 0.1),
+    transparent
+  );
+  animation: shine 4s infinite linear;
+  z-index: 0;
+}
+@keyframes shine {
+  from { transform: translateY(0); }
+  to { transform: translateY(100%); }
+}
+
+/* Contenido de las tarjetas */
+.nav-card svg {
+  margin-right: 1.5rem;
+  color: var(--neon-color);
+  filter: drop-shadow(0 0 6px rgba(0, 255, 200, 0.6));
+  transition: transform 0.3s ease;
+  z-index: 1;
+}
+.nav-card:hover svg {
+  transform: scale(1.15) rotate(5deg);
+}
+.nav-card h3 {
+  font-size: 1.3rem;
+  margin-bottom: 0.4rem;
+  color: var(--neon-color);
+  text-shadow: 0 0 5px var(--neon-color);
+}
+.nav-card p {
+  font-size: 0.95rem;
+  color: #b8b8b8;
+}
+
+/* Hover: flotante */
+.nav-card:hover {
+  transform: translateY(-8px) scale(1.03);
+  box-shadow: 0 0 25px rgba(0, 255, 200, 0.3);
+}
+
+/* --- Responsividad --- */
+@media (min-width: 650px) {
+  .profile-container {
+    padding: 3rem 2.5rem;
+  }
+
+  .neon-logout-btn span {
+    display: inline;
+  }
+
+  .navigation-grid {
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  }
 }
