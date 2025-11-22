@@ -1,144 +1,284 @@
-.nueva-factura-section {
+/* =========================================
+   CONTENEDOR GENERAL
+========================================= */
+.nf-section {
   display: flex;
   justify-content: center;
-  align-items: center;
-  height: 100vh; /* ocupa toda la pantalla */
-  background: #0b0b0b;
-  overflow: hidden;
-}
-
-.nueva-factura-container {
-  position: relative;
+  align-items: flex-start; /* ← esto lo sube */
+  padding-top: 0;          /* ← elimina espacio superior */
+  padding-left: 1rem;
+  padding-right: 1rem;
+  padding-bottom: 1rem;
   width: 100%;
-  max-width: 620px;
-  background: rgba(26, 26, 26, 0.96);
-  border: 1px solid var(--color-primary, #00e6e6);
-  border-radius: 1.5rem;
-  padding: 2rem;
-  box-shadow: 0 0 25px rgba(0, 230, 230, 0.15);
-  animation: fadeIn 0.6s ease-in-out;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
+  min-height: calc(100vh - 60px); /* ← evita que se corte si hay navbar */
 }
 
-/* ✖ Botón superior derecho */
-.close-btn {
+
+
+/* =========================================
+   TARJETA PRINCIPAL
+========================================= */
+.nf-card {
+  width: 100%;
+  max-width: 900px;
+  background: rgba(20, 20, 20, 0.75);
+  border: 1px solid rgba(0, 255, 200, 0.45);
+  border-radius: 1rem;
+  padding: 1.2rem;
+  position: relative;
+  backdrop-filter: blur(10px);
+
+  /* ✨ Glow suave inicial */
+  box-shadow:
+    0 0 6px rgba(0, 255, 200, 0.4),
+    0 0 12px rgba(0, 255, 200, 0.25);
+  
+  transition: 0.35s ease;
+}
+
+/* Glow fuerte cuando el card toma foco (hover o escribiendo) */
+.nf-card:hover,
+.nf-card:focus-within {
+  box-shadow:
+    0 0 10px rgba(0, 255, 200, 0.8),
+    0 0 22px rgba(0, 255, 200, 0.45),
+    0 0 38px rgba(0, 255, 200, 0.25);
+}
+
+/* =========================================
+   BOTÓN CERRAR
+========================================= */
+.nf-close {
   position: absolute;
-  top: 12px;
-  right: 16px;
+  top: 10px;
+  right: 10px;
   background: transparent;
   border: none;
-  color: var(--color-primary, #00e6e6);
-  font-size: 1.3rem;
   cursor: pointer;
-  transition: color 0.3s;
+  color: white;
 }
 
-.close-btn:hover {
-  color: #14f0f0;
-}
-
-.nueva-factura-container h3 {
-  color: var(--color-primary, #00e6e6);
-  font-size: 1.8rem;
+/* =========================================
+   TÍTULO
+========================================= */
+.nf-title {
   text-align: center;
-  margin-bottom: 1.2rem;
-  letter-spacing: 0.05em;
+  margin-bottom: 1rem;
+  font-size: 1.4rem;
 }
 
-.nueva-factura-form {
+/* =========================================
+   GRID PRINCIPAL
+========================================= */
+.nf-main-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 1rem 1.2rem;
+  gap: 1rem;
 }
 
-.nueva-factura-group {
+/* MODO CELULAR */
+@media (max-width: 750px) {
+  .nf-main-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* =========================================
+   BLOQUES
+========================================= */
+.nf-block {
+  background: rgba(255, 255, 255, 0.04);
+  padding: 0.7rem;
+  border-radius: 0.8rem;
+  border: 1px solid rgba(0, 255, 200, 0.2);
+}
+
+.nf-block-title {
+  font-size: 0.85rem;
+  margin-bottom: 0.4rem;
+  opacity: 0.9;
+}
+
+/* =========================================
+   F I L A S (AQUÍ ESTÁ EL CAMBIO)
+========================================= */
+.nf-row {
+  display: flex;
+  flex-direction: row;       /* Fuerza que vayan lado a lado */
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+/* CADA CAMPO ocupa el 50% EXACTO */
+.nf-row .nf-field {
+  flex: 1;                   /* Ambos campos crecen igual */
+}
+
+/* En celular se vuelven uno encima del otro */
+@media (max-width: 600px) {
+  .nf-row {
+    flex-direction: column;
+  }
+}
+
+/* =========================================
+   CAMPOS (NEON TURQUESA)
+========================================= */
+.nf-field {
   display: flex;
   flex-direction: column;
+  position: relative;
 }
 
-.nueva-factura-group label {
-  color: #d1d1d1;
-  font-weight: 600;
+.nf-field label {
+  font-size: 0.75rem;
+  margin-bottom: 2px;
+  color: #d2fff7;
+  letter-spacing: 0.3px;
+}
+
+.nf-field input,
+.nf-field select,
+.nf-field textarea {
+  width: 100%;
+  padding: 0.5rem;
+  border-radius: 0.5rem;
+  border: 1px solid rgba(0, 255, 200, 0.35);
+  background: rgba(0, 0, 0, 0.25);
+  color: white;
   font-size: 0.85rem;
-  margin-bottom: 0.3rem;
-}
-
-.nueva-factura-group input {
-  background: #111;
-  border: 1px solid #333;
-  border-radius: 0.6rem;
-  color: #fff;
-  padding: 0.55rem 0.8rem;
-  font-size: 0.95rem;
-  transition: border 0.3s, box-shadow 0.3s;
-}
-
-.nueva-factura-group input:focus {
-  border-color: var(--color-primary, #00e6e6);
-  box-shadow: 0 0 6px rgba(0, 230, 230, 0.4);
   outline: none;
+  transition: 0.25s ease;
+  box-shadow: 0 0 4px rgba(0, 255, 200, 0.15);
 }
 
-/* 🔹 Botones inferiores */
-.nueva-factura-buttons {
-  grid-column: 1 / -1;
+/* NEON TURQUESA — enfoque */
+.nf-field input:focus,
+.nf-field select:focus,
+.nf-field textarea:focus {
+  border-color: #00ffc8;
+  box-shadow:
+    0 0 6px rgba(0, 255, 200, 0.6),
+    0 0 14px rgba(0, 255, 200, 0.35);
+}
+
+/* TEXTAREA tamaño uniforme */
+.nf-field textarea {
+  resize: none;
+  height: 38px;
+}
+
+/* =========================================
+   ICONOS DE ESTADO
+========================================= */
+.nf-field-icon {
+  position: absolute;
+  right: 8px;
+  bottom: 8px;
+  opacity: 0.8;
+}
+
+.nf-field-error {
+  margin-top: 2px;
+  font-size: 0.72rem;
+  color: #ff6b6b;
+  display: flex;
+  gap: 4px;
+  align-items: center;
+  opacity: 0.9;
+}
+
+/* Estados */
+.nf-field.invalid input,
+.nf-field.invalid textarea {
+  border-color: #ff6b6b;
+  box-shadow: none;
+}
+
+.nf-field.valid input,
+.nf-field.valid textarea {
+  border-color: #51cf66;
+  box-shadow: 0 0 6px rgba(81, 207, 102, 0.4);
+}
+
+/* =========================================
+   BOTONES
+========================================= */
+.nf-actions {
   display: flex;
   justify-content: flex-end;
   gap: 0.8rem;
-  margin-top: 0.5rem;
+  margin-top: 1rem;
 }
 
-.save-btn,
-.cancel-btn {
-  padding: 0.7rem 1.2rem;
+.nf-btn {
+  padding: 0.6rem 1.2rem;
   border-radius: 0.6rem;
-  font-weight: 700;
-  font-size: 0.95rem;
-  cursor: pointer;
-  transition: all 0.3s ease;
   border: none;
+  cursor: pointer;
 }
 
-.save-btn {
-  background: var(--color-primary, #00e6e6);
-  color: #000;
+.nf-btn.cancel {
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
 }
 
-.save-btn:hover {
-  background: #14f0f0;
-  box-shadow: 0 0 10px rgba(0, 230, 230, 0.4);
+.nf-btn.save {
+  background: #00ffc8;
+  color: black;
+  font-weight: bold;
 }
 
-.cancel-btn {
-  background: transparent;
-  border: 1px solid var(--color-primary, #00e6e6);
-  color: var(--color-primary, #00e6e6);
+/* =========================================
+   SPINNER
+========================================= */
+.nf-spinner {
+  width: 15px;
+  height: 15px;
+  border: 2px solid transparent;
+  border-top-color: black;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
 }
 
-.cancel-btn:hover {
-  background: rgba(0, 230, 230, 0.1);
-}
-
-/* 🔹 Responsive */
-@media (max-width: 640px) {
-  .nueva-factura-form {
-    grid-template-columns: 1fr;
-  }
-  .nueva-factura-container {
-    padding: 1.5rem;
-  }
-}
-
-/* ✨ Animación */
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(10px);
-  }
+@keyframes spin {
   to {
-    opacity: 1;
-    transform: translateY(0);
+    transform: rotate(360deg);
   }
 }
+
+/* =========================================
+   TOAST
+========================================= */
+.nf-toast {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background: #00ffc8;
+  padding: 0.8rem 1.2rem;
+  border-radius: 0.6rem;
+  color: #000;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+
+.nf-title {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+}
+
+.nf-title-logo {
+  width: clamp(95px, 10vw, 180px);
+  height: clamp(95px, 10vw, 180px);
+  object-fit: contain;
+  
+}
+
+
+
+
