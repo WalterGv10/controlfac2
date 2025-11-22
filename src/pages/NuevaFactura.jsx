@@ -1,75 +1,435 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "../supabaseClient";
+import { Check, X, AlertCircle } from "lucide-react";
+import logo from "../assets/logo.png";
 import "./NuevaFactura.css";
 
 export default function NuevaFactura() {
   const navigate = useNavigate();
-  const [formData, setFormData] = useState({
-    fecha: "",
-    nit_cliente: "",
+
+  /* ----------------------------------------
+   * ESTADO INICIAL
+   * ---------------------------------------- */
+  const initialState = {
+    fecha: new Date().toISOString().split("T")[0],
     nit_emisor: "",
     serie: "",
     dte: "",
     punto_servicio: "",
-    motivo_visita: "",
     tecnico: "",
-    cuenta: "",
-  });
-
-  const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    motivo_visita: "",
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    const { error } = await supabase.from("facturas").insert([formData]);
-    if (error) {
-      alert("❌ Error al guardar: " + error.message);
-    } else {
-      alert("✅ Factura guardada correctamente");
-      navigate("/facturas");
+  const [formData, setFormData] = useState(initialState);
+  const [loading, setLoading] = useState(false);
+  const [errors, setErrors] = useState({});
+  const [touched, setTouched] = useState({});
+  const [showToast, setShowToast] = useState(false);
+  const [savedEmisores, setSavedEmisores] = useState([]);
+
+  /* ----------------------------------------
+   * CARGAR EMISORES RECIENTES
+   * ---------------------------------------- */
+  useEffect(() => {
+    try {
+      const stored = localStorage.getItem("emisores_recientes");
+      if (stored) setSavedEmisores(JSON.parse(stored));
+    } catch (e) {
+      console.error("Error cargando emisores:", e);
+    }
+  }, []);
+
+  /* ----------------------------------------
+   * VALIDACIONES
+   * ---------------------------------------- */
+  const validate = (name, value) => {
+    let error = "";
+
+    switch (name) {
+      case "nit_emisor":
+        if (!/^\d{7,9}-?\d?$/.test(value) && value !== "") {
+          error = "NIT inválido (ej: 12345678-9)";
+        }
+        break;
+
+      case "serie":
+        if (value && value.length > 20) error = "Máximo 20 caracteres";
+        break;
+
+      case "dte":
+        if (value && !/^[A-Z0-9-]+$/.test(value)) {
+          error = "Solo letras mayúsculas, números y guiones";
+        }
+        break;
+
+      case "fecha":
+        const f = new Date(value);
+        const hoy = new Date();
+        if (f > hoy) error = "La fecha no puede ser futura";
+        break;
+
+      default:
+        break;
+    }
+
+    return error;
+  };
+
+  /* ----------------------------------------
+   * FORMATEO AUTOMÁTICO
+   * ---------------------------------------- */
+  const formatValue = (name, value) => {
+    switch (name) {
+      case "nit_emisor":
+        const nums = value.replace(/\D/g, "");
+        return nums.length > 8 ? nums.slice(0, 8) + "-" + nums.slice(8, 9) : nums;
+
+      case "dte":
+      case "serie":
+        return value.toUpperCase();
+
+      default:
+        return value;
     }
   };
 
+  /* ----------------------------------------
+   * HANDLERS DE FORMULARIO
+   * ---------------------------------------- */
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    const formatted = formatValue(name, value);
+    const error = validate(name, formatted);
+
+    setFormData({ ...formData, [name]: formatted });
+    setErrors({ ...errors, [name]: error });
+  };
+
+  const handleBlur = (e) => {
+    setTouched({ ...touched, [e.target.name]: true });
+  };
+
+  const handleEmisorSelect = (e) => {
+    const nit = e.target.value;
+    const emisor = savedEmisores.find((em) => em.nit === nit);
+
+    if (emisor) {
+      setFormData({
+        ...formData,
+        nit_emisor: emisor.nit,
+        tecnico: emisor.tecnico || formData.tecnico,
+      });
+    }
+  };
+
+  const saveEmisor = (nit, tecnico) => {
+    try {
+      const newEmisor = { nit, tecnico, lastUsed: Date.now() };
+      const updated = [newEmisor, ...savedEmisores.filter((e) => e.nit !== nit)].slice(0, 5);
+
+      setSavedEmisores(updated);
+      localStorage.setItem("emisores_recientes", JSON.stringify(updated));
+    } catch (e) {
+      console.error("Error guardando emisor:", e);
+    }
+  };
+
+  /* ----------------------------------------
+   * SUBMIT
+   * ---------------------------------------- */
+  const handleSubmit = async () => {
+    const newErrors = {};
+    const newTouched = {};
+
+    Object.keys(formData).forEach((key) => {
+      newTouched[key] = true;
+
+      if (!formData[key]) {
+        newErrors[key] = "Campo requerido";
+      } else {
+        const error = validate(key, formData[key]);
+        if (error) newErrors[key] = error;
+      }
+    });
+
+    setTouched(newTouched);
+    setErrors(newErrors);
+
+    if (Object.keys(newErrors).length > 0) return;
+
+    setLoading(true);
+
+    try {
+      const { error: insertError } = await supabase.from("facturas").insert([formData]);
+      if (insertError) throw insertError;
+
+      saveEmisor(formData.nit_emisor, formData.tecnico);
+
+      setShowToast(true);
+
+      setTimeout(() => navigate("/facturas"), 2000);
+    } catch (err) {
+      setErrors({ submit: "❌ Error al guardar: " + err.message });
+      setLoading(false);
+    }
+  };
+
+  const handleKeyPress = (e) => {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault();
+      if (e.target.tagName !== "TEXTAREA") handleSubmit();
+    }
+  };
+
+  /* ----------------------------------------
+   * UTILS DE ESTADO VISUAL
+   * ---------------------------------------- */
+  const isFieldValid = (name) => touched[name] && !errors[name] && formData[name];
+  const isFieldInvalid = (name) => touched[name] && errors[name];
+
+  /* ----------------------------------------
+   * RENDER
+   * ---------------------------------------- */
   return (
-    <section className="nueva-factura-section">
-      <div className="nueva-factura-container">
-        {/* ✖ Botón cerrar */}
-        <button className="close-btn" onClick={() => navigate("/facturas")}>
-          ✖
+    <section className="nf-section">
+      <div className="nf-card">
+        <button className="nf-close" onClick={() => navigate("/facturas")} aria-label="Cerrar">
+          <X size={20} />
         </button>
 
-        <h3>Nueva Factura</h3>
+        <h2 className="nf-title">
+  <img src={logo} alt="logo" className="nf-title-logo" />
+  Guarda Nueva Factura
+</h2>
 
-        <form onSubmit={handleSubmit} className="nueva-factura-form">
-          {Object.entries(formData).map(([key, value]) => (
-            <div key={key} className="nueva-factura-group">
-              <label>{key.replace("_", " ").toUpperCase()}</label>
-              <input
-                type={key === "fecha" ? "date" : "text"}
-                name={key}
-                value={value}
-                onChange={handleChange}
-                required
-              />
+
+        <div className="nf-form" onKeyPress={handleKeyPress}>
+          {/* ---------------- GRID PRINCIPAL ---------------- */}
+          <div className="nf-main-grid">
+
+            {/* -------- COLUMNA 1 -------- */}
+            <div className="nf-grid-col">
+              <div className="nf-block">
+                <h4 className="nf-block-title">📋 Datos Generales</h4>
+
+                {/* FILA 1 */}
+                <div className="nf-row">
+                  
+                  {/* FECHA */}
+                  <div className={`nf-field required ${isFieldValid("fecha") ? "valid" : ""} ${isFieldInvalid("fecha") ? "invalid" : ""}`}>
+                    <label htmlFor="fecha">Fecha</label>
+                    <input
+                      id="fecha"
+                      type="date"
+                      name="fecha"
+                      value={formData.fecha}
+                      onChange={handleChange}
+                      onBlur={handleBlur}
+                    />
+                    {isFieldValid("fecha") && <div className="nf-field-icon"><Check size={16} /></div>}
+                    {isFieldInvalid("fecha") && (
+                      <>
+                        <div className="nf-field-icon"><X size={16} /></div>
+                        <div className="nf-field-error"><AlertCircle size={12} /> {errors.fecha}</div>
+                      </>
+                    )}
+                  </div>
+
+                  {/* SERIE */}
+                  <div className={`nf-field required ${isFieldValid("serie") ? "valid" : ""} ${isFieldInvalid("serie") ? "invalid" : ""}`}>
+                    <label htmlFor="serie">Serie</label>
+                    <input
+                      id="serie"
+                      type="text"
+                      name="serie"
+                      placeholder="Ej: 2D22F3D33"
+                      value={formData.serie}
+                      onChange={handleChange}
+                      onBlur={handleBlur}
+                    />
+                    {isFieldValid("serie") && <div className="nf-field-icon"><Check size={16} /></div>}
+                    {isFieldInvalid("serie") && (
+                      <>
+                        <div className="nf-field-icon"><X size={16} /></div>
+                        <div className="nf-field-error"><AlertCircle size={12} /> {errors.serie}</div>
+                      </>
+                    )}
+                  </div>
+
+                </div>
+
+                {/* FILA 2 */}
+                <div className="nf-row">
+
+                  {/* DTE */}
+                  <div className={`nf-field required ${isFieldValid("dte") ? "valid" : ""} ${isFieldInvalid("dte") ? "invalid" : ""}`}>
+                    <label htmlFor="dte">Numero DTE</label>
+                    <input
+                      id="dte"
+                      type="text"
+                      name="dte"
+                      placeholder="Ej: 12345556"
+                      value={formData.dte}
+                      onChange={handleChange}
+                      onBlur={handleBlur}
+                    />
+                    {isFieldValid("dte") && <div className="nf-field-icon"><Check size={16} /></div>}
+                    {isFieldInvalid("dte") && (
+                      <>
+                        <div className="nf-field-icon"><X size={16} /></div>
+                        <div className="nf-field-error"><AlertCircle size={12} /> {errors.dte}</div>
+                      </>
+                    )}
+                  </div>
+
+                  {/* PDS */}
+                  <div className={`nf-field required ${isFieldValid("punto_servicio") ? "valid" : ""} ${isFieldInvalid("punto_servicio") ? "invalid" : ""}`}>
+                    <label htmlFor="punto_servicio">Punto de Servicio</label>
+                    <input
+                      id="punto_servicio"
+                      type="text"
+                      name="punto_servicio"
+                      placeholder="Ej: CXXX"
+                      value={formData.punto_servicio}
+                      onChange={handleChange}
+                      onBlur={handleBlur}
+                    />
+                    {isFieldValid("punto_servicio") && <div className="nf-field-icon"><Check size={16} /></div>}
+                    {isFieldInvalid("punto_servicio") && (
+                      <>
+                        <div className="nf-field-icon"><X size={16} /></div>
+                        <div className="nf-field-error"><AlertCircle size={12} /> {errors.punto_servicio}</div>
+                      </>
+                    )}
+                  </div>
+
+                </div>
+              </div>
             </div>
-          ))}
 
-          <div className="nueva-factura-buttons">
-            <button
-              type="button"
-              className="cancel-btn"
-              onClick={() => navigate("/facturas")}
-            >
+            {/* -------- COLUMNA 2 -------- */}
+            <div className="nf-grid-col">
+
+              <div className="nf-block">
+                {/* EMISORES RECIENTES */}
+                {savedEmisores.length > 0 && (
+                  <div className="nf-field" style={{ marginBottom: "1rem" }}>
+                    <label htmlFor="emisor_reciente">Emisor Reciente (opcional)</label>
+                    <select id="emisor_reciente" onChange={handleEmisorSelect} defaultValue="">
+                      <option value="">Seleccionar emisor guardado...</option>
+                      {savedEmisores.map((em, i) => (
+                        <option key={i} value={em.nit}>
+                          {em.nit} - {em.tecnico}
+                        </option>
+                      ))}
+                    </select>
+                    <div className="nf-field-hint">Selecciona para autocompletar</div>
+                  </div>
+                )}
+
+                {/* NIT EMISOR */}
+                <div className={`nf-field required ${isFieldValid("nit_emisor") ? "valid" : ""} ${isFieldInvalid("nit_emisor") ? "invalid" : ""}`}>
+                  <label htmlFor="nit_emisor">NIT Emisor</label>
+                  <input
+                    id="nit_emisor"
+                    type="text"
+                    name="nit_emisor"
+                    placeholder="123456789"
+                    value={formData.nit_emisor}
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    maxLength="10"
+                  />
+                  {isFieldValid("nit_emisor") && <div className="nf-field-icon"><Check size={16} /></div>}
+                  {isFieldInvalid("nit_emisor") && (
+                    <>
+                      <div className="nf-field-icon"><X size={16} /></div>
+                      <div className="nf-field-error"><AlertCircle size={12} /> {errors.nit_emisor}</div>
+                    </>
+                  )}
+                </div>
+
+                {/* TÉCNICO */}
+                <div className={`nf-field required ${isFieldValid("tecnico") ? "valid" : ""} ${isFieldInvalid("tecnico") ? "invalid" : ""}`}>
+                  <label htmlFor="tecnico">Técnico</label>
+                  <input
+                    id="tecnico"
+                    type="text"
+                    name="tecnico"
+                    placeholder="Nombre del técnico"
+                    value={formData.tecnico}
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                  />
+                  {isFieldValid("tecnico") && <div className="nf-field-icon"><Check size={16} /></div>}
+                  {isFieldInvalid("tecnico") && (
+                    <>
+                      <div className="nf-field-icon"><X size={16} /></div>
+                      <div className="nf-field-error"><AlertCircle size={12} /> {errors.tecnico}</div>
+                    </>
+                  )}
+                </div>
+              </div>
+
+              {/* MOTIVO DE VISITA */}
+              <div className="nf-block">
+                <div className={`nf-field required ${isFieldValid("motivo_visita") ? "valid" : ""} ${isFieldInvalid("motivo_visita") ? "invalid" : ""}`}>
+                  <label htmlFor="motivo_visita">Motivo de la Visita</label>
+                  
+                  <textarea
+                    id="motivo_visita"
+                    name="motivo_visita"
+                    rows="1"
+                    placeholder="Describe el motivo..."
+                    value={formData.motivo_visita}
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                  />
+
+                  {isFieldValid("motivo_visita") && <div className="nf-field-icon"><Check size={16} /></div>}
+                  {isFieldInvalid("motivo_visita") && (
+                    <>
+                      <div className="nf-field-icon"><X size={16} /></div>
+                      <div className="nf-field-error"><AlertCircle size={12} /> {errors.motivo_visita}</div>
+                    </>
+                  )}
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+          {/* -------- ACCIONES -------- */}
+          {errors.submit && <div className="nf-error">{errors.submit}</div>}
+
+          <div className="nf-actions">
+            <button type="button" className="nf-btn cancel" onClick={() => navigate("/facturas")}>
               Cancelar
             </button>
-            <button type="submit" className="save-btn">
-              Guardar
+
+            <button type="button" className="nf-btn save" onClick={handleSubmit} disabled={loading}>
+              {loading ? (
+                <>
+                  <div className="nf-spinner" /> Guardando...
+                </>
+              ) : (
+                <>
+                  <Check size={18} /> Guardar Factura
+                </>
+              )}
             </button>
           </div>
-        </form>
+
+        </div>
       </div>
+
+      {/* -------- TOAST -------- */}
+      {showToast && (
+        <div className="nf-toast">
+          <Check size={20} /> ¡Factura guardada exitosamente!
+        </div>
+      )}
     </section>
   );
 }
