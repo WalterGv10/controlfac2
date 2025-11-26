@@ -37,7 +37,7 @@ body {
 /* --- Panel Principal --- */
 .profile-container {
   max-width: 700px;
-  margin: 6vh auto;
+  margin: 1vh auto;
   background: rgba(18, 24, 33, 0.85);
   backdrop-filter: blur(18px);
   border: 1px solid rgba(0, 255, 200, 0.3);
@@ -62,22 +62,27 @@ body {
   animation: pulse-glow 1.5s ease-in-out infinite alternate;
 }
 
-/* --- Encabezado --- */
-.profile-header h1 {
-  font-size: 2rem;
-  margin-bottom: 0.3rem;
+/* --- Encabezado con efecto visual --- */
+.profile-header {
+  margin-bottom: 1rem;
+  padding: 1.2rem;
+  border-radius: 3rem;
+  background: radial-gradient(circle at 50% 50%, rgba(0,255,200,0.15), transparent 70%);
+  box-shadow: 0 0 15px rgba(0,255,200,0.2);
+  animation: welcomeGlow 3.5s ease-in-out infinite alternate;
+  transition: all 0.3s ease;
 }
-.neon-text-main {
-  color: var(--neon-color);
-  text-shadow:
-    0 0 5px var(--neon-color),
-    0 0 10px var(--neon-color),
-    0 0 20px rgba(0, 255, 200, 0.8);
-}
-.sub-text {
-  color: #8d8d8d;
-  font-size: 0.9rem;
-  margin-bottom: 2rem;
+@keyframes welcomeGlow {
+  0% {
+    box-shadow: 0 0 10px rgba(0,255,200,0.15),
+                inset 0 0 8px rgba(0,255,200,0.25);
+    transform: scale(1);
+  }
+  100% {
+    box-shadow: 0 0 25px rgba(0,255,200,0.35),
+                inset 0 0 15px rgba(0,255,200,0.4);
+    transform: scale(1.02);
+  }
 }
 
 /* --- Avatar --- */
@@ -137,7 +142,7 @@ body {
   text-shadow: 0 0 8px var(--danger-color);
 }
 
-/* --- Tarjetas de Navegación --- */
+/* --- Tarjetas de Navegación (nuevo efecto) --- */
 .navigation-grid {
   display: grid;
   grid-template-columns: 1fr;
@@ -148,19 +153,22 @@ body {
 .nav-card {
   display: flex;
   align-items: center;
+  justify-content: flex-start;
   background: rgba(20, 25, 30, 0.75);
   border: 2px solid rgba(0, 255, 200, 0.25);
   border-radius: 1rem;
   padding: 1.8rem 1.4rem;
   text-decoration: none;
   color: white;
-  transition: all 0.4s ease;
+  transition: transform 0.4s ease, box-shadow 0.4s ease;
   backdrop-filter: blur(12px);
   position: relative;
   overflow: hidden;
+  perspective: 800px;
+  transform-style: preserve-3d;
 }
 
-/* Efecto glow animado */
+/* reflejo dinámico sutil */
 .nav-card::before {
   content: "";
   position: absolute;
@@ -169,20 +177,20 @@ body {
   width: 100%;
   height: 300%;
   background: linear-gradient(
-    120deg,
-    transparent,
-    rgba(0, 255, 200, 0.1),
-    transparent
+    100deg,
+    rgba(0,255,200,0.0),
+    rgba(0,255,200,0.2) 40%,
+    rgba(0,255,200,0.0)
   );
-  animation: shine 4s infinite linear;
+  animation: slideReflex 6s linear infinite;
   z-index: 0;
 }
-@keyframes shine {
-  from { transform: translateY(0); }
-  to { transform: translateY(100%); }
+@keyframes slideReflex {
+  0% { transform: translateY(-100%) rotate(0deg); }
+  100% { transform: translateY(100%) rotate(0deg); }
 }
 
-/* Contenido de las tarjetas */
+/* Contenido */
 .nav-card svg {
   margin-right: 1.5rem;
   color: var(--neon-color);
@@ -204,10 +212,10 @@ body {
   color: #b8b8b8;
 }
 
-/* Hover: flotante */
+/* Hover con giro y sombra */
 .nav-card:hover {
-  transform: translateY(-8px) scale(1.03);
-  box-shadow: 0 0 25px rgba(0, 255, 200, 0.3);
+  transform: rotateY(6deg) translateY(-6px) scale(1.04);
+  box-shadow: 0 10px 25px rgba(0,255,200,0.25);
 }
 
 /* --- Responsividad --- */
@@ -215,11 +223,93 @@ body {
   .profile-container {
     padding: 3rem 2.5rem;
   }
-
   .neon-logout-btn span {
     display: inline;
   }
+  .navigation-grid {
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  }
+}
 
+
+/* --- Tarjetas de Navegación (nuevo efecto dinámico) --- */
+.navigation-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+  margin-top: 2.5rem;
+}
+
+.nav-card {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  background: rgba(18, 24, 33, 0.85);
+  border: 1.5px solid rgba(0, 255, 200, 0.25);
+  border-radius: 3rem;
+  padding: 1.8rem 1.4rem;
+  text-decoration: none;
+  color: white;
+  backdrop-filter: blur(12px);
+  overflow: hidden;
+  transition: all 0.4s ease;
+  box-shadow: 0 0 12px rgba(0,255,200,0.05);
+}
+
+/* Onda luminosa */
+.nav-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: radial-gradient(
+    circle at 50% 50%,
+    rgba(0,255,200,0.15),
+    transparent 70%
+  );
+  opacity: 0;
+  transform: scale(0.7);
+  transition: all 0.6s ease;
+  z-index: 0;
+}
+.nav-card:hover::before {
+  opacity: 1;
+  transform: scale(1.2);
+}
+
+/* Brillo y elevación */
+.nav-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 0 20px rgba(0,255,200,0.25), 0 0 40px rgba(0,255,200,0.1);
+  border-color: rgba(0,255,200,0.4);
+}
+
+/* Ícono y texto */
+.nav-card svg {
+  margin-right: 1.5rem;
+  color: var(--neon-color);
+  filter: drop-shadow(0 0 8px rgba(0,255,200,0.6));
+  transition: transform 0.4s ease;
+  z-index: 1;
+}
+.nav-card:hover svg {
+  transform: scale(1.2) rotate(-3deg);
+}
+
+.nav-card h3 {
+  font-size: 1.3rem;
+  margin-bottom: 0.4rem;
+  color: var(--neon-color);
+  text-shadow: 0 0 6px var(--neon-color);
+}
+.nav-card p {
+  font-size: 0.95rem;
+  color: #b8b8b8;
+}
+
+/* --- Responsividad --- */
+@media (min-width: 650px) {
   .navigation-grid {
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
   }

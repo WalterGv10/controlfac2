@@ -1,0 +1,314 @@
+/* =========================================
+   CONTENEDOR PRINCIPAL
+========================================= */
+.df-section {
+  /* 1. Quitamos padding exagerado */
+  padding: 10px 1rem 1rem 1rem; 
+  
+  display: flex;
+  justify-content: center;
+  
+  /* 2. ALINEAR ARRIBA (Clave para quitar espacio con el navbar) */
+  align-items: flex-start; 
+  
+  min-height: 100vh;
+  box-sizing: border-box;
+  
+  /* 3. Ajuste fino: Si tu navbar es fija, deja unos 60px. 
+     Si es normal, déjalo en 0 o 10px. */
+  padding-top: 10px; 
+}
+
+.df-card {
+  width: 100%;
+  max-width: 900px;
+  background: rgba(20, 20, 20, 0.85);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(0, 255, 200, 0.3);
+  border-radius: 1rem;
+  
+  /* Reducimos un poco el padding interno para ganar espacio */
+  padding: 1.2rem; 
+  
+  color: white;
+  box-shadow: 0 0 20px rgba(0, 255, 200, 0.1);
+  
+  /* Asegura que no tenga margen superior externo */
+  margin-top: 0; 
+  
+  animation: fadeIn 0.4s ease-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ... (El resto del CSS se mantiene igual) ... */
+.df-card {
+  width: 100%;
+  /* Aumentamos el ancho máximo para aprovechar pantallas de laptop */
+  max-width: 900px; 
+  background: rgba(20, 20, 20, 0.85);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(0, 255, 200, 0.3);
+  border-radius: 1rem;
+  padding: 1.2rem; /* Padding reducido */
+  color: white;
+  box-shadow: 0 0 20px rgba(0, 255, 200, 0.1);
+  
+  /* Animación */
+  animation: fadeIn 0.4s ease-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* =========================================
+   HEADER Y BOTONES
+========================================= */
+.df-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1rem; /* Margen reducido */
+  gap: 10px;
+}
+
+.df-header-left {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+}
+
+.df-controls {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.df-back-btn {
+  background: transparent;
+  border: none;
+  color: white;
+  cursor: pointer;
+  padding: 5px;
+  transition: transform 0.2s;
+  display: flex;
+  align-items: center;
+}
+.df-back-btn:hover { transform: translateX(-3px); }
+
+.df-title {
+  margin: 0;
+  font-size: 1.3rem;
+  white-space: nowrap;
+}
+
+/* Botones pequeños */
+.df-action-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: 8px;
+  border: 1px solid rgba(255,255,255,0.2);
+  background: rgba(255,255,255,0.05);
+  color: white;
+  cursor: pointer;
+  font-size: 0.8rem;
+  font-weight: 500;
+  transition: 0.2s;
+}
+.df-action-btn.edit:hover { background: rgba(0, 255, 200, 0.15); color: #00ffc8; border-color: #00ffc8; }
+.df-action-btn.save { background: #00ffc8; color: black; font-weight: bold; border: none; }
+.df-action-btn.cancel { background: rgba(255, 100, 100, 0.2); color: #ff6b6b; border-color: #ff6b6b; }
+
+/* =========================================
+   SECCIÓN DE ESTADO (Compacta)
+========================================= */
+.df-status-section {
+  margin-bottom: 1rem;
+}
+
+.df-status-display {
+  display: flex;
+  align-items: center;
+  justify-content: space-between; /* Lado a lado en lugar de columna */
+  gap: 1rem;
+}
+
+.df-status-badge {
+  text-align: center;
+  padding: 0.5rem 1rem;
+  border-radius: 2rem;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-size: 0.9rem;
+  flex: 1;
+}
+
+.status-green { background: rgba(74, 222, 128, 0.15); color: #4ade80; border: 1px solid #4ade80; }
+.status-yellow { background: rgba(250, 204, 21, 0.15); color: #facc15; border: 1px solid #facc15; }
+
+.df-edit-status {
+  background: rgba(255,255,255,0.05);
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border: 1px dashed rgba(255,255,255,0.2);
+}
+
+/* Botón Rápido */
+.df-quick-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 8px 12px;
+  border-radius: 10px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  flex: 1;
+  font-weight: 600;
+}
+.df-quick-toggle.pay { background: rgba(74, 222, 128, 0.1); border: 1px dashed #4ade80; color: #4ade80; }
+.df-quick-toggle.pay:hover { background: #4ade80; color: black; border-style: solid; }
+.df-quick-toggle.undo { background: rgba(255, 255, 255, 0.05); border: 1px dashed rgba(255, 255, 255, 0.3); color: #aaa; }
+.df-quick-toggle.undo:hover { background: rgba(255, 255, 255, 0.15); color: white; border-color: white; border-style: solid; }
+
+/* =========================================
+   GRID INTELIGENTE (La clave del espacio)
+========================================= */
+.df-grid {
+  display: grid;
+  /* Por defecto (móvil) 1 columna */
+  grid-template-columns: 1fr; 
+  gap: 0.8rem;
+}
+
+/* --- MODO LAPTOP/TABLET (Min 700px) --- 
+   Aquí ocurre la magia para que quepa en 14" */
+@media (min-width: 700px) {
+  .df-grid {
+    /* 2 Columnas: Izquierda y Derecha */
+    grid-template-columns: 1fr 1fr; 
+    gap: 1rem;
+  }
+
+  /* El bloque de Monto/Fecha ocupa todo el ancho arriba */
+  .df-block.highlight {
+    grid-column: 1 / -1;
+    display: flex;
+    justify-content: space-between; /* Elementos lado a lado */
+    align-items: center;
+    gap: 2rem;
+  }
+  
+  .df-block.highlight .df-row {
+    flex: 1;
+    margin-bottom: 0; /* Quitar margen inferior porque van lado a lado */
+  }
+
+  /* El bloque de Descripción ocupa todo el ancho abajo */
+  .df-block.full-width {
+    grid-column: 1 / -1;
+  }
+}
+
+.df-block {
+  background: rgba(255, 255, 255, 0.03);
+  padding: 0.8rem 1rem; /* Padding más compacto */
+  border-radius: 0.8rem;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.df-block.highlight {
+  border: 1px solid rgba(0, 255, 200, 0.25);
+  background: rgba(0, 255, 200, 0.04);
+}
+
+.df-row {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 0.6rem;
+}
+.df-row:last-child { margin-bottom: 0; }
+
+.df-item {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  margin-bottom: 0.6rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+.df-item:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+
+.df-data-col { width: 100%; overflow: hidden; }
+
+/* =========================================
+   TEXTOS E INPUTS
+========================================= */
+label { display: block; font-size: 0.65rem; color: #00ffc8; opacity: 0.8; margin-bottom: 2px; text-transform: uppercase; letter-spacing: 0.5px; }
+p { margin: 0; font-size: 0.9rem; word-break: break-word; color: #eee; }
+
+.df-value.big { 
+  font-size: 1.4rem; 
+  font-weight: bold; 
+  color: #00ffc8; 
+  text-shadow: 0 0 8px rgba(0, 255, 200, 0.3);
+}
+
+.df-desc-box {
+  margin-top: 0.3rem;
+  padding: 0.6rem;
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 0.6rem;
+  font-style: italic;
+  color: #ccc;
+  line-height: 1.4;
+  font-size: 0.9rem;
+}
+
+/* --- Inputs --- */
+.df-input, .df-input-select, .df-textarea {
+  width: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: white;
+  padding: 6px 8px;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  outline: none;
+  transition: 0.3s;
+}
+.df-input:focus, .df-input-select:focus, .df-textarea:focus { border-color: #00ffc8; box-shadow: 0 0 8px rgba(0, 255, 200, 0.25); }
+
+.df-input.big { font-size: 1.2rem; font-weight: bold; color: #00ffc8; }
+
+.df-input-wrapper { display: flex; align-items: center; gap: 8px; }
+.df-input-wrapper .prefix { font-size: 1.2rem; font-weight: bold; color: #00ffc8; }
+
+.df-textarea { resize: none; min-height: 60px; font-family: inherit; }
+
+.df-loading, .df-error { text-align: center; margin-top: 4rem; color: white; opacity: 0.7; }
+
+/* =========================================
+   CELULAR PEQUEÑO (Vertical puro)
+========================================= */
+@media (max-width: 600px) {
+  .df-section { padding: 0.5rem; align-items: flex-start; } /* En móvil sí scroll */
+  .df-grid { grid-template-columns: 1fr; } /* Volver a 1 columna */
+  .df-status-display { flex-direction: column; } /* Estado apilado */
+  .df-block.highlight { flex-direction: column; align-items: flex-start; gap: 0; }
+  .df-block.highlight .df-row { margin-bottom: 0.8rem; width: 100%; }
+  .df-block.highlight .df-row:last-child { margin-bottom: 0; }
+}

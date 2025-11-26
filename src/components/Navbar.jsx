@@ -1,10 +1,18 @@
 // ✅ src/components/Navbar.jsx
-import { NavLink, useNavigate } from "react-router-dom";
+import { NavLink, useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 
 export default function Navbar() {
   const { session, signOut } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
+
+  // 🛑 OCULTAR NAVBAR EN NUEVA FACTURA
+  const hideNavbarRoutes = ["/nueva-factura"];
+
+  if (hideNavbarRoutes.includes(location.pathname)) {
+    return null; // ⬅️ Esconde la navbar completamente
+  }
 
   // 🚪 Cerrar sesión
   const handleLogout = async () => {
@@ -20,7 +28,8 @@ export default function Navbar() {
     "nav-link" + (isActive ? " active" : "");
 
   // 👤 Datos del usuario
-  const userName = session?.user?.user_metadata?.full_name || session?.user?.email;
+  const userName =
+    session?.user?.user_metadata?.full_name || session?.user?.email;
 
   return (
     <header className="navbar glass">

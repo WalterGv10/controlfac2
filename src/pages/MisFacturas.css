@@ -1,0 +1,232 @@
+/* CONTENEDOR */
+.mf-section {
+  padding: 2rem 1rem;
+  min-height: 100vh;
+  color: white;
+}
+
+.mf-container {
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+/* HEADER */
+.mf-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.mf-back-btn {
+  background: transparent;
+  border: 1px solid rgba(255,255,255,0.2);
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  cursor: pointer;
+}
+
+.mf-title {
+  font-size: 1.8rem;
+  text-shadow: 0 0 10px rgba(0, 255, 200, 0.4);
+}
+
+/* GRID */
+.mf-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1.5rem;
+}
+
+/* TARJETA BASE */
+.mf-card {
+  background: rgba(20, 20, 20, 0.6);
+  backdrop-filter: blur(12px);
+  border-radius: 12px;
+  padding: 1.2rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  transition: 0.3s;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+/* BORDES DE ESTADO (LA CLAVE VISUAL) */
+.border-green { border-left: 5px solid #4ade80; }
+.border-yellow { border-left: 5px solid #facc15; }
+.border-red { border-left: 5px solid #ef4444; }
+.border-red-intense { 
+  border-left: 5px solid #ff0000; 
+  box-shadow: 0 0 20px rgba(255, 0, 0, 0.15);
+  animation: pulseBorder 2s infinite;
+}
+
+@keyframes pulseBorder {
+  50% { box-shadow: 0 0 25px rgba(255, 0, 0, 0.3); }
+}
+
+/* DATOS DE LA TARJETA */
+.mf-card-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.mf-serie {
+  font-family: monospace;
+  opacity: 0.7;
+  font-size: 0.9rem;
+}
+
+.mf-badge {
+  font-size: 0.75rem;
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  color: black;
+}
+
+.bg-green { background: #4ade80; }
+.bg-yellow { background: #facc15; }
+.bg-red { background: #ef4444; color: white; }
+.bg-red-intense { background: #ff0000; color: white; }
+
+.mf-monto {
+  font-size: 2rem;
+  margin: 0.5rem 0;
+  color: white;
+}
+
+.mf-cliente {
+  color: #00ffc8;
+  font-weight: 600;
+  font-size: 1.1rem;
+}
+
+.mf-meta, .mf-desc {
+  font-size: 0.85rem;
+  opacity: 0.7;
+  margin-top: 4px;
+}
+
+/* ACCIONES */
+.mf-card-actions {
+  margin-top: 1.5rem;
+  padding-top: 1rem;
+  border-top: 1px solid rgba(255,255,255,0.1);
+  text-align: right;
+}
+
+.mf-btn-pay {
+  background: rgba(74, 222, 128, 0.1);
+  color: #4ade80;
+  border: 1px solid #4ade80;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: 0.3s;
+}
+
+.mf-btn-pay:hover {
+  background: #4ade80;
+  color: black;
+}
+
+.mf-loading, .mf-empty {
+  grid-column: 1 / -1;
+  text-align: center;
+  opacity: 0.6;
+  margin-top: 2rem;
+}
+
+/* =========================================
+   NUEVA BARRA DE ACCIONES (FOOTER)
+========================================= */
+.mf-card-footer {
+  margin-top: 1rem;
+  padding-top: 0.8rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  display: flex;
+  justify-content: space-between; /* Separa iconos del botón de pago */
+  align-items: center;
+}
+
+/* GRUPO DE ICONOS (Ver, Editar, Borrar) */
+.mf-tools {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.mf-icon-btn {
+  background: transparent;
+  border: none;
+  padding: 6px;
+  border-radius: 6px;
+  cursor: pointer;
+  color: rgba(255, 255, 255, 0.6);
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Colores al pasar el mouse */
+.mf-icon-btn.view:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+}
+
+.mf-icon-btn.edit:hover {
+  background: rgba(0, 255, 200, 0.1);
+  color: #00ffc8;
+}
+
+.mf-icon-btn.delete:hover {
+  background: rgba(255, 107, 107, 0.15);
+  color: #ff6b6b;
+}
+
+/* BOTONES DE PAGO / REVERTIR */
+.mf-btn-pay {
+  background: rgba(74, 222, 128, 0.15);
+  color: #4ade80;
+  border: 1px solid #4ade80;
+  padding: 0.4rem 1rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  font-weight: 600;
+  transition: 0.3s;
+}
+
+.mf-btn-pay:hover {
+  background: #4ade80;
+  color: black;
+}
+
+.mf-btn-undo {
+  background: rgba(255, 255, 255, 0.05);
+  color: #aaa;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  padding: 0.4rem 0.8rem;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: 0.3s;
+  display: flex;
+  align-items: center;
+}
+
+.mf-btn-undo:hover {
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+  border-color: white;
+}
