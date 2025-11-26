@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { supabase } from "../supabaseClient";
 import { Check, X, AlertCircle } from "lucide-react";
 import logo from "../assets/logo.png";
@@ -7,6 +7,7 @@ import "./NuevaFactura.css";
 
 export default function NuevaFactura() {
   const navigate = useNavigate();
+  const location = useLocation(); // Hook para recibir datos de navegación (OCR)
 
   /* ----------------------------------------
    * ESTADO INICIAL
@@ -19,6 +20,8 @@ export default function NuevaFactura() {
     punto_servicio: "",
     tecnico: "",
     motivo_visita: "",
+    monto: "",                    
+    estado: "Pendiente",
   };
 
   const [formData, setFormData] = useState(initialState);
@@ -26,19 +29,33 @@ export default function NuevaFactura() {
   const [errors, setErrors] = useState({});
   const [touched, setTouched] = useState({});
   const [showToast, setShowToast] = useState(false);
-  const [savedEmisores, setSavedEmisores] = useState([]);
 
   /* ----------------------------------------
-   * CARGAR EMISORES RECIENTES
+   * 1. DETECTAR DATOS DE OCR (SI EXISTEN)
    * ---------------------------------------- */
   useEffect(() => {
-    try {
-      const stored = localStorage.getItem("emisores_recientes");
-      if (stored) setSavedEmisores(JSON.parse(stored));
-    } catch (e) {
-      console.error("Error cargando emisores:", e);
+    // Si venimos de la pantalla "Importar" con datos detectados:
+    if (location.state?.ocrData) {
+       const ocr = location.state.ocrData;
+       
+       setFormData(prev => ({
+         ...prev,
+         // Usamos los datos del OCR si existen, si no, dejamos lo que estaba
+         nit_emisor: ocr.nit_emisor || prev.nit_emisor,
+         monto: ocr.monto || prev.monto,
+         fecha: ocr.fecha || prev.fecha,
+         dte: ocr.dte || prev.dte,
+         serie: ocr.serie || prev.serie,
+         // Agregamos el texto crudo al motivo para referencia
+         motivo_visita: ocr.rawText 
+            ? `[OCR Detectado]\nRevisar datos.\n\nTexto original:\n${ocr.rawText.substring(0, 100)}...` 
+            : prev.motivo_visita
+       }));
+
+       // Mostrar notificación visual
+       setShowToast(true); 
     }
-  }, []);
+  }, [location]);
 
   /* ----------------------------------------
    * VALIDACIONES
@@ -48,7 +65,9 @@ export default function NuevaFactura() {
 
     switch (name) {
       case "nit_emisor":
-        if (!/^\d{7,9}-?\d?$/.test(value) && value !== "") {
+        // Permitimos vacio temporalmente mientras escriben, pero validamos formato
+        if (value && !/^\d{7,10}-?\w?$/.test(value)) { 
+          // Regex un poco más permisiva para NITs de Guatemala
           error = "NIT inválido (ej: 12345678-9)";
         }
         break;
@@ -66,7 +85,15 @@ export default function NuevaFactura() {
       case "fecha":
         const f = new Date(value);
         const hoy = new Date();
+        // Ajustamos para permitir el día de hoy sin problemas de hora
+        hoy.setHours(23, 59, 59, 999); 
         if (f > hoy) error = "La fecha no puede ser futura";
+        break;
+
+      case "monto":
+        if (value && !/^\d+(\.\d{1,2})?$/.test(value)) {
+          error = "Monto inválido (Ej: 125.50)";
+        }
         break;
 
       default:
@@ -82,12 +109,19 @@ export default function NuevaFactura() {
   const formatValue = (name, value) => {
     switch (name) {
       case "nit_emisor":
-        const nums = value.replace(/\D/g, "");
-        return nums.length > 8 ? nums.slice(0, 8) + "-" + nums.slice(8, 9) : nums;
+        const nums = value.replace(/[^0-9kK]/g, "").toUpperCase(); // Acepta K para casos especiales
+        // Formato simple X-Y si tiene longitud suficiente
+        if (nums.length > 8 && !nums.includes('-')) {
+             return nums.slice(0, nums.length - 1) + "-" + nums.slice(nums.length - 1);
+        }
+        return nums;
 
       case "dte":
       case "serie":
         return value.toUpperCase();
+
+      case "monto":
+        return value.replace(/[^0-9.]/g, "");
 
       default:
         return value;
@@ -106,33 +140,12 @@ export default function NuevaFactura() {
     setErrors({ ...errors, [name]: error });
   };
 
+  const handleStatusChange = (newStatus) => {
+    setFormData({ ...formData, estado: newStatus });
+  };
+
   const handleBlur = (e) => {
     setTouched({ ...touched, [e.target.name]: true });
-  };
-
-  const handleEmisorSelect = (e) => {
-    const nit = e.target.value;
-    const emisor = savedEmisores.find((em) => em.nit === nit);
-
-    if (emisor) {
-      setFormData({
-        ...formData,
-        nit_emisor: emisor.nit,
-        tecnico: emisor.tecnico || formData.tecnico,
-      });
-    }
-  };
-
-  const saveEmisor = (nit, tecnico) => {
-    try {
-      const newEmisor = { nit, tecnico, lastUsed: Date.now() };
-      const updated = [newEmisor, ...savedEmisores.filter((e) => e.nit !== nit)].slice(0, 5);
-
-      setSavedEmisores(updated);
-      localStorage.setItem("emisores_recientes", JSON.stringify(updated));
-    } catch (e) {
-      console.error("Error guardando emisor:", e);
-    }
   };
 
   /* ----------------------------------------
@@ -144,8 +157,8 @@ export default function NuevaFactura() {
 
     Object.keys(formData).forEach((key) => {
       newTouched[key] = true;
-
-      if (!formData[key]) {
+      // Validar campos obligatorios básicos
+      if (!formData[key] && key !== 'serie' && key !== 'dte') { 
         newErrors[key] = "Campo requerido";
       } else {
         const error = validate(key, formData[key]);
@@ -163,8 +176,6 @@ export default function NuevaFactura() {
     try {
       const { error: insertError } = await supabase.from("facturas").insert([formData]);
       if (insertError) throw insertError;
-
-      saveEmisor(formData.nit_emisor, formData.tecnico);
 
       setShowToast(true);
 
@@ -199,13 +210,17 @@ export default function NuevaFactura() {
         </button>
 
         <h2 className="nf-title">
-  <img src={logo} alt="logo" className="nf-title-logo" />
-  Guarda Nueva Factura
-</h2>
+          <img src={logo} alt="logo" className="nf-title-logo" />
+          Guarda Nueva Factura
+        </h2>
 
+        {location.state?.ocrData && (
+            <div className="nf-ocr-badge">
+                 ✨ Datos autocompletados por OCR
+            </div>
+        )}
 
         <div className="nf-form" onKeyPress={handleKeyPress}>
-          {/* ---------------- GRID PRINCIPAL ---------------- */}
           <div className="nf-main-grid">
 
             {/* -------- COLUMNA 1 -------- */}
@@ -213,9 +228,30 @@ export default function NuevaFactura() {
               <div className="nf-block">
                 <h4 className="nf-block-title">📋 Datos Generales</h4>
 
+                <div className="nf-field" style={{ marginBottom: "1rem" }}>
+                  <label>Estado de la Factura</label>
+                  <div className="nf-status-row">
+                    <button
+                      type="button"
+                      className={`nf-status-btn pending ${formData.estado === "Pendiente" ? "active" : ""}`}
+                      onClick={() => handleStatusChange("Pendiente")}
+                    >
+                      ⏳ Pendiente
+                    </button>
+
+                    <button
+                      type="button"
+                      className={`nf-status-btn paid ${formData.estado === "Pagada" ? "active" : ""}`}
+                      onClick={() => handleStatusChange("Pagada")}
+                    >
+                      💵 Pagada
+                    </button>
+                  </div>
+                </div>
+
                 {/* FILA 1 */}
                 <div className="nf-row">
-                  
+
                   {/* FECHA */}
                   <div className={`nf-field required ${isFieldValid("fecha") ? "valid" : ""} ${isFieldInvalid("fecha") ? "invalid" : ""}`}>
                     <label htmlFor="fecha">Fecha</label>
@@ -283,7 +319,7 @@ export default function NuevaFactura() {
                     )}
                   </div>
 
-                  {/* PDS */}
+                  {/* PUNTO DE SERVICIO */}
                   <div className={`nf-field required ${isFieldValid("punto_servicio") ? "valid" : ""} ${isFieldInvalid("punto_servicio") ? "invalid" : ""}`}>
                     <label htmlFor="punto_servicio">Punto de Servicio</label>
                     <input
@@ -305,6 +341,32 @@ export default function NuevaFactura() {
                   </div>
 
                 </div>
+
+                {/* FILA 3 → MONTO */}
+                <div className="nf-row">
+
+                  <div className={`nf-field required ${isFieldValid("monto") ? "valid" : ""} ${isFieldInvalid("monto") ? "invalid" : ""}`}>
+                    <label htmlFor="monto">Monto de la Factura (Q)</label>
+                    <input
+                      id="monto"
+                      type="text"
+                      name="monto"
+                      placeholder="Ej: 125.50"
+                      value={formData.monto}
+                      onChange={handleChange}
+                      onBlur={handleBlur}
+                      style={location.state?.ocrData ? {borderColor: '#00ffc8', boxShadow: '0 0 5px rgba(0,255,200,0.5)'} : {}}
+                    />
+                    {isFieldValid("monto") && <div className="nf-field-icon"><Check size={16} /></div>}
+                    {isFieldInvalid("monto") && (
+                      <>
+                        <div className="nf-field-icon"><X size={16} /></div>
+                        <div className="nf-field-error"><AlertCircle size={12} /> {errors.monto}</div>
+                      </>
+                    )}
+                  </div>
+
+                </div>
               </div>
             </div>
 
@@ -312,22 +374,7 @@ export default function NuevaFactura() {
             <div className="nf-grid-col">
 
               <div className="nf-block">
-                {/* EMISORES RECIENTES */}
-                {savedEmisores.length > 0 && (
-                  <div className="nf-field" style={{ marginBottom: "1rem" }}>
-                    <label htmlFor="emisor_reciente">Emisor Reciente (opcional)</label>
-                    <select id="emisor_reciente" onChange={handleEmisorSelect} defaultValue="">
-                      <option value="">Seleccionar emisor guardado...</option>
-                      {savedEmisores.map((em, i) => (
-                        <option key={i} value={em.nit}>
-                          {em.nit} - {em.tecnico}
-                        </option>
-                      ))}
-                    </select>
-                    <div className="nf-field-hint">Selecciona para autocompletar</div>
-                  </div>
-                )}
-
+                
                 {/* NIT EMISOR */}
                 <div className={`nf-field required ${isFieldValid("nit_emisor") ? "valid" : ""} ${isFieldInvalid("nit_emisor") ? "invalid" : ""}`}>
                   <label htmlFor="nit_emisor">NIT Emisor</label>
@@ -339,7 +386,7 @@ export default function NuevaFactura() {
                     value={formData.nit_emisor}
                     onChange={handleChange}
                     onBlur={handleBlur}
-                    maxLength="10"
+                    maxLength="15"
                   />
                   {isFieldValid("nit_emisor") && <div className="nf-field-icon"><Check size={16} /></div>}
                   {isFieldInvalid("nit_emisor") && (
@@ -380,7 +427,7 @@ export default function NuevaFactura() {
                   <textarea
                     id="motivo_visita"
                     name="motivo_visita"
-                    rows="1"
+                    rows="3"
                     placeholder="Describe el motivo..."
                     value={formData.motivo_visita}
                     onChange={handleChange}
@@ -400,7 +447,6 @@ export default function NuevaFactura() {
             </div>
           </div>
 
-          {/* -------- ACCIONES -------- */}
           {errors.submit && <div className="nf-error">{errors.submit}</div>}
 
           <div className="nf-actions">
@@ -424,10 +470,10 @@ export default function NuevaFactura() {
         </div>
       </div>
 
-      {/* -------- TOAST -------- */}
       {showToast && (
         <div className="nf-toast">
-          <Check size={20} /> ¡Factura guardada exitosamente!
+          <Check size={20} /> 
+          {location.state?.ocrData ? "¡Datos importados guardados!" : "¡Factura guardada exitosamente!"}
         </div>
       )}
     </section>

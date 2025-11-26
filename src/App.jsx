@@ -3,7 +3,10 @@ import { BrowserRouter, Routes, Route, Navigate, useLocation } from "react-route
 import { useAuth } from "./context/AuthContext";
 import Navbar from "./components/Navbar";
 import Facturas from "./pages/Facturas";
-import NuevaFactura from "./pages/NuevaFactura"; // 👈 nueva importación
+import NuevaFactura from "./pages/NuevaFactura";
+import MisFacturas from "./pages/MisFacturas";
+import DetalleFactura from "./pages/DetalleFactura";
+import ImportarFactura from "./pages/ImportarFactura"; // 👈 1. NUEVA IMPORTACIÓN AQUÍ
 import Reportes from "./pages/Reportes";
 import Perfil from "./pages/Perfil";
 import Login from "./pages/Login";
@@ -79,12 +82,39 @@ export default function App() {
             }
           />
 
-          {/* 👇 Nueva ruta protegida */}
           <Route
             path="/nueva-factura"
             element={
               <PrivateRoute>
                 <NuevaFactura />
+              </PrivateRoute>
+            }
+          />
+
+          <Route
+            path="/mis-facturas"
+            element={
+              <PrivateRoute>
+                <MisFacturas />
+              </PrivateRoute>
+            }
+          />
+
+          <Route
+            path="/factura/:id"
+            element={
+              <PrivateRoute>
+                <DetalleFactura />
+              </PrivateRoute>
+            }
+          />
+
+          {/* 👇 2. NUEVA RUTA PARA IMPORTAR/OCR */}
+          <Route
+            path="/importar-factura"
+            element={
+              <PrivateRoute>
+                <ImportarFactura />
               </PrivateRoute>
             }
           />
