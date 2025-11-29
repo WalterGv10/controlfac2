@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { supabase } from "../supabaseClient";
-import { Check, X, AlertCircle } from "lucide-react";
+import { Check, X, AlertCircle, Building, User } from "lucide-react";
 import logo from "../assets/logo.png";
 import "./NuevaFactura.css";
 
@@ -19,6 +19,7 @@ export default function NuevaFactura() {
     dte: "",
     punto_servicio: "",
     tecnico: "",
+    grupo: "", // ✅ Nuevo: Se llenará auto desde Perfil
     motivo_visita: "",
     monto: "",                    
     estado: "Pendiente",
@@ -31,7 +32,38 @@ export default function NuevaFactura() {
   const [showToast, setShowToast] = useState(false);
 
   /* ----------------------------------------
-   * 1. DETECTAR DATOS DE OCR (SI EXISTEN)
+   * 1. DETECTAR DATOS AUTO (PERFIL/FIRMAS)
+   * ---------------------------------------- */
+  useEffect(() => {
+    const newData = {};
+    let dataChanged = false;
+
+    // A. Grupo de Trabajo (desde Perfil)
+    const userGroup = localStorage.getItem("user_group");
+    if (userGroup) {
+      newData.grupo = userGroup;
+      dataChanged = true;
+    }
+
+    // B. Nombre del Técnico (desde Configurar Firmas)
+    const configFirmas = localStorage.getItem("config_firmas");
+    if (configFirmas) {
+      try {
+        const parsed = JSON.parse(configFirmas);
+        if (parsed.tecnico) {
+          newData.tecnico = parsed.tecnico;
+          dataChanged = true;
+        }
+      } catch (e) { console.error(e); }
+    }
+
+    if (dataChanged) {
+      setFormData(prev => ({ ...prev, ...newData }));
+    }
+  }, []);
+
+  /* ----------------------------------------
+   * 2. DETECTAR DATOS DE OCR (SI EXISTEN)
    * ---------------------------------------- */
   useEffect(() => {
     // Si venimos de la pantalla "Importar" con datos detectados:
@@ -213,6 +245,22 @@ export default function NuevaFactura() {
           <img src={logo} alt="logo" className="nf-title-logo" />
           Guarda Nueva Factura
         </h2>
+
+        {/* --- INFO AUTOMÁTICA (GRUPO Y TÉCNICO) --- */}
+        <div className="nf-auto-info">
+          {formData.grupo && (
+            <div className="nf-badge">
+              <Building size={14} /> 
+              <span>{formData.grupo}</span>
+            </div>
+          )}
+          {formData.tecnico && (
+            <div className="nf-badge">
+              <User size={14} /> 
+              <span>{formData.tecnico}</span>
+            </div>
+          )}
+        </div>
 
         {location.state?.ocrData && (
             <div className="nf-ocr-badge">

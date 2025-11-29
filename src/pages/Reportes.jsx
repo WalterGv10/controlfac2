@@ -1,39 +1,83 @@
+import { useNavigate } from "react-router-dom";
+import { 
+  FileText, 
+  Calendar, 
+  PenTool, 
+  Download, 
+  ArrowRight,
+  BarChart3
+} from "lucide-react";
+import "./Reportes.css";
+
 export default function Reportes() {
+  const navigate = useNavigate();
+
   return (
-    <section id="reportes" className="section">
-      <div className="container">
-        <div className="section-header">
-          <h3>Reportes</h3>
-          <p>Totales por mes y año. Próximamente exportación a PDF.</p>
+    <section id="reportes" className="rep-section">
+      <div className="rep-container">
+        
+        {/* ENCABEZADO */}
+        <div className="rep-header">
+          <div className="rep-header-icon">
+            <BarChart3 size={32} color="#00ffc8" />
+          </div>
+          <div className="rep-header-text">
+            <h3>Reportes y Gestión</h3>
+            <p>Totales por mes y año. Próximamente exportación a PDF.</p>
+          </div>
         </div>
 
-        <div className="grid">
-          <article className="card">
-            <h4>Reporte mensual</h4>
+        {/* GRID DE TARJETAS */}
+        <div className="rep-grid">
+          
+          {/* --- TARJETA 1: REPORTE MENSUAL --- */}
+          <article className="rep-card">
+            <div className="rep-icon-box blue">
+              <FileText size={28} />
+            </div>
+            <h4>Reporte Mensual</h4>
             <p>Resumen del mes actual: total en parqueos y conteo de facturas.</p>
-            <div className="actions">
-              <button>Ver resumen</button>
-              <button style={{ background: "transparent", color: "var(--color-primary)", border: "1px solid var(--color-primary)" }}>
-                Exportar PDF
+            <div className="rep-actions">
+              {/* Navegación al Reporte Mensual */}
+              <button className="rep-btn primary" onClick={() => navigate("/reportes/mensual")}>
+                Ver Resumen
+              </button>
+              <button className="rep-btn outline">
+                <Download size={16} /> Exportar PDF
               </button>
             </div>
           </article>
 
-          <article className="card">
-            <h4>Reporte anual</h4>
+          {/* --- TARJETA 2: REPORTE ANUAL --- */}
+          <article className="rep-card">
+            <div className="rep-icon-box yellow">
+              <Calendar size={28} />
+            </div>
+            <h4>Reporte Anual</h4>
             <p>Comparativa por meses y acumulado anual.</p>
-            <div className="actions">
-              <button>Ver anual</button>
+            <div className="rep-actions">
+              {/* Navegación al Reporte Anual */}
+              <button className="rep-btn primary" onClick={() => navigate("/reportes/anual")}>
+                Ver Anual <ArrowRight size={16} />
+              </button>
             </div>
           </article>
 
-          <article className="card">
+          {/* --- TARJETA 3: FIRMAS --- */}
+          <article className="rep-card">
+            <div className="rep-icon-box pink">
+              <PenTool size={28} />
+            </div>
             <h4>Firmas</h4>
             <p>Espacio para gestionar firmas del técnico, coordinador y secretaria.</p>
-            <div className="actions">
-              <button>Configurar</button>
+            <div className="rep-actions">
+              {/* Navegación a Configuración de Firmas */}
+              <button className="rep-btn secondary" onClick={() => navigate("/reportes/firmas")}>
+                Configurar
+              </button>
             </div>
           </article>
+
         </div>
       </div>
     </section>

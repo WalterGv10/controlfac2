@@ -1,89 +1,129 @@
-import { useMemo } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useAuth } from "../context/AuthContext";
 import { Link } from "react-router-dom";
-import { FaRegClipboard, FaChartLine, FaSignOutAlt } from "react-icons/fa";
+import {
+  FaRegClipboard,
+  FaChartLine,
+  FaSignOutAlt,
+  FaUsers,
+  FaBuilding
+} from "react-icons/fa";
+
 import "./Perfil.css";
 
-const DEFAULT_USERNAME = "Usuario Parkeador";
+const GRUPOS_TECNOLOGICOS = [
+  "CAJEROS AUTOMATICOS",
+  "SOPORTE AGENCIAS",
+  "COMUNICACIONES WAN",
+  "TELEFONIA"
+];
 
 export default function Perfil() {
   const { session, signOut } = useAuth();
   const user = session?.user;
+
   const metadata = user?.user_metadata || {};
+  const [selectedGroup, setSelectedGroup] = useState("");
+  const [saved, setSaved] = useState(false);
 
-  const userName = useMemo(
-    () => (user?.email ? user.email.split("@")[0] : DEFAULT_USERNAME),
-    [user]
-  );
+  useEffect(() => {
+    const stored = localStorage.getItem("user_group");
+    if (stored) setSelectedGroup(stored);
+  }, []);
 
-  const avatarSrc = metadata?.avatar_url;
+  const updateGroup = (value) => {
+    setSelectedGroup(value);
+    localStorage.setItem("user_group", value);
+    setSaved(true);
+    setTimeout(() => setSaved(false), 1800);
+  };
 
-  if (!session) {
-    return (
-      <main className="perfil-main futuristic-bg">
-        <div className="profile-container neo-glass">
-          <div className="loader">Cargando perfil...</div>
-        </div>
-      </main>
-    );
-  }
+  const username = useMemo(() => {
+    if (!user?.email) return "Usuario";
+    return user.email.split("@")[0];
+  }, [user]);
+
+  const avatar = metadata?.avatar_url;
+
+  if (!session) return null;
 
   return (
-    <main id="perfil" className="perfil-main futuristic-bg">
-      <div className="profile-container neo-glass">
-        {/* Botón de cierre de sesión */}
-        <button
-          onClick={signOut}
-          className="neon-logout-btn"
-          title="Cerrar sesión"
-        >
-          <FaSignOutAlt size={18} aria-label="Cerrar sesión" />
-          <span>Cerrar Sesión</span>
-        </button>
+    <main className="perfil-main material-bg">
+      <div className="perfil-wrapper material-card">
 
-        {/* Encabezado del perfil */}
-        <header className="profile-header">
-          <h2 className="welcome-text">¡Bienvenido!</h2>
-
-          <div className="avatar-section">
-            <div className="avatar-wrap glow-border">
-              {avatarSrc ? (
-                <img
-                  src={avatarSrc}
-                  alt={`Avatar de ${userName}`}
-                  className="avatar"
-                  referrerPolicy="no-referrer"
-                />
-              ) : (
-                <div className="avatar-placeholder">
-                  {userName.charAt(0).toUpperCase()}
-                </div>
-              )}
-            </div>
-
-            <div className="neon-sign">
-              <span className="neon-text">{userName}</span>
-            </div>
-          </div>
+        {/* Top bar */}
+        <header className="material-topbar">
+          <h1>Mi Perfil</h1>
+          <button className="material-logout" onClick={signOut}>
+            <FaSignOutAlt size={18} />
+            <span>Salir</span>
+          </button>
         </header>
 
-        {/* Navegación principal */}
-        <nav className="navigation-grid">
-          <Link to="/facturas" className="nav-card neon-card" aria-label="Ir a Facturas">
-            <FaRegClipboard size={36} />
-            <div className="card-info">
-              <h3>Facturas</h3>
-              <p>Registra y administra tus documentos de parqueo.</p>
-            </div>
+        {/* User */}
+        <section className="material-user">
+          <div className="material-avatar">
+            {avatar ? (
+              <img src={avatar} alt="avatar" referrerPolicy="no-referrer" />
+            ) : (
+              <span>{username.charAt(0).toUpperCase()}</span>
+            )}
+          </div>
+
+          <div className="material-user-text">
+            <h2>{username}</h2>
+            <p>{user.email}</p>
+          </div>
+        </section>
+
+        {/* Grupo */}
+        <section className="material-section">
+          <label className="material-label">
+            <FaBuilding size={16} />
+            <span>División Tecnológica</span>
+          </label>
+
+          <select
+            value={selectedGroup}
+            onChange={(e) => updateGroup(e.target.value)}
+            className="material-select"
+          >
+            <option value="" disabled>
+              Selecciona un grupo
+            </option>
+            {GRUPOS_TECNOLOGICOS.map((g) => (
+              <option key={g} value={g}>
+                {g}
+              </option>
+            ))}
+          </select>
+
+          {saved && <small className="material-saved">✓ Guardado</small>}
+        </section>
+
+        {/* Menu */}
+        <nav className="material-menu-grid">
+
+          {/* Tarjeta destacada: Firmas */}
+          <Link to="/reportes/firmas" className="material-item">
+            <div className="material-icon"><FaUsers size={36} /></div>
+            <span className="material-title">Configurar Firmas</span>
+            <p className="material-desc">Gestiona las firmas autorizadas para cobros y aprobaciones</p>
           </Link>
 
-          <Link to="/reportes" className="nav-card neon-card" aria-label="Ir a Reportes">
-            <FaChartLine size={36} />
-            <div className="card-info">
-              <h3>Reportes</h3>
-              <p>Genera análisis estadísticos y visualiza datos.</p>
-            </div>
+          {/* Resto de opciones */}
+          <Link to="/facturas" className="material-item">
+            <div className="material-icon"><FaRegClipboard size={28} /></div>
+            <span className="material-title">Facturas</span>
+            <p className="material-desc">Control y registro</p>
           </Link>
+
+          <Link to="/reportes" className="material-item">
+            <div className="material-icon"><FaChartLine size={28} /></div>
+            <span className="material-title">Reportes</span>
+            <p className="material-desc">Datos e informes</p>
+          </Link>
+
         </nav>
       </div>
     </main>

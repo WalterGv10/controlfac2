@@ -1,0 +1,168 @@
+/* =========================================
+   CONTENEDOR PRINCIPAL
+========================================= */
+.rep-section {
+  padding: 2rem 1rem;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  box-sizing: border-box;
+}
+
+.rep-container {
+  width: 100%;
+  max-width: 1000px;
+}
+
+/* =========================================
+   HEADER
+========================================= */
+.rep-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 2.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.rep-header-icon {
+  background: rgba(0, 255, 200, 0.1);
+  padding: 10px;
+  border-radius: 12px;
+  border: 1px solid rgba(0, 255, 200, 0.2);
+}
+
+.rep-header-text h3 {
+  margin: 0;
+  font-size: 1.8rem;
+  color: white;
+  text-shadow: 0 0 10px rgba(0, 255, 200, 0.3);
+}
+
+.rep-header-text p {
+  margin: 5px 0 0 0;
+  color: #aaa;
+  font-size: 0.95rem;
+}
+
+/* =========================================
+   GRID DE TARJETAS
+========================================= */
+.rep-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1.5rem;
+}
+
+.rep-card {
+  background: rgba(20, 20, 20, 0.6);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 1rem;
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.3s ease, border-color 0.3s ease;
+}
+
+.rep-card:hover {
+  transform: translateY(-5px);
+  border-color: rgba(0, 255, 200, 0.4);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+
+/* ICONOS DE TARJETAS (Círculos de color) */
+.rep-icon-box {
+  width: 50px;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+  margin-bottom: 1rem;
+}
+
+.rep-icon-box.blue { background: rgba(0, 255, 200, 0.15); color: #00ffc8; }
+.rep-icon-box.yellow { background: rgba(250, 204, 21, 0.15); color: #facc15; }
+.rep-icon-box.pink { background: rgba(244, 114, 182, 0.15); color: #f472b6; }
+
+.rep-card h4 {
+  margin: 0 0 0.5rem 0;
+  font-size: 1.25rem;
+  color: white;
+}
+
+.rep-card p {
+  color: #ccc;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  margin-bottom: 1.5rem;
+  flex-grow: 1; /* Empuja los botones al fondo */
+}
+
+/* =========================================
+   BOTONES
+========================================= */
+.rep-actions {
+  display: flex;
+  gap: 0.8rem;
+  flex-wrap: wrap;
+}
+
+.rep-btn {
+  padding: 0.6rem 1rem;
+  border-radius: 0.5rem;
+  border: none;
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: 0.2s;
+}
+
+/* Botón Primario (Ver Resumen) */
+.rep-btn.primary {
+  background: #00ffc8;
+  color: #000;
+}
+.rep-btn.primary:hover {
+  background: #00e0b0;
+  box-shadow: 0 0 10px rgba(0, 255, 200, 0.4);
+}
+
+/* Botón Outline (Exportar PDF) */
+.rep-btn.outline {
+  background: transparent;
+  border: 1px solid #00ffc8;
+  color: #00ffc8;
+}
+.rep-btn.outline:hover {
+  background: rgba(0, 255, 200, 0.1);
+}
+
+/* Botón Secundario (Configurar) */
+.rep-btn.secondary {
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+.rep-btn.secondary:hover {
+  background: rgba(255, 255, 255, 0.2);
+  border-color: white;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+  .rep-header {
+    flex-direction: column;
+    text-align: center;
+    gap: 0.5rem;
+  }
+  
+  .rep-grid {
+    grid-template-columns: 1fr;
+  }
+}

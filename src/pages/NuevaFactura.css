@@ -321,3 +321,29 @@
   box-shadow: 0 0 10px rgba(74, 222, 128, 0.4);
   transform: translateY(-1px);
 }
+
+/* --- Agregar al final de tu archivo CSS --- */
+
+.nf-auto-info {
+  display: flex;
+  gap: 0.8rem;
+  margin-bottom: 1.5rem;
+  margin-left: 0.5rem;
+}
+
+.nf-badge {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: rgba(0, 255, 200, 0.1);
+  border: 1px solid rgba(0, 255, 200, 0.3);
+  padding: 0.4rem 0.8rem;
+  border-radius: 20px;
+  color: #00ffc8;
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+
+.nf-badge svg {
+  opacity: 0.8;
+}

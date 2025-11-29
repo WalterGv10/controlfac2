@@ -1,0 +1,220 @@
+/* =========================================
+   CONTENEDOR PRINCIPAL
+========================================= */
+.ra-section {
+  padding: 1rem;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+}
+
+.ra-container {
+  width: 100%;
+  max-width: 900px;
+}
+
+/* =========================================
+   HEADER
+========================================= */
+.ra-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.ra-back-btn {
+  background: rgba(255, 255, 255, 0.1);
+  border: none;
+  color: white;
+  padding: 8px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.ra-title-box h2 {
+  margin: 0;
+  font-size: 1.5rem;
+  color: white;
+}
+
+.ra-year-selector {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 5px;
+}
+
+.year-btn {
+  background: rgba(0, 255, 200, 0.1);
+  border: 1px solid rgba(0, 255, 200, 0.3);
+  color: #00ffc8;
+  border-radius: 4px;
+  cursor: pointer;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.year-display {
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: white;
+}
+
+/* =========================================
+   TARJETAS DE RESUMEN (STATS)
+========================================= */
+.ra-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.ra-stat-card {
+  background: rgba(20, 20, 20, 0.6);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px); /* Soporte Safari */
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 1.2rem;
+  border-radius: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+/* Variantes de color */
+.ra-stat-card.primary {
+  border-color: #00ffc8;
+  background: rgba(0, 255, 200, 0.05);
+}
+
+.ra-stat-card.success {
+  border-color: #4ade80;
+  background: rgba(74, 222, 128, 0.05);
+}
+
+.ra-stat-card.info {
+  border-color: #60a5fa;
+  background: rgba(96, 165, 250, 0.05);
+}
+
+/* Iconos dentro de las tarjetas */
+.primary .stat-icon { color: #00ffc8; }
+.success .stat-icon { color: #4ade80; }
+.info .stat-icon { color: #60a5fa; }
+
+/* Textos dentro de las tarjetas */
+.stat-label {
+  font-size: 0.8rem;
+  color: #aaa;
+  text-transform: uppercase;
+}
+
+.stat-value {
+  font-size: 1.4rem;
+  font-weight: bold;
+  color: white;
+}
+
+.stat-subvalue {
+  font-size: 0.85rem;
+  color: #4ade80;
+  display: block;
+}
+
+.capitalize {
+  text-transform: capitalize;
+}
+
+/* =========================================
+   GRÁFICA DE BARRAS
+========================================= */
+.ra-chart-container {
+  background: rgba(20, 20, 20, 0.6);
+  border-radius: 1rem;
+  padding: 1.5rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.ra-subtitle {
+  margin: 0 0 1.5rem 0;
+  color: #00ffc8;
+  font-size: 1.1rem;
+}
+
+.ra-chart-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.ra-month-row {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.month-label {
+  width: 80px;
+  color: #ddd;
+  font-size: 0.9rem;
+}
+
+.month-bar-container {
+  flex-grow: 1;
+  height: 12px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.month-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #00ffc8, #00d4ff);
+  border-radius: 6px;
+  transition: width 1s ease-out;
+}
+
+.month-values {
+  width: 100px;
+  text-align: right;
+  font-size: 0.9rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.month-total {
+  color: white;
+  font-weight: bold;
+}
+
+.month-count {
+  font-size: 0.75rem;
+  color: #666;
+}
+
+.ra-loading {
+  text-align: center;
+  color: #888;
+  padding: 2rem;
+}
+
+/* =========================================
+   RESPONSIVE
+========================================= */
+@media (max-width: 600px) {
+  .ra-month-row {
+    gap: 0.5rem;
+  }
+  
+  .month-label {
+    width: 30px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+}
