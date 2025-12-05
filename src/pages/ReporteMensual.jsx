@@ -1,17 +1,26 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "../supabaseClient";
-import { ArrowLeft, Calendar, DollarSign, FileText, Filter, Download, Search } from "lucide-react";
+import { useAuth } from "../context/AuthContext"; 
+import { ArrowLeft, Calendar, DollarSign, FileText, Download, Search, Eye, X } from "lucide-react";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable"; 
 import "./ReporteMensual.css";
 
 export default function ReporteMensual() {
   const navigate = useNavigate();
+  const { session } = useAuth(); 
   const [loading, setLoading] = useState(true);
   const [facturas, setFacturas] = useState([]);
   const [filteredFacturas, setFilteredFacturas] = useState([]);
   
+  // Estado para guardar los datos del perfil (Firma, Banco, etc.)
+  const [perfil, setPerfil] = useState(null);
+
+  // Estados para Vista Previa
+  const [pdfPreviewUrl, setPdfPreviewUrl] = useState(null);
+  const [showPreview, setShowPreview] = useState(false);
+
   // Filtros
   const [selectedMonth, setSelectedMonth] = useState(new Date().toISOString().slice(0, 7));
   const [searchTerm, setSearchTerm] = useState(""); 
@@ -23,10 +32,14 @@ export default function ReporteMensual() {
     pendientes: 0
   });
 
+  // 1. Cargar Datos
   useEffect(() => {
-    fetchReporte();
-  }, [selectedMonth]);
+    if (session?.user) {
+      fetchData();
+    }
+  }, [selectedMonth, session]);
 
+  // 2. Filtros locales
   useEffect(() => {
     const filtradas = facturas.filter(f => 
       f.tecnico?.toLowerCase().includes(searchTerm.toLowerCase())
@@ -35,26 +48,43 @@ export default function ReporteMensual() {
     calcularTotales(filtradas);
   }, [searchTerm, facturas]);
 
-  const fetchReporte = async () => {
+  const fetchData = async () => {
     setLoading(true);
     const startOfMonth = `${selectedMonth}-01`;
     const [year, month] = selectedMonth.split('-');
     const endOfMonth = new Date(year, month, 0).toISOString().split('T')[0];
 
-    const { data, error } = await supabase
-      .from("facturas")
-      .select("*")
-      .gte("fecha", startOfMonth)
-      .lte("fecha", endOfMonth)
-      .order("fecha", { ascending: false });
+    try {
+      // A. Cargar Facturas del mes
+      const { data: facturasData, error: facturasError } = await supabase
+        .from("facturas")
+        .select("*")
+        .gte("fecha", startOfMonth)
+        .lte("fecha", endOfMonth)
+        .order("fecha", { ascending: false });
 
-    if (error) {
-      console.error(error);
-    } else {
-      setFacturas(data || []);
-      setFilteredFacturas(data || []);
+      if (facturasError) throw facturasError;
+      
+      setFacturas(facturasData || []);
+      setFilteredFacturas(facturasData || []);
+
+      // B. Cargar Perfil desde Supabase (Firma, Grupo, Cuenta)
+      const { data: perfilData, error: perfilError } = await supabase
+        .from("perfiles")
+        .select("*")
+        .eq("id", session.user.id)
+        .single();
+      
+      // Si existe el perfil, lo guardamos en el estado
+      if (!perfilError && perfilData) {
+        setPerfil(perfilData);
+      }
+
+    } catch (error) {
+      console.error("Error cargando datos:", error);
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   };
 
   const calcularTotales = (data) => {
@@ -74,161 +104,158 @@ export default function ReporteMensual() {
   };
 
   // ==========================================
-  // 🖨️ GENERACIÓN DE PDF (VERTICAL OFICIAL)
+  // 🖨️ GENERACIÓN DE PDF
   // ==========================================
-  const handleExportPDF = () => {
-    try {
-      // 1. Orientación VERTICAL (Portrait)
-      const doc = new jsPDF(); 
-      
-      // Cargar configuración guardada
-      const configFirmas = JSON.parse(localStorage.getItem("config_firmas") || "{}");
-      const nombreTecnico = searchTerm || configFirmas.tecnico || "General";
-      const division = configFirmas.grupo || "ÁREA TECNOLÓGICA";
+  const generatePDFBlob = () => {
+    const doc = new jsPDF(); 
+    
+    // Datos del Perfil (o valores por defecto si no ha configurado)
+    const nombreTecnico = searchTerm || perfil?.nombre_tecnico || "General";
+    const division = perfil?.grupo_tecnico || "ÁREA TECNOLÓGICA";
+    const cuenta = perfil?.numero_cuenta || "---";
+    const firmaImg = perfil?.firma_digital; 
+    
+    const firmaTecnico = perfil?.nombre_tecnico || "Solicitante";
+    const firmaCoord = perfil?.nombre_coordinador || "Jefe Inmediato";
+    const firmaSecre = perfil?.nombre_secretaria || "Administración";
 
-      // 2. ENCABEZADO
-      // Título Principal
-      doc.setFontSize(16);
-      doc.setTextColor(40);
-      doc.text("Reporte de Gastos / Reembolso", 14, 20);
-      
-      // Subtítulos
-      doc.setFontSize(9);
-      doc.setTextColor(100);
-      doc.text(`Periodo: ${selectedMonth}`, 14, 26);
-      doc.text(`Técnico: ${nombreTecnico}`, 14, 31);
-      
-      // División Tecnológica (Alineada a la derecha)
-      doc.setFontSize(10);
-      doc.setTextColor(0, 150, 200); // Color azulado corporativo
-      doc.text(division, 195, 20, { align: "right" });
-      
-      doc.setFontSize(8);
-      doc.setTextColor(100);
-      doc.text(`Fecha Impresión: ${new Date().toLocaleDateString()}`, 195, 26, { align: "right" });
+    // 1. ENCABEZADO
+    doc.setFontSize(14);
+    doc.setTextColor(40);
+    doc.setFont("helvetica", "bold");
+    // 🔴 TÍTULO ACTUALIZADO
+    doc.text("REPORTE DE GASTOS DE PARQUEO", 105, 20, { align: "center" });
+    
+    doc.setFontSize(9);
+    doc.setFont("helvetica", "normal");
+    doc.setTextColor(100);
+    doc.text(`Periodo: ${selectedMonth}`, 14, 30);
+    doc.text(`Técnico: ${nombreTecnico}`, 14, 35);
+    
+    // División Tecnológica
+    doc.setFontSize(10);
+    doc.setTextColor(0, 150, 200);
+    doc.text(division, 195, 30, { align: "right" });
+    
+    doc.setFontSize(8);
+    doc.setTextColor(100);
+    doc.text(`Generado: ${new Date().toLocaleDateString()}`, 195, 35, { align: "right" });
 
-      // 3. TABLA DE DATOS
-      const tableColumn = [
-        "Fecha", 
-        "Documento", 
-        "Detalle del Servicio", 
-        "Monto (Q)"
+    // 2. TABLA
+    const tableColumn = [
+      "Fecha", 
+      "Documento", 
+      "Detalle del Servicio", 
+      "Monto (Q)"
+    ];
+    
+    const tableRows = filteredFacturas.map(fac => {
+      const docInfo = `${fac.serie || ""}-${fac.dte || ""}\nNIT: ${fac.nit_emisor || ""}`;
+      const detalles = `${fac.punto_servicio || ""}\n${fac.motivo_visita || ""}`;
+      return [
+        fac.fecha,
+        docInfo,
+        detalles,
+        Number(fac.monto).toFixed(2)
       ];
-      
-      const tableRows = [];
+    });
 
-      filteredFacturas.forEach(fac => {
-        // Formateo de celda Documento
-        const docInfo = `${fac.serie || ""}-${fac.dte || ""}\nNIT: ${fac.nit_emisor || ""}`;
-        
-        // Formateo de celda Detalle
-        const detalles = `${fac.punto_servicio || ""}\n${fac.motivo_visita || ""}`;
-
-        const row = [
-          fac.fecha,
-          docInfo,
-          detalles,
-          Number(fac.monto).toFixed(2)
-        ];
-        tableRows.push(row);
-      });
-
-      autoTable(doc, {
-        head: [tableColumn],
-        body: tableRows,
-        startY: 38,
-        theme: 'grid',
-        styles: { fontSize: 8, cellPadding: 2, valign: 'middle' },
-        headStyles: { fillColor: [40, 40, 40], textColor: [255, 255, 255] },
-        columnStyles: {
-          0: { cellWidth: 20 }, // Fecha
-          1: { cellWidth: 40 }, // Documento
-          2: { cellWidth: 'auto' }, // Detalle (ocupa resto)
-          3: { cellWidth: 25, halign: 'right', fontStyle: 'bold' }, // Monto
-        }
-      });
-
-      // 4. TOTALES
-      const finalY = (doc.lastAutoTable && doc.lastAutoTable.finalY) || 100;
-      
-      doc.setFontSize(12);
-      doc.setTextColor(0);
-      doc.text(`Total a Reembolsar: Q ${resumen.total.toFixed(2)}`, 14, finalY + 10);
-      doc.setFontSize(9);
-      doc.setTextColor(100);
-      doc.text(`Documentos adjuntos: ${resumen.cantidad}`, 14, finalY + 15);
-
-      // 5. PIE DE PÁGINA (FIRMAS)
-      let firmaY = finalY + 45; 
-      if (firmaY > 260) { // Nueva página si no cabe
-          doc.addPage();
-          firmaY = 50;
+    autoTable(doc, {
+      head: [tableColumn],
+      body: tableRows,
+      startY: 42,
+      theme: 'grid',
+      styles: { fontSize: 8, cellPadding: 2, valign: 'middle' },
+      headStyles: { fillColor: [20, 20, 20], textColor: [255, 255, 255] }, // Encabezado oscuro
+      columnStyles: {
+        0: { cellWidth: 20 }, 
+        1: { cellWidth: 40 }, 
+        2: { cellWidth: 'auto' }, 
+        3: { cellWidth: 25, halign: 'right', fontStyle: 'bold' }, 
       }
+    });
 
-      const pageWidth = doc.internal.pageSize.getWidth();
-      const margin = 14;
-      
-      // Líneas de firma
-      doc.setLineWidth(0.5);
-      doc.setDrawColor(150);
-      
-      // Configuración de columnas de firma
-      const sectionWidth = (pageWidth - (margin * 2)) / 3;
-      const x1 = margin;
-      const x2 = margin + sectionWidth;
-      const x3 = margin + (sectionWidth * 2);
+    // 3. TOTALES
+    const finalY = (doc.lastAutoTable && doc.lastAutoTable.finalY) || 100;
+    
+    doc.setFontSize(12);
+    doc.setTextColor(0);
+    doc.setFont("helvetica", "bold");
+    doc.text(`Total a Reembolsar: Q ${resumen.total.toFixed(2)}`, 14, finalY + 10);
+    
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(9);
+    doc.setTextColor(100);
+    doc.text(`Documentos adjuntos: ${resumen.cantidad}`, 14, finalY + 15);
 
-      const lineLen = 45; 
-      const offset = (sectionWidth - lineLen) / 2;
-
-      // --- FIRMA 1: SOLICITANTE (Técnico) ---
-      // Imagen de firma
-      if (configFirmas.firmaImagen) {
-          try {
-              const isJpeg = configFirmas.firmaImagen.startsWith('data:image/jpeg');
-              const imgFormat = isJpeg ? 'JPEG' : 'PNG';
-              doc.addImage(configFirmas.firmaImagen, imgFormat, x1 + offset + 2, firmaY - 22, 40, 20); 
-          } catch (e) { console.error(e); }
-      }
-
-      // Línea y Nombre
-      doc.line(x1 + offset, firmaY, x1 + offset + lineLen, firmaY);
-      doc.setFontSize(8);
-      doc.setTextColor(0);
-      doc.text(configFirmas.tecnico || "Solicitante", x1 + offset + (lineLen/2), firmaY + 5, { align: "center" });
-      
-      // Datos Bancarios y División
-      doc.setFontSize(7);
-      doc.setTextColor(80);
-      // Mostramos la división seleccionada
-      doc.text(configFirmas.grupo || "Área Técnica", x1 + offset + (lineLen/2), firmaY + 9, { align: "center" });
-      // Datos de Banco Industrial fijos + cuenta
-      doc.text("Banco Industrial", x1 + offset + (lineLen/2), firmaY + 13, { align: "center" });
-      doc.text(`Cta: ${configFirmas.cuenta || "---"}`, x1 + offset + (lineLen/2), firmaY + 17, { align: "center" });
-
-
-      // --- FIRMA 2: COORDINADOR ---
-      doc.line(x2 + offset, firmaY, x2 + offset + lineLen, firmaY);
-      doc.setFontSize(8);
-      doc.setTextColor(0);
-      doc.text(configFirmas.coordinador || "Jefe Inmediato", x2 + offset + (lineLen/2), firmaY + 5, { align: "center" });
-      doc.setTextColor(100);
-      doc.text("Revisado por", x2 + offset + (lineLen/2), firmaY + 9, { align: "center" });
-
-      // --- FIRMA 3: SECRETARIA ---
-      doc.line(x3 + offset, firmaY, x3 + offset + lineLen, firmaY);
-      doc.setTextColor(0);
-      doc.text(configFirmas.secretaria || "Administración", x3 + offset + (lineLen/2), firmaY + 5, { align: "center" });
-      doc.setTextColor(100);
-      doc.text("Vo.Bo.", x3 + offset + (lineLen/2), firmaY + 9, { align: "center" });
-
-      // 6. Descargar
-      doc.save(`Reembolso_${division}_${selectedMonth}.pdf`);
-
-    } catch (error) {
-      console.error("Error generando PDF:", error);
-      alert("Hubo un error al generar el PDF. Verifica la consola.");
+    // 4. FIRMAS (Desde la base de datos)
+    let firmaY = finalY + 45; 
+    if (firmaY > 260) { 
+        doc.addPage();
+        firmaY = 50;
     }
+
+    const pageWidth = doc.internal.pageSize.getWidth();
+    const margin = 14;
+    
+    doc.setLineWidth(0.5);
+    doc.setDrawColor(150);
+    
+    const sectionWidth = (pageWidth - (margin * 2)) / 3;
+    const offset = (sectionWidth - 45) / 2; // Centrar líneas de 45px
+    const lineLen = 45;
+
+    // --- FIRMA 1: TÉCNICO ---
+    if (firmaImg) {
+        try {
+            const isJpeg = firmaImg.startsWith('data:image/jpeg');
+            const imgFormat = isJpeg ? 'JPEG' : 'PNG';
+            doc.addImage(firmaImg, imgFormat, margin + offset + 2, firmaY - 22, 40, 20); 
+        } catch (e) { console.error("Error imagen firma", e); }
+    }
+
+    doc.line(margin + offset, firmaY, margin + offset + lineLen, firmaY);
+    doc.setFontSize(8); doc.setTextColor(0);
+    doc.text(firmaTecnico, margin + offset + (lineLen/2), firmaY + 5, { align: "center" });
+    
+    doc.setFontSize(7); doc.setTextColor(80);
+    doc.text(division, margin + offset + (lineLen/2), firmaY + 9, { align: "center" });
+    doc.text("Banco Industrial", margin + offset + (lineLen/2), firmaY + 13, { align: "center" });
+    doc.text(`Cta: ${cuenta}`, margin + offset + (lineLen/2), firmaY + 17, { align: "center" });
+
+    // --- FIRMA 2: COORDINADOR ---
+    const x2 = margin + sectionWidth;
+    doc.line(x2 + offset, firmaY, x2 + offset + lineLen, firmaY);
+    doc.setFontSize(8); doc.setTextColor(0);
+    doc.text(firmaCoord, x2 + offset + (lineLen/2), firmaY + 5, { align: "center" });
+    doc.setTextColor(100);
+    doc.text("Revisado por", x2 + offset + (lineLen/2), firmaY + 9, { align: "center" });
+
+    // --- FIRMA 3: SECRETARIA ---
+    const x3 = margin + (sectionWidth * 2);
+    doc.line(x3 + offset, firmaY, x3 + offset + lineLen, firmaY);
+    doc.setTextColor(0);
+    doc.text(firmaSecre, x3 + offset + (lineLen/2), firmaY + 5, { align: "center" });
+    doc.setTextColor(100);
+    doc.text("Vo.Bo.", x3 + offset + (lineLen/2), firmaY + 9, { align: "center" });
+
+    // Retornamos el BLOB URL para la vista previa
+    return doc.output('bloburl');
+  };
+
+  // --- MANEJADORES DE VISTA PREVIA ---
+  const handlePreview = () => {
+    const url = generatePDFBlob();
+    setPdfPreviewUrl(url);
+    setShowPreview(true);
+  };
+
+  const handleDownload = () => {
+    const blobUrl = generatePDFBlob();
+    const link = document.createElement('a');
+    link.href = blobUrl;
+    link.download = `Gastos_Parqueo_${selectedMonth}.pdf`;
+    link.click();
   };
 
   return (
@@ -282,8 +309,10 @@ export default function ReporteMensual() {
               <span className="stat-value">{resumen.cantidad}</span>
             </div>
           </div>
-          <button className="rm-export-btn" onClick={handleExportPDF} disabled={filteredFacturas.length === 0}>
-             <Download size={20} /> Descargar PDF
+          
+          {/* BOTÓN VISTA PREVIA */}
+          <button className="rm-export-btn" onClick={handlePreview} disabled={filteredFacturas.length === 0}>
+             <Eye size={20} /> Vista Previa PDF
           </button>
         </div>
 
@@ -296,7 +325,7 @@ export default function ReporteMensual() {
           {loading ? (
             <div className="rm-loading">Cargando datos...</div>
           ) : filteredFacturas.length === 0 ? (
-            <div className="rm-empty">No se encontraron facturas con estos filtros.</div>
+            <div className="rm-empty">No se encontraron facturas.</div>
           ) : (
             <div className="rm-table-wrapper">
               <table className="rm-table">
@@ -328,8 +357,38 @@ export default function ReporteMensual() {
             </div>
           )}
         </div>
-
       </div>
+
+      {/* --- MODAL DE VISTA PREVIA --- */}
+      {showPreview && (
+        <div className="pdf-modal-overlay">
+          <div className="pdf-modal-content">
+            <div className="pdf-modal-header">
+              <h3>Vista Previa del Documento</h3>
+              <button onClick={() => setShowPreview(false)} className="pdf-close-btn">
+                <X size={24} />
+              </button>
+            </div>
+            
+            <div className="pdf-iframe-container">
+              <iframe 
+                src={pdfPreviewUrl} 
+                title="Vista Previa PDF"
+                className="pdf-preview-iframe"
+              ></iframe>
+            </div>
+
+            <div className="pdf-modal-footer">
+              <button onClick={() => setShowPreview(false)} className="pdf-cancel-btn">
+                Cerrar
+              </button>
+              <button onClick={handleDownload} className="pdf-download-btn">
+                <Download size={18} /> Descargar Archivo
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </section>
   );
 }

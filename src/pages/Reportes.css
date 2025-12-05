@@ -1,168 +1,263 @@
 /* =========================================
-   CONTENEDOR PRINCIPAL
+   VARIABLES & TEMA
 ========================================= */
-.rep-section {
-  padding: 2rem 1rem;
-  min-height: 100vh;
-  display: flex;
-  justify-content: center;
-  box-sizing: border-box;
-}
-
-.rep-container {
-  width: 100%;
-  max-width: 1000px;
+:root {
+  --bg-primary: #0a0f1f;
+  --bg-card: rgba(20, 25, 40, 0.7);
+  --bg-card-hover: rgba(30, 35, 60, 0.9);
+  
+  --neon-cyan: #00ffc8;
+  --neon-purple: #b967ff;
+  --neon-pink: #ff4da6;
+  
+  --text-primary: #ffffff;
+  --text-secondary: #94a3b8;
+  
+  --glass-border: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 /* =========================================
-   HEADER
+   LAYOUT (FULL SCREEN - NO SCROLL)
+========================================= */
+.rep-section {
+  height: calc(100vh - 60px); 
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 1rem;
+  box-sizing: border-box;
+  background: var(--bg-primary);
+  overflow: hidden;
+}
+
+.rep-wrapper {
+  width: 100%;
+  max-width: 1200px;
+  height: 100%;
+  max-height: 800px;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem; /* Gap reducido para acercar el título al contenido */
+}
+
+/* =========================================
+   ENCABEZADO (DISCRETO & NEÓN)
 ========================================= */
 .rep-header {
   display: flex;
   align-items: center;
-  gap: 1rem;
-  margin-bottom: 2.5rem;
-  padding-bottom: 1rem;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  gap: 0.8rem;
+  padding: 0.5rem 1rem; /* Padding reducido */
+  
+  /* Eliminamos el fondo de caja fuerte */
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  backdrop-filter: none;
+  
+  margin-bottom: 0.5rem;
+  opacity: 0.9; /* Un poco de transparencia para sutileza */
 }
 
 .rep-header-icon {
-  background: rgba(0, 255, 200, 0.1);
-  padding: 10px;
-  border-radius: 12px;
+  /* Icono brillante pero pequeño y circular */
+  background: rgba(0, 255, 200, 0.05);
+  color: var(--neon-cyan);
+  padding: 8px;
+  border-radius: 50%;
+  box-shadow: 0 0 12px rgba(0, 255, 200, 0.3); /* Glow del icono */
   border: 1px solid rgba(0, 255, 200, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .rep-header-text h3 {
   margin: 0;
-  font-size: 1.8rem;
-  color: white;
-  text-shadow: 0 0 10px rgba(0, 255, 200, 0.3);
+  font-size: 1.1rem; /* Tamaño más discreto */
+  color: #fff;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  text-shadow: 0 0 8px rgba(0, 255, 200, 0.5); /* Texto Neón */
+  text-transform: uppercase;
 }
 
-.rep-header-text p {
-  margin: 5px 0 0 0;
-  color: #aaa;
-  font-size: 0.95rem;
+.rep-header-text small {
+  display: block;
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  opacity: 0.7;
+  margin-top: 2px;
 }
 
 /* =========================================
-   GRID DE TARJETAS
+   GRID DE TARJETAS (FLEXIBLE)
 ========================================= */
 .rep-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 1.5rem;
-}
-
-.rep-card {
-  background: rgba(20, 20, 20, 0.6);
-  backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 1rem;
-  padding: 1.5rem;
   display: flex;
   flex-direction: column;
-  transition: transform 0.3s ease, border-color 0.3s ease;
+  gap: 1rem;
+  flex-grow: 1; 
 }
 
+/* =========================================
+   TARJETAS
+========================================= */
+.rep-card {
+  position: relative;
+  background: var(--bg-card);
+  border: var(--glass-border);
+  border-radius: 24px;
+  padding: 0 1.5rem;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  overflow: hidden;
+  
+  display: flex;
+  align-items: center;
+  flex: 1; /* Crecen para llenar espacio */
+  min-height: 80px;
+}
+
+.rep-content-row {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  gap: 1rem;
+  z-index: 2;
+}
+
+/* Hover Effects */
 .rep-card:hover {
-  transform: translateY(-5px);
-  border-color: rgba(0, 255, 200, 0.4);
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  background: var(--bg-card-hover);
+  border-color: rgba(255, 255, 255, 0.2);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.3);
 }
 
-/* ICONOS DE TARJETAS (Círculos de color) */
+.rep-card:active {
+  transform: scale(0.98);
+}
+
+/* TARJETA DESTACADA */
+.rep-card.primary {
+  border-color: rgba(0, 255, 200, 0.3);
+  background: linear-gradient(145deg, rgba(0, 255, 200, 0.05) 0%, rgba(20, 25, 40, 0.8) 100%);
+}
+
+.card-bg-glow {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: radial-gradient(circle at top right, rgba(0, 255, 200, 0.15), transparent 70%);
+  opacity: 0.5;
+  z-index: 1;
+}
+
+/* =========================================
+   ICONOS Y TEXTO INTERNO
+========================================= */
 .rep-icon-box {
-  width: 50px;
-  height: 50px;
+  width: 48px;
+  height: 48px;
+  border-radius: 14px;
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 12px;
-  margin-bottom: 1rem;
+  font-size: 1.2rem;
+  flex-shrink: 0;
 }
 
-.rep-icon-box.blue { background: rgba(0, 255, 200, 0.15); color: #00ffc8; }
-.rep-icon-box.yellow { background: rgba(250, 204, 21, 0.15); color: #facc15; }
-.rep-icon-box.pink { background: rgba(244, 114, 182, 0.15); color: #f472b6; }
+.cyan { background: rgba(0, 255, 200, 0.15); color: var(--neon-cyan); }
+.purple { background: rgba(185, 103, 255, 0.15); color: var(--neon-purple); }
+.pink { background: rgba(255, 77, 166, 0.15); color: var(--neon-pink); }
 
-.rep-card h4 {
-  margin: 0 0 0.5rem 0;
-  font-size: 1.25rem;
-  color: white;
+.rep-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 
-.rep-card p {
-  color: #ccc;
-  font-size: 0.9rem;
-  line-height: 1.5;
-  margin-bottom: 1.5rem;
-  flex-grow: 1; /* Empuja los botones al fondo */
+.rep-info h4 {
+  margin: 0;
+  font-size: 1.1rem;
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+.rep-info p {
+  margin: 4px 0 0 0;
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+}
+
+.rep-arrow {
+  color: rgba(255, 255, 255, 0.2);
+  transition: 0.3s;
+}
+
+.rep-card:hover .rep-arrow {
+  color: var(--neon-cyan);
+  transform: translateX(5px);
 }
 
 /* =========================================
-   BOTONES
+   RESPONSIVE (TABLETS/DESKTOP)
 ========================================= */
-.rep-actions {
-  display: flex;
-  gap: 0.8rem;
-  flex-wrap: wrap;
-}
+@media (min-width: 768px) {
+  .rep-section {
+    align-items: center;
+    padding: 2rem;
+  }
 
-.rep-btn {
-  padding: 0.6rem 1rem;
-  border-radius: 0.5rem;
-  border: none;
-  font-weight: 600;
-  font-size: 0.9rem;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  transition: 0.2s;
-}
+  .rep-wrapper {
+    display: grid;
+    grid-template-rows: auto 1fr;
+    gap: 1.5rem;
+    height: auto;
+  }
 
-/* Botón Primario (Ver Resumen) */
-.rep-btn.primary {
-  background: #00ffc8;
-  color: #000;
-}
-.rep-btn.primary:hover {
-  background: #00e0b0;
-  box-shadow: 0 0 10px rgba(0, 255, 200, 0.4);
-}
-
-/* Botón Outline (Exportar PDF) */
-.rep-btn.outline {
-  background: transparent;
-  border: 1px solid #00ffc8;
-  color: #00ffc8;
-}
-.rep-btn.outline:hover {
-  background: rgba(0, 255, 200, 0.1);
-}
-
-/* Botón Secundario (Configurar) */
-.rep-btn.secondary {
-  background: rgba(255, 255, 255, 0.1);
-  color: white;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-}
-.rep-btn.secondary:hover {
-  background: rgba(255, 255, 255, 0.2);
-  border-color: white;
-}
-
-/* Responsive */
-@media (max-width: 600px) {
   .rep-header {
-    flex-direction: column;
-    text-align: center;
-    gap: 0.5rem;
+    /* En PC lo alineamos a la izquierda pero mantenemos el estilo discreto */
+    padding-left: 0;
+    margin-bottom: 0.5rem;
   }
   
   .rep-grid {
-    grid-template-columns: 1fr;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); 
+    grid-template-rows: 1fr; 
+    gap: 1.5rem;
+    height: 300px; 
   }
+
+  .rep-card {
+    flex-direction: column;
+    text-align: center;
+    padding: 2rem;
+    justify-content: center;
+    gap: 1.5rem;
+  }
+
+  .rep-content-row {
+    flex-direction: column;
+    text-align: center;
+    gap: 1.5rem;
+  }
+
+  .rep-info h4 { font-size: 1.3rem; }
+  .rep-info p { font-size: 0.95rem; }
+
+  .rep-arrow {
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+  }
+}
+
+@media (min-width: 1400px) {
+  .rep-wrapper { max-width: 1400px; }
+  .rep-grid { height: 400px; }
+  .rep-info h4 { font-size: 1.5rem; }
 }

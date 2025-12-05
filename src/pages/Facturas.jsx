@@ -1,59 +1,83 @@
 import { useNavigate } from "react-router-dom";
-import { UploadCloud } from "lucide-react"; // Agregué un icono opcional
+import { Camera, FileText, Ticket, List, ChevronRight, Zap } from "lucide-react";
+import "./Facturas.css";
 
 export default function Facturas() {
   const navigate = useNavigate();
 
   return (
-    <section id="facturas" className="section">
+    <section className="facturas-main">
       <div className="container">
-        <div className="section-header">
-          <h3>Facturas</h3>
-          <p>Registro y consulta de facturas de parqueo.</p>
+        
+        {/* HEADER CON ANIMACIÓN */}
+        <div className="facturas-header fade-in">
+          <h1>Gestión de Gastos</h1>
+          <p>Selecciona una operación</p>
         </div>
 
-        <div className="grid">
-          {/* --- TARJETA 1: NUEVA FACTURA --- */}
-          <article className="card">
-            <h4>Nueva factura</h4>
-            <p>Ingresa una nueva factura con fecha, monto y foto del recibo.</p>
-            <div className="actions">
-              <button
-                style={{
-                  background: "transparent",
-                  color: "var(--color-primary)",
-                  border: "1px solid var(--color-primary)",
-                }}
-                onClick={() => navigate("/nueva-factura")}
-              >
-                Ver formulario
-              </button>
+        {/* GRID DE OPCIONES */}
+        <div className="facturas-grid">
+          
+          {/* 1. OCR (ESCANEAR) - DESTACADO */}
+          <button 
+            className="menu-card primary fade-in-up delay-1" 
+            onClick={() => navigate("/importar-factura")}
+          >
+            <div className="card-bg-glow"></div>
+            <div className="icon-wrapper neon">
+              <Camera size={28} strokeWidth={2} />
             </div>
-          </article>
+            <div className="card-content">
+              <h4>Escanear con IA</h4>
+              <p>Detectar datos automáticamente</p>
+            </div>
+            <div className="action-icon">
+               <Zap size={20} className="zap-icon" />
+            </div>
+          </button>
 
-          {/* --- TARJETA 2: MIS FACTURAS --- */}
-          <article className="card">
-            <h4>Mis facturas</h4>
-            <p>Lista rápida de tus últimos ingresos (visualiza estados y atrasos).</p>
-            <div className="actions">
-              <button onClick={() => navigate("/mis-facturas")}>
-                Ver listado
-              </button>
-            </div>
-          </article>
+          <div className="divider fade-in delay-2"><span>Ingreso Manual</span></div>
 
-          {/* --- TARJETA 3: IMPORTAR (ACTUALIZADA) --- */}
-          <article className="card">
-            <h4>Importar Factura (OCR)</h4>
-            <p>Toma una foto o sube una imagen para detectar los datos automáticamente.</p>
-            <div className="actions">
-              {/* 👇 AQUÍ ESTÁ EL CAMBIO: Navegación a la nueva ruta */}
-              <button onClick={() => navigate("/importar-factura")} style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <UploadCloud size={18} /> Subir o Tomar Foto
-              </button>
+          {/* 2. FACTURA MANUAL (Fiscal) */}
+          <button 
+            className="menu-card fade-in-up delay-2" 
+            onClick={() => navigate("/nueva-factura")}
+          >
+            <div className="icon-wrapper blue">
+              <FileText size={24} />
             </div>
-          </article>
+            <div className="card-content">
+              <h4>Factura Contable</h4>
+              <p>NIT, DTE y Serie requeridos</p>
+            </div>
+            <ChevronRight className="arrow-icon" />
+          </button>
+
+          {/* 3. RECIBO MUNICIPAL */}
+          <button 
+            className="menu-card fade-in-up delay-3" 
+            onClick={() => navigate("/recibo-municipal")}
+          >
+            <div className="icon-wrapper orange">
+              <Ticket size={24} />
+            </div>
+            <div className="card-content">
+              <h4>Recibo Municipal</h4>
+              <p>Tickets de Parqueo y Peaje</p>
+            </div>
+            <ChevronRight className="arrow-icon" />
+          </button>
+
         </div>
+
+        {/* FOOTER */}
+        <div className="facturas-footer fade-in delay-3">
+           <button className="history-button" onClick={() => navigate("/mis-facturas")}>
+              <List size={20} /> 
+              <span>Ver Historial de Gastos</span>
+           </button>
+        </div>
+
       </div>
     </section>
   );

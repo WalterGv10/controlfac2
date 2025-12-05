@@ -5,7 +5,6 @@
   display: flex;
   justify-content: center;
   align-items: flex-start; /* ← esto lo sube */
-  padding-top: 0;          /* ← elimina espacio superior */
   padding-left: 1rem;
   padding-right: 1rem;
   padding-bottom: 1rem;

@@ -1,6 +1,8 @@
 import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import { ArrowLeft, Save, PenTool, UserCheck, User, CreditCard, Upload, Trash2, Building } from "lucide-react";
+import { supabase } from "../supabaseClient"; // 👈 IMPORTANTE: Cliente BD
+import { useAuth } from "../context/AuthContext"; // 👈 IMPORTANTE: Usuario
+import { ArrowLeft, Save, PenTool, User, CreditCard, Upload, Trash2, Building } from "lucide-react";
 import "./ConfigurarFirmas.css";
 
 // Definimos los grupos de la corporación
@@ -13,13 +15,14 @@ const GRUPOS_TECNOLOGICOS = [
 
 export default function ConfigurarFirmas() {
   const navigate = useNavigate();
+  const { session } = useAuth(); // Obtenemos la sesión del usuario actual
   const fileInputRef = useRef(null);
   const [loading, setLoading] = useState(false);
   const [showToast, setShowToast] = useState(false);
 
   // Estado inicial
   const [config, setConfig] = useState({
-    grupo: "", // Nuevo campo
+    grupo: "", 
     tecnico: "",
     coordinador: "",
     secretaria: "",
@@ -27,17 +30,45 @@ export default function ConfigurarFirmas() {
     firmaImagen: null 
   });
 
-  // 1. Cargar configuración guardada
+  // 1. Cargar configuración desde SUPABASE (Nube)
   useEffect(() => {
+    if (session?.user) {
+      cargarPerfil();
+    }
+  }, [session]);
+
+  const cargarPerfil = async () => {
     try {
-      const guardadas = localStorage.getItem("config_firmas");
-      if (guardadas) {
-        setConfig(JSON.parse(guardadas));
+      setLoading(true);
+      const { user } = session;
+
+      // Consultamos la tabla 'perfiles'
+      let { data, error } = await supabase
+        .from('perfiles')
+        .select('*')
+        .eq('id', user.id)
+        .single();
+
+      if (data) {
+        // Rellenamos el estado con los datos que vienen de la BD
+        setConfig({
+          grupo: data.grupo_tecnico || "",
+          tecnico: data.nombre_tecnico || "",
+          coordinador: data.nombre_coordinador || "",
+          secretaria: data.nombre_secretaria || "",
+          cuenta: data.numero_cuenta || "",
+          firmaImagen: data.firma_digital || null
+        });
+        
+        // Guardamos copia local para velocidad
+        localStorage.setItem("user_group", data.grupo_tecnico || "");
       }
     } catch (error) {
-      console.error("Error cargando config:", error);
+      console.error("Error cargando perfil:", error);
+    } finally {
+      setLoading(false);
     }
-  }, []);
+  };
 
   // 2. Manejar cambios en inputs
   const handleChange = (e) => {
@@ -64,18 +95,48 @@ export default function ConfigurarFirmas() {
     setConfig({ ...config, firmaImagen: null });
   };
 
-  // 4. Guardar
-  const handleSave = () => {
+  // 4. Guardar en SUPABASE (Base de Datos)
+  const handleSave = async () => {
+    if (!session?.user) {
+        alert("No hay sesión activa. Por favor inicia sesión de nuevo.");
+        return;
+    }
+    
     setLoading(true);
-    setTimeout(() => {
+
+    try {
+      // Preparamos el objeto con los nombres de columnas de la BD
+      const updates = {
+        id: session.user.id,
+        grupo_tecnico: config.grupo,
+        nombre_tecnico: config.tecnico,
+        nombre_coordinador: config.coordinador,
+        nombre_secretaria: config.secretaria,
+        numero_cuenta: config.cuenta,
+        firma_digital: config.firmaImagen, // Se guarda en Base64
+        updated_at: new Date(),
+      };
+
+      // Enviamos a la tabla 'perfiles'
+      let { error } = await supabase
+        .from('perfiles')
+        .upsert(updates);
+
+      if (error) throw error;
+
+      // Actualizamos localStorage también por redundancia
       localStorage.setItem("config_firmas", JSON.stringify(config));
-      // También actualizamos el user_group global para que NuevaFactura lo detecte
       if(config.grupo) localStorage.setItem("user_group", config.grupo);
       
-      setLoading(false);
       setShowToast(true);
       setTimeout(() => setShowToast(false), 3000);
-    }, 800);
+
+    } catch (error) {
+      console.error("Error guardando:", error);
+      alert("Error al guardar en la nube: " + error.message);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -194,8 +255,8 @@ export default function ConfigurarFirmas() {
         {/* ACCIONES */}
         <div className="cf-actions">
             <button className="cf-btn-save" onClick={handleSave} disabled={loading}>
-              {loading ? "Guardando..." : (
-                <> <Save size={18} /> Guardar Perfil de Cobro </>
+              {loading ? "Guardando en Nube..." : (
+                <> <Save size={18} /> Guardar Perfil </>
               )}
             </button>
         </div>
@@ -236,7 +297,7 @@ export default function ConfigurarFirmas() {
 
       {showToast && (
         <div className="cf-toast">
-          ✅ Datos guardados correctamente
+          ✅ Datos guardados y sincronizados
         </div>
       )}
     </section>

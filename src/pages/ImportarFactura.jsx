@@ -1,7 +1,7 @@
 import { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import Tesseract from "tesseract.js";
-import { ArrowLeft, Upload, Camera, CheckCircle, AlertCircle, Loader2 } from "lucide-react";
+import { ArrowLeft, Upload, Camera, CheckCircle, Loader2 } from "lucide-react";
 import "./ImportarFactura.css";
 
 export default function ImportarFactura() {
@@ -49,8 +49,7 @@ export default function ImportarFactura() {
 
       const extractedData = parseOCRText(result.data.text);
       
-      // CAMBIO AQUÍ: Ya no guardamos 'rawText'. Solo guardamos los datos limpios.
-      // Esto asegura que NO se pase texto basura al motivo de la visita.
+      // Guardamos los datos extraídos
       setOcrResult(extractedData); 
       
       setStatusText("¡Lectura completada!");
@@ -73,7 +72,7 @@ export default function ImportarFactura() {
       fecha: "",
       serie: "",
       dte: "",
-      // Nota: Tecnico y Motivo se dejan vacíos para ingreso manual
+      rawText: text 
     };
 
     const fullText = text.toUpperCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
@@ -106,7 +105,7 @@ export default function ImportarFactura() {
         try {
             const [dia, mes, anio] = dateMatch[1].split(/[\/.-]/);
             data.fecha = `${anio}-${mes}-${dia}`;
-        } catch (e) { /* Fallo silencioso */ }
+        } catch (e) { }
     }
 
     /* E. MONTO */
@@ -147,10 +146,10 @@ export default function ImportarFactura() {
         <div className="if-card">
           
           <div className="if-upload-zone">
+            {/* CORRECCIÓN: Eliminado capture="environment" para permitir elegir archivo */}
             <input 
                 type="file" 
                 accept="image/*" 
-                capture="environment" 
                 ref={fileInputRef}
                 onChange={handleImageChange}
                 style={{ display: 'none' }} 
@@ -158,10 +157,13 @@ export default function ImportarFactura() {
             
             {!image ? (
               <div className="if-placeholder">
-                <Camera size={48} className="if-icon-placeholder" />
-                <p>Toma una foto clara del recibo</p>
+                <div className="if-icon-circle">
+                   <Camera size={40} />
+                </div>
+                <h3>Sube una foto</h3>
+                <p>Toma una foto clara del recibo o súbela de tu galería.</p>
                 <button className="if-btn-select" onClick={() => fileInputRef.current.click()}>
-                   <Upload size={18} /> Subir Foto
+                   <Upload size={18} /> Seleccionar Foto
                 </button>
               </div>
             ) : (
@@ -187,7 +189,7 @@ export default function ImportarFactura() {
 
           {image && !loading && !ocrResult && (
              <button className="if-btn-process" onClick={handleProcessImage}>
-               🔍 Escanear Datos
+               🔍 Escanear Datos Automáticamente
              </button>
           )}
 
@@ -200,10 +202,10 @@ export default function ImportarFactura() {
               
               <div className="if-detected-fields">
                  <div className="if-field-preview">
-                    <label>Serie ("erie"):</label> <span>{ocrResult.serie || "--"}</span>
+                    <label>Serie:</label> <span>{ocrResult.serie || "--"}</span>
                  </div>
                  <div className="if-field-preview">
-                    <label>DTE (Numero):</label> <span>{ocrResult.dte || "--"}</span>
+                    <label>DTE:</label> <span>{ocrResult.dte || "--"}</span>
                  </div>
                  <div className="if-field-preview highlight">
                     <label>Monto:</label> <span>Q {ocrResult.monto || "0.00"}</span>
@@ -211,7 +213,6 @@ export default function ImportarFactura() {
                  <div className="if-field-preview">
                     <label>NIT:</label> <span>{ocrResult.nit_emisor || "--"}</span>
                  </div>
-                 {/* Indicador visual de que estos campos son manuales */}
                  <div className="if-field-preview manual">
                     <label>Técnico/Visita:</label> <span>Manual</span>
                  </div>
