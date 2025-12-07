@@ -431,6 +431,395 @@
   justify-content: center;
   gap: 10px;
   transition: 0.3s;
+}/* ANIMACIONES */
+@keyframes scanLaser {
+  0% { top: 0; box-shadow: 0 0 10px rgba(0, 255, 200, 0.5); }
+  50% { top: 100%; box-shadow: 0 0 25px rgba(0, 255, 200, 0.9); }
+  100% { top: 0; box-shadow: 0 0 10px rgba(0, 255, 200, 0.5); }
+}
+
+@keyframes pulse-neon {
+  0% { box-shadow: 0 0 0 0 rgba(0, 255, 200, 0.4); }
+  70% { box-shadow: 0 0 0 15px rgba(0, 255, 200, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(0, 255, 200, 0); }
+}
+
+/* LAYOUT GENERAL */
+.if-section {
+  padding: 1rem;
+  min-height: calc(100vh - 60px);
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  box-sizing: border-box;
+}
+
+.if-container {
+  width: 100%;
+  max-width: 500px;
+}
+
+/* HEADER */
+.if-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.5rem;
+}
+
+.if-back-btn {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #ccc;
+  padding: 8px 14px;
+  border-radius: 10px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.9rem;
+  transition: 0.3s;
+}
+
+.if-back-btn:hover {
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+}
+
+.if-title {
+  color: white;
+  font-size: 1.2rem;
+  margin: 0;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+
+/* CARD PRINCIPAL */
+.if-card {
+  background: rgba(30, 35, 50, 0.6);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 20px;
+  padding: 1.5rem;
+  box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
+  overflow: hidden; /* Importante para el zoom */
+}
+
+/* ZONA DE UPLOAD */
+.if-upload-zone {
+  min-height: 300px; /* Más altura para ver bien tickets largos */
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 16px;
+  border: 2px dashed rgba(255, 255, 255, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+  transition: 0.3s;
+}
+
+.if-placeholder {
+  text-align: center;
+  padding: 2rem;
+  cursor: pointer;
+}
+
+.if-icon-circle {
+  width: 80px;
+  height: 80px;
+  background: rgba(0, 255, 200, 0.05);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 1rem auto;
+  color: var(--neon-cyan);
+  border: 1px solid rgba(0, 255, 200, 0.2);
+}
+
+.if-icon-circle.pulse {
+  animation: pulse-neon 2s infinite;
+}
+
+.if-placeholder h3 { color: white; margin: 0 0 5px 0; }
+.if-placeholder p { color: #888; font-size: 0.85rem; margin-bottom: 1.5rem; }
+
+.if-btn-select {
+  background: var(--neon-cyan);
+  color: #000;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 auto;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+/* PREVIEW & SCANNER */
+.if-preview-container {
+  width: 100%;
+  height: 300px; /* Altura fija para el viewport */
+  position: relative;
+  background: #000;
+  overflow: hidden; /* CLAVE: Oculta lo que se sale al hacer zoom */
+}
+
+/* Wrapper que se mueve y escala */
+.img-wrapper {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* El transform se aplica inline desde React */
+}
+
+.if-image-preview {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  user-select: none;
+  pointer-events: none; /* Deja que el wrapper reciba los clicks */
+}
+
+/* ESCANER LASER */
+.scanner-line {
+  position: absolute;
+  width: 100%;
+  height: 2px;
+  background: var(--neon-cyan);
+  left: 0;
+  top: 0;
+  animation: scanLaser 2s infinite linear;
+  box-shadow: 0 0 10px var(--neon-cyan);
+  z-index: 10;
+  pointer-events: none;
+}
+
+/* CONTROLES ZOOM */
+.zoom-controls {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(4px);
+  padding: 4px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  z-index: 20;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.zoom-btn {
+  background: rgba(255, 255, 255, 0.1);
+  border: none;
+  color: white;
+  width: 30px;
+  height: 30px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.zoom-btn:hover { background: var(--neon-cyan); color: black; }
+
+.zoom-level {
+  color: white;
+  font-size: 0.8rem;
+  font-weight: bold;
+  min-width: 35px;
+  text-align: center;
+}
+
+/* BADGES Y BOTONES FLOTANTES */
+.processed-badge {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  background: rgba(0, 255, 200, 0.2);
+  color: var(--neon-cyan);
+  font-size: 0.75rem;
+  padding: 4px 8px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  border: 1px solid rgba(0, 255, 200, 0.3);
+  backdrop-filter: blur(4px);
+  z-index: 20;
+  pointer-events: none;
+}
+
+.if-btn-change {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  background: rgba(0, 0, 0, 0.8);
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-size: 0.8rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  z-index: 20;
+}
+
+.drag-hint {
+  position: absolute;
+  bottom: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0, 0, 0, 0.6);
+  color: white;
+  padding: 5px 12px;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  pointer-events: none;
+  z-index: 20;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* PROGRESS BAR */
+.if-progress-container { margin-top: 1.5rem; text-align: center; }
+.if-progress-bar {
+  height: 6px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 3px;
+  overflow: hidden;
+  margin-bottom: 10px;
+}
+.if-progress-fill {
+  height: 100%;
+  background: var(--neon-cyan);
+  transition: width 0.3s ease;
+  box-shadow: 0 0 10px var(--neon-cyan);
+}
+.if-status-text {
+  color: var(--neon-cyan);
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+/* RESULTADOS */
+.if-btn-process {
+  width: 100%;
+  margin-top: 1.5rem;
+  padding: 1rem;
+  background: linear-gradient(90deg, #3b82f6, #8b5cf6);
+  border: none;
+  border-radius: 12px;
+  color: white;
+  font-weight: 700;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: 0.3s;
+  box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
+}
+
+.if-results {
+  margin-top: 1.5rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  padding-top: 1.5rem;
+}
+
+.if-results-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 1rem;
+}
+
+.if-fields-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.if-input-group {
+  background: rgba(0, 0, 0, 0.2);
+  padding: 8px 12px;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+.if-input-group.full-width { grid-column: span 2; }
+.if-input-group.highlight {
+  border-color: rgba(0, 255, 200, 0.3);
+  background: rgba(0, 255, 200, 0.02);
+}
+
+.if-input-group label {
+  display: block;
+  font-size: 0.7rem;
+  color: #888;
+  margin-bottom: 2px;
+  text-transform: uppercase;
+}
+
+.input-wrapper { display: flex; align-items: center; }
+.input-wrapper input {
+  background: transparent;
+  border: none;
+  color: white;
+  width: 100%;
+  font-size: 0.95rem;
+  outline: none;
+}
+.input-monto {
+  font-size: 1.4rem !important;
+  color: var(--neon-cyan) !important;
+  font-weight: 700 !important;
+}
+
+.if-btn-continue {
+  width: 100%;
+  margin-top: 1.5rem;
+  padding: 1rem;
+  background: var(--neon-cyan);
+  color: #000;
+  border: none;
+  border-radius: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+.debug-details {
+  margin-top: 20px;
+  font-size: 0.7rem;
+  color: #666;
+  border-top: 1px solid #333;
+  padding-top: 10px;
+}
+.debug-details pre {
+  white-space: pre-wrap;
+  background: #000;
+  padding: 10px;
+  border-radius: 5px;
+  margin-top: 5px;
+  max-height: 150px;
+  overflow-y: auto;
 }
 
 .if-btn-continue:hover {
