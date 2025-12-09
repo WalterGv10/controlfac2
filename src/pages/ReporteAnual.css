@@ -1,16 +1,41 @@
 /* =========================================
-   CONTENEDOR PRINCIPAL
+   VARIABLES & TEMA
+========================================= */
+:root {
+  --ra-primary: #00ffc8;       /* Turquesa Neón */
+  --ra-primary-glow: rgba(0, 255, 200, 0.4);
+  --ra-bg-dark: #121212;
+  --ra-bg-card: #1c1c1c;
+  --ra-text-primary: #ffffff;
+  --ra-text-secondary: #aaaaaa;
+  --ra-border: rgba(255, 255, 255, 0.1);
+}
+
+/* =========================================
+   LAYOUT PRINCIPAL
 ========================================= */
 .ra-section {
-  padding: 1rem;
-  min-height: 100vh;
+  padding: 2rem 1rem;
+  min-height: calc(100vh - 60px);
   display: flex;
   justify-content: center;
+  background: var(--ra-bg-dark);
+  color: var(--ra-text-primary);
+  box-sizing: border-box;
+  animation: fadeIn 0.4s ease-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 
 .ra-container {
   width: 100%;
   max-width: 900px;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
 }
 
 /* =========================================
@@ -20,98 +45,125 @@
   display: flex;
   align-items: center;
   gap: 1rem;
-  margin-bottom: 2rem;
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
 }
 
 .ra-back-btn {
-  background: rgba(255, 255, 255, 0.1);
-  border: none;
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.2);
   color: white;
   padding: 8px;
   border-radius: 8px;
   cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: 0.2s;
+}
+
+.ra-back-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: white;
 }
 
 .ra-title-box h2 {
   margin: 0;
-  font-size: 1.5rem;
-  color: white;
+  font-size: 1.8rem;
+  font-weight: 700;
+  text-shadow: 0 0 10px var(--ra-primary-glow);
 }
 
+/* Selector de Año */
 .ra-year-selector {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 15px;
   margin-top: 5px;
+  background: rgba(0,0,0,0.3);
+  padding: 5px 15px;
+  border-radius: 20px;
+  border: 1px solid var(--ra-border);
 }
 
 .year-btn {
-  background: rgba(0, 255, 200, 0.1);
-  border: 1px solid rgba(0, 255, 200, 0.3);
-  color: #00ffc8;
-  border-radius: 4px;
+  background: transparent;
+  border: none;
+  color: var(--ra-text-secondary);
   cursor: pointer;
-  width: 24px;
-  height: 24px;
+  padding: 5px;
   display: flex;
   align-items: center;
-  justify-content: center;
+  transition: 0.2s;
+}
+
+.year-btn:hover {
+  color: white;
+  transform: scale(1.2);
 }
 
 .year-display {
   font-size: 1.2rem;
   font-weight: bold;
-  color: white;
+  color: var(--ra-primary);
+  font-variant-numeric: tabular-nums;
 }
 
 /* =========================================
-   TARJETAS DE RESUMEN (STATS)
+   GRID DE ESTADÍSTICAS (KPIs)
 ========================================= */
 .ra-stats-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 1rem;
-  margin-bottom: 2rem;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.5rem;
 }
 
-.ra-stat-card {
-  background: rgba(20, 20, 20, 0.6);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px); /* Soporte Safari */
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  padding: 1.2rem;
-  border-radius: 1rem;
+.stat-card {
+  background: var(--ra-bg-card);
+  border: 1px solid var(--ra-border);
+  border-radius: 16px;
+  padding: 1.5rem;
   display: flex;
   align-items: center;
   gap: 1rem;
+  transition: 0.3s;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.2);
 }
 
-/* Variantes de color */
-.ra-stat-card.primary {
-  border-color: #00ffc8;
-  background: rgba(0, 255, 200, 0.05);
+.stat-card:hover {
+  transform: translateY(-5px);
+  border-color: var(--ra-primary);
+  box-shadow: 0 10px 30px rgba(0, 255, 200, 0.1);
 }
 
-.ra-stat-card.success {
-  border-color: #4ade80;
-  background: rgba(74, 222, 128, 0.05);
+.stat-icon {
+  width: 54px;
+  height: 54px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.05);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  color: white;
 }
 
-.ra-stat-card.info {
-  border-color: #60a5fa;
-  background: rgba(96, 165, 250, 0.05);
+/* Colores específicos para iconos */
+.stat-icon.yellow { color: #facc15; background: rgba(250, 204, 21, 0.1); }
+.stat-icon.green { color: #4ade80; background: rgba(74, 222, 128, 0.1); }
+.stat-icon.blue { color: #60a5fa; background: rgba(96, 165, 250, 0.1); }
+
+.stat-info {
+  display: flex;
+  flex-direction: column;
 }
 
-/* Iconos dentro de las tarjetas */
-.primary .stat-icon { color: #00ffc8; }
-.success .stat-icon { color: #4ade80; }
-.info .stat-icon { color: #60a5fa; }
-
-/* Textos dentro de las tarjetas */
 .stat-label {
   font-size: 0.8rem;
-  color: #aaa;
+  color: var(--ra-text-secondary);
   text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 4px;
 }
 
 .stat-value {
@@ -120,36 +172,52 @@
   color: white;
 }
 
-.stat-subvalue {
-  font-size: 0.85rem;
-  color: #4ade80;
-  display: block;
-}
-
-.capitalize {
-  text-transform: capitalize;
+.stat-sub {
+  font-size: 0.8rem;
+  color: #666;
+  margin-top: 2px;
 }
 
 /* =========================================
-   GRÁFICA DE BARRAS
+   GRÁFICA DE BARRAS MENSUAL
 ========================================= */
 .ra-chart-container {
-  background: rgba(20, 20, 20, 0.6);
-  border-radius: 1rem;
-  padding: 1.5rem;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: var(--ra-bg-card);
+  border-radius: 16px;
+  padding: 2rem;
+  border: 1px solid var(--ra-border);
+  position: relative;
+  overflow: hidden;
 }
 
 .ra-subtitle {
   margin: 0 0 1.5rem 0;
-  color: #00ffc8;
+  color: var(--ra-primary);
   font-size: 1.1rem;
+  font-weight: 600;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  padding-bottom: 10px;
+  display: inline-block;
+}
+
+.ra-loading {
+  text-align: center;
+  padding: 3rem;
+  color: var(--ra-text-secondary);
+  font-style: italic;
+  animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+  0% { opacity: 0.5; }
+  50% { opacity: 1; }
+  100% { opacity: 0.5; }
 }
 
 .ra-chart-grid {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 1.2rem;
 }
 
 .ra-month-row {
@@ -159,62 +227,88 @@
 }
 
 .month-label {
-  width: 80px;
-  color: #ddd;
+  width: 90px;
+  color: var(--ra-text-secondary);
   font-size: 0.9rem;
+  text-transform: capitalize;
+  font-weight: 500;
 }
 
 .month-bar-container {
-  flex-grow: 1;
-  height: 12px;
+  flex: 1;
+  height: 10px;
   background: rgba(255, 255, 255, 0.05);
-  border-radius: 6px;
+  border-radius: 10px;
   overflow: hidden;
+  position: relative;
 }
 
 .month-bar-fill {
   height: 100%;
-  background: linear-gradient(90deg, #00ffc8, #00d4ff);
-  border-radius: 6px;
-  transition: width 1s ease-out;
+  background: linear-gradient(90deg, var(--ra-primary), #00b890);
+  border-radius: 10px;
+  transition: width 1s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  min-width: 4px;
+}
+
+/* Efecto de brillo en la punta de la barra */
+.month-bar-fill::after {
+  content: '';
+  position: absolute;
+  top: 0; right: 0; bottom: 0; width: 6px;
+  background: rgba(255, 255, 255, 0.6);
+  box-shadow: 0 0 8px white;
+  border-radius: 10px;
+  opacity: 0.8;
 }
 
 .month-values {
-  width: 100px;
+  width: 140px;
   text-align: right;
-  font-size: 0.9rem;
   display: flex;
   flex-direction: column;
+  align-items: flex-end;
+  line-height: 1.2;
 }
 
 .month-total {
-  color: white;
   font-weight: bold;
+  color: white;
+  font-size: 0.95rem;
 }
 
 .month-count {
   font-size: 0.75rem;
-  color: #666;
-}
-
-.ra-loading {
-  text-align: center;
-  color: #888;
-  padding: 2rem;
+  color: #555;
 }
 
 /* =========================================
    RESPONSIVE
 ========================================= */
-@media (max-width: 600px) {
-  .ra-month-row {
-    gap: 0.5rem;
+@media (max-width: 768px) {
+  .ra-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .ra-stats-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .ra-chart-container {
+    padding: 1.2rem;
   }
   
   .month-label {
-    width: 30px;
+    width: 35px; /* Acortar nombre del mes en móvil */
     overflow: hidden;
-    text-overflow: ellipsis;
     white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+  
+  .month-values {
+    width: auto;
+    min-width: 80px;
   }
 }

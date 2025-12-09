@@ -137,10 +137,10 @@ export default function ImportarFactura() {
   };
 
   // -------------------------------------------------------------------------
-  // 4. LÓGICA DE EXTRACCIÓN (CORREGIDA)
+  // 4. LÓGICA DE EXTRACCIÓN
   // -------------------------------------------------------------------------
   const parseOCR = (text) => {
-    // 1. Limpieza MENOS agresiva (No convertimos O -> 0 globalmente todavía)
+    // 1. Limpieza MENOS agresiva
     const fullText = text
         .toUpperCase()
         .normalize("NFD").replace(/[\u0300-\u036f]/g, "") // Sin tildes
@@ -152,30 +152,20 @@ export default function ImportarFactura() {
       monto: "",
       nit_emisor: "",
       fecha: "",
-      motivo_visita: "",
+      motivo_visita: "", // SE ASEGURA QUE ESTÉ VACÍO
       rawText: text
     };
 
     // ===============================================
-    // A. DTE / NUMERO (PRIORIDAD ALTA)
+    // A. DTE / NUMERO
     // ===============================================
-    // Regex que cubre:
-    // "NUMERO: 3291"
-    // "NUMER0: 3291" (Error OCR común)
-    // "No.: 3291"
-    // "N° 3291"
-    
-    // \s* permite espacios.
-    // [\w\s]* permite errores tipográficos leves dentro de la palabra "NUMERO"
     const numeroExplicitRegex = /(?:NUMERO|NUMER0|NUM|NO\.|NO:|N°|#|DTE)\s*[:.]?\s*([0-9]+)/i;
     const explicitMatch = fullText.match(numeroExplicitRegex);
 
     if (explicitMatch && explicitMatch[1]) {
-        // Encontramos el número explícito
         data.dte = explicitMatch[1];
     } 
     else {
-        // Fallback: Buscar "Ticket", "Doc", etc.
         const dteRegex = /(?:TICKET|DOCTO|DOC|FACTURA)\s*[:.;-]?\s*([0-9-]{1,15})(?!\d)/i;
         const dteMatch = fullText.match(dteRegex);
 
@@ -185,14 +175,12 @@ export default function ImportarFactura() {
     }
 
     // ===============================================
-    // B. SERIE (Debe tener letras)
+    // B. SERIE
     // ===============================================
-    // Buscamos SERIE, ERIE, SER, etc.
     const serieRegex = /(?:SERIE|ERIE|SER|SR|S\.|^S\s)\s*[:.;-]?\s*([A-Z0-9-]{1,10})/i;
     const serieMatch = fullText.match(serieRegex);
 
     if (serieMatch && serieMatch[1]) {
-       // Validamos que tenga al menos una letra (A-Z) para diferenciar de montos
        if (/[A-Z]/.test(serieMatch[1])) {
           data.serie = serieMatch[1].replace(/[^A-Z0-9-]/g, '');
        }
@@ -202,15 +190,12 @@ export default function ImportarFactura() {
     // C. ESTRATEGIA DE RESCATE (Huérfanos)
     // ===============================================
     if (!data.serie || !data.dte) {
-        // Patrón visual: Letras solas + Espacio + Números solos
         const orphanRegex = /(?:^|\n|\s)([A-Z]{1,5})\s+([0-9]{1,10})(?:\s|$|\n)/;
         const orphanMatch = fullText.match(orphanRegex);
         
         if (orphanMatch) {
             const potentialSerie = orphanMatch[1];
             const potentialDte = orphanMatch[2];
-            
-            // Palabras prohibidas que parecen series
             const blacklist = ["TOTAL", "NIT", "PAGO", "EFECTIVO", "CAMBIO", "VISA", "GTQ", "SUB"];
             
             if (!blacklist.includes(potentialSerie)) {
@@ -234,25 +219,23 @@ export default function ImportarFactura() {
     if (dateMatch) data.fecha = `${dateMatch[3]}-${dateMatch[2]}-${dateMatch[1]}`;
 
     // MONTO
-    // Primero intentamos buscar "TOTAL"
     const totalRegex = /(?:TOTAL|PAGAR|VENTA)\s*(?:Q|GTQ)?\s*[:.]?\s*([0-9,]+\.[0-9]{2})/i;
     const totalMatch = fullText.match(totalRegex);
     
     if (totalMatch) {
         data.monto = totalMatch[1].replace(/,/g, '');
     } else {
-        // Si falla, buscamos precios sueltos y tomamos el mayor lógico
         const priceRegex = /(?:Q|GTQ)?\s*([0-9,]+\.[0-9]{2})/g;
         const matches = [...fullText.matchAll(priceRegex)];
         if (matches.length > 0) {
             const prices = matches.map(m => parseFloat(m[1].replace(/,/g, '')));
-            // Filtramos años (2024, 2025) que se confunden con precios
             const validPrices = prices.filter(p => p < 50000 && p !== 2024 && p !== 2025);
             const max = Math.max(...validPrices);
             if (max > 0 && isFinite(max)) data.monto = max.toFixed(2);
         }
     }
 
+    // NOTA: No asignamos nada a data.motivo_visita, se mantiene vacío.
     return data;
   };
 

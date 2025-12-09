@@ -10,7 +10,9 @@ import {
   RotateCcw, 
   Eye, 
   Edit, 
-  Trash2 
+  Trash2,
+  Ticket,     // 👈 Nuevo Icono para Recibos
+  FileText    // 👈 Nuevo Icono para Facturas
 } from "lucide-react";
 import "./MisFacturas.css";
 
@@ -36,6 +38,18 @@ export default function MisFacturas() {
     setLoading(false);
   };
 
+  // ✅ HELPER: Formatear Fecha (YYYY-MM-DD -> DD/MM/AAAA)
+  const formatDate = (dateStr) => {
+    if (!dateStr) return "--/--/----";
+    const [year, month, day] = dateStr.split('-');
+    return `${day}/${month}/${year}`;
+  };
+
+  // ✅ HELPER: Identificar si es Recibo Municipal
+  const isMunicipal = (fac) => {
+    return fac.dte === 'TICKET' || fac.tipo === 'PARQUEO' || fac.tipo === 'PEAJE';
+  };
+
   // --- LÓGICA DE ESTADOS VISUALES ---
   const getEstadoVisual = (factura) => {
     if (factura.estado === "Pagada") {
@@ -53,7 +67,7 @@ export default function MisFacturas() {
     }
   };
 
-  // --- ACCIÓN 1: TOGGLE PAGO (Pagada <-> Pendiente) ---
+  // --- ACCIONES ---
   const toggleEstado = async (id, estadoActual) => {
     const nuevoEstado = estadoActual === "Pagada" ? "Pendiente" : "Pagada";
     const mensaje = nuevoEstado === "Pagada" 
@@ -62,31 +76,19 @@ export default function MisFacturas() {
 
     if (!window.confirm(mensaje)) return;
 
-    const { error } = await supabase
-      .from("facturas")
-      .update({ estado: nuevoEstado })
-      .eq("id", id);
-
+    const { error } = await supabase.from("facturas").update({ estado: nuevoEstado }).eq("id", id);
     if (error) alert("Error al actualizar");
     else fetchFacturas();
   };
 
-  // --- ACCIÓN 2: BORRAR ---
   const eliminarFactura = async (id) => {
     if (!window.confirm("⚠️ ¿Estás seguro de BORRAR esta factura permanentemente?")) return;
-
-    const { error } = await supabase
-      .from("facturas")
-      .delete()
-      .eq("id", id);
-
+    const { error } = await supabase.from("facturas").delete().eq("id", id);
     if (error) alert("Error al borrar: " + error.message);
     else fetchFacturas();
   };
 
-  // --- ACCIÓN 3: EDITAR (CAMBIO PRINCIPAL) ---
   const editarFactura = (factura) => {
-    // Navegamos al DETALLE pasando un estado 'startEditing' para que se active el modo edición allá
     navigate(`/factura/${factura.id}`, { state: { startEditing: true } });
   };
 
@@ -98,7 +100,7 @@ export default function MisFacturas() {
           <button onClick={() => navigate("/facturas")} className="mf-back-btn">
             <ArrowLeft size={20} /> Volver
           </button>
-          <h2 className="mf-title">Reporte de Facturas</h2>
+          <h2 className="mf-title">Historial de Gastos</h2>
         </div>
 
         <div className="mf-grid">
@@ -109,13 +111,28 @@ export default function MisFacturas() {
           ) : (
             facturas.map((fac) => {
               const estado = getEstadoVisual(fac);
+              const esTicket = isMunicipal(fac); // Detectamos tipo
 
               return (
                 <div key={fac.id} className={`mf-card border-${estado.color}`}>
                   
                   {/* CABECERA TARJETA */}
                   <div className="mf-card-top">
-                    <span className="mf-serie">#{fac.numero_factura || fac.serie}</span>
+                    {/* 🔹 Identificador Visual de Tipo */}
+                    <span className="mf-serie" style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                      {esTicket ? (
+                        <>
+                           <Ticket size={16} color="#fb923c" /> 
+                           <span style={{ color: '#fb923c' }}>Recibo #{fac.serie}</span>
+                        </>
+                      ) : (
+                        <>
+                           <FileText size={16} color="#60a5fa" /> 
+                           <span style={{ color: '#60a5fa' }}>Factura #{fac.serie}</span>
+                        </>
+                      )}
+                    </span>
+                    
                     <span className={`mf-badge bg-${estado.color}`}>
                       {estado.icon} {estado.label}
                     </span>
@@ -124,44 +141,32 @@ export default function MisFacturas() {
                   {/* CUERPO TARJETA */}
                   <div className="mf-card-body">
                     <h3 className="mf-monto">Q {Number(fac.monto).toFixed(2)}</h3>
-                    <p className="mf-cliente">{fac.cliente || fac.punto_servicio}</p>
+                    <p className="mf-cliente">
+                        {fac.cliente || fac.punto_servicio}
+                        {fac.nit_emisor && <span style={{opacity:0.6, fontSize:'0.8em', display:'block'}}>NIT: {fac.nit_emisor}</span>}
+                    </p>
+                    
                     <p className="mf-meta">
-                      📅 {fac.fecha} • 👨‍🔧 {fac.tecnico}
+                      {/* ✅ Fecha Formateada */}
+                      📅 {formatDate(fac.fecha)} • 👨‍🔧 {fac.tecnico}
                     </p>
                     <p className="mf-desc">{fac.descripcion || fac.motivo_visita}</p>
                   </div>
 
                   {/* PIE DE TARJETA: ACCIONES */}
                   <div className="mf-card-footer">
-                    
-                    {/* GRUPO 1: HERRAMIENTAS (Ver, Editar, Borrar) */}
                     <div className="mf-tools">
-                      <button 
-                        title="Ver detalles" 
-                        className="mf-icon-btn view"
-                        onClick={() => navigate(`/factura/${fac.id}`)}
-                      >
+                      <button title="Ver detalles" className="mf-icon-btn view" onClick={() => navigate(`/factura/${fac.id}`)}>
                         <Eye size={18} />
                       </button>
-                      
-                      <button 
-                        title="Editar" 
-                        className="mf-icon-btn edit"
-                        onClick={() => editarFactura(fac)}
-                      >
+                      <button title="Editar" className="mf-icon-btn edit" onClick={() => editarFactura(fac)}>
                         <Edit size={18} />
                       </button>
-                      
-                      <button 
-                        title="Borrar" 
-                        className="mf-icon-btn delete"
-                        onClick={() => eliminarFactura(fac.id)}
-                      >
+                      <button title="Borrar" className="mf-icon-btn delete" onClick={() => eliminarFactura(fac.id)}>
                         <Trash2 size={18} />
                       </button>
                     </div>
 
-                    {/* GRUPO 2: BOTÓN DE ESTADO PRINCIPAL */}
                     <div className="mf-main-action">
                       {fac.estado !== "Pagada" ? (
                         <button className="mf-btn-pay" onClick={() => toggleEstado(fac.id, fac.estado)}>
@@ -173,7 +178,6 @@ export default function MisFacturas() {
                         </button>
                       )}
                     </div>
-
                   </div>
                 </div>
               );

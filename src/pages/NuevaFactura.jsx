@@ -19,7 +19,7 @@ export default function NuevaFactura() {
     dte: "",
     punto_servicio: "",
     tecnico: "",
-    grupo: "", // ✅ Nuevo: Se llenará auto desde Perfil
+    grupo: "", // Se llenará auto desde Perfil
     motivo_visita: "",
     monto: "",                    
     estado: "Pendiente",
@@ -78,10 +78,10 @@ export default function NuevaFactura() {
          fecha: ocr.fecha || prev.fecha,
          dte: ocr.dte || prev.dte,
          serie: ocr.serie || prev.serie,
-         // Agregamos el texto crudo al motivo para referencia
-         motivo_visita: ocr.rawText 
-            ? `[OCR Detectado]\nRevisar datos.\n\nTexto original:\n${ocr.rawText.substring(0, 100)}...` 
-            : prev.motivo_visita
+         
+         // 🧹 LIMPIEZA TOTAL: Forzamos cadena vacía explícitamente.
+         // Esto elimina cualquier texto tipo "[OCR Detectado]..."
+         motivo_visita: "" 
        }));
 
        // Mostrar notificación visual
@@ -189,7 +189,7 @@ export default function NuevaFactura() {
 
     Object.keys(formData).forEach((key) => {
       newTouched[key] = true;
-      // Validar campos obligatorios básicos
+      // Validar campos obligatorios básicos (DTE y SERIE pueden ser opcionales en borradores, ajusta si es necesario)
       if (!formData[key] && key !== 'serie' && key !== 'dte') { 
         newErrors[key] = "Campo requerido";
       } else {
