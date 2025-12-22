@@ -1,5 +1,6 @@
 import React from "react";
 import { X, LayoutGrid, Cpu, Smartphone, Globe, Shield, Rocket, CheckCircle, Info } from "lucide-react";
+import MatrixRain from "./MatrixRain";
 
 export default function LoginInfoPortal({ isOpen, onClose, view }) {
     if (!isOpen) return null;
@@ -80,7 +81,8 @@ export default function LoginInfoPortal({ isOpen, onClose, view }) {
 
     return (
         <div className="info-portal-overlay" onClick={onClose}>
-            <div className="info-portal-modal" onClick={(e) => e.stopPropagation()}>
+            <div className="info-portal-modal matrix-theme" onClick={(e) => e.stopPropagation()}>
+                <MatrixRain />
                 <button className="close-btn" onClick={onClose}>
                     <X size={24} />
                 </button>

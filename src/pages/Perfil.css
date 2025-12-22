@@ -1,19 +1,20 @@
-/* ====== VARIABLES DE COLOR ====== */
+/* ====== VARIABLES DE COLOR (Nueva Factura Style) ====== */
 :root {
   --bg-primary: #0a0f1f;
-  --bg-card: rgba(20, 25, 40, 0.75);
-  --bg-card-hover: rgba(30, 35, 50, 0.85);
-  --accent-cyan: #00ffff;
-  --accent-cyan-dim: rgba(0, 255, 255, 0.3);
+  --bg-card: rgba(20, 20, 20, 0.75);
+  --bg-card-hover: rgba(30, 30, 30, 0.85);
+  --accent-cyan: #00ffc8;
+  /* Neon Turquesa de Nueva Factura */
+  --accent-cyan-dim: rgba(0, 255, 200, 0.3);
   --accent-purple: #b967ff;
   --accent-purple-dim: rgba(185, 103, 255, 0.3);
   --text-primary: #ffffff;
-  --text-secondary: #cfd3ff;
+  --text-secondary: #d2fff7;
   --text-muted: #a9b4ff;
-  --border-color: rgba(0, 255, 255, 0.3);
+  --border-color: rgba(0, 255, 200, 0.45);
   --shadow-sm: 0 4px 12px rgba(0, 0, 0, 0.25);
   --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.35);
-  --shadow-lg: 0 12px 40px rgba(0, 0, 0, 0.45);
+  --shadow-lg: 0 0 20px rgba(0, 255, 200, 0.3);
 }
 
 /* ====== RESET Y BASE ====== */
@@ -47,13 +48,14 @@
 }
 
 @keyframes slideUp {
-  from { 
-    opacity: 0; 
-    transform: translateY(20px); 
+  from {
+    opacity: 0;
+    transform: translateY(20px);
   }
-  to { 
-    opacity: 1; 
-    transform: translateY(0); 
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }
 
@@ -214,16 +216,18 @@
 }
 
 @keyframes popIn {
-  0% { 
-    opacity: 0; 
-    transform: scale(0.8); 
+  0% {
+    opacity: 0;
+    transform: scale(0.8);
   }
+
   60% {
     transform: scale(1.05);
   }
-  100% { 
-    opacity: 1; 
-    transform: scale(1); 
+
+  100% {
+    opacity: 1;
+    transform: scale(1);
   }
 }
 
@@ -266,7 +270,9 @@
   transform: translateY(-6px) scale(1.02);
   border-color: var(--accent-cyan);
   background: var(--bg-card-hover);
-  box-shadow: 0 12px 28px rgba(0, 255, 255, 0.2);
+  box-shadow:
+    0 0 10px rgba(0, 255, 200, 0.6),
+    0 0 20px rgba(0, 255, 200, 0.2);
 }
 
 .material-item:hover::before {
@@ -342,7 +348,7 @@
   .material-menu-grid {
     grid-template-columns: repeat(2, 1fr);
   }
-  
+
   .material-item:first-child {
     grid-column: 1 / -1;
   }
@@ -453,30 +459,126 @@
   }
 }
 
-/* ====== MÓVILES PEQUEÑOS ====== */
+/* ====== MÓVILES PEQUEÑOS (Optimización 360x740) ====== */
 @media (max-width: 380px) {
-  .material-menu-grid {
-    grid-template-columns: 1fr;
-    gap: 12px;
+  .material-bg {
+    padding: 12px 10px;
   }
 
-  .material-item:not(:first-child) {
+  .material-wrapper,
+  .perfil-wrapper {
     padding: 18px 14px;
+    border-radius: 16px;
+  }
+
+  .material-topbar {
+    margin-bottom: 20px;
+    padding-bottom: 12px;
+  }
+
+  .material-topbar h1 {
+    font-size: 1.2rem;
+  }
+
+  .material-logout {
+    padding: 7px 10px;
+    font-size: 0.8rem;
+    gap: 5px;
+  }
+
+  .material-logout span {
+    display: none;
+    /* Ocultamos texto "Salir" para ganar espacio */
   }
 
   .material-user {
-    flex-direction: column;
-    text-align: center;
+    flex-direction: row;
+    /* Volvemos a horizontal para ahorrar espacio vertical */
+    text-align: left;
+    padding: 12px;
+    gap: 12px;
+    margin-bottom: 20px;
   }
 
   .material-avatar {
-    width: 65px;
-    height: 65px;
+    width: 50px;
+    height: 50px;
+    font-size: 24px;
+    border-width: 2px;
+  }
+
+  .material-user-text h2 {
+    font-size: 1.05rem;
+    margin-bottom: 2px;
+  }
+
+  .material-user-text p {
+    font-size: 0.75rem;
+  }
+
+  .material-section {
+    margin-bottom: 24px;
+  }
+
+  .material-label {
+    font-size: 0.85rem;
+    margin-bottom: 6px;
+  }
+
+  .material-select {
+    padding: 10px 12px;
+    font-size: 0.9rem;
+    background-position: right 10px center;
+  }
+
+  .material-menu-grid {
+    grid-template-columns: repeat(2, 1fr);
+    /* 2 columnas para Facturas y Reportes */
+    gap: 10px;
+  }
+
+  .material-item:first-child {
+    grid-column: 1 / -1;
+    padding: 20px 16px;
+  }
+
+  .material-item:first-child .material-icon {
+    margin-bottom: 10px;
+  }
+
+  .material-item:first-child .material-icon svg {
+    width: 28px;
+    height: 28px;
   }
 
   .material-item:first-child::after {
-    font-size: 0.6rem;
-    padding: 3px 8px;
+    font-size: 0.55rem;
+    padding: 2px 6px;
+    top: 8px;
+    right: 8px;
+  }
+
+  .material-item:not(:first-child) {
+    padding: 14px 10px;
+  }
+
+  .material-item .material-icon {
+    margin-bottom: 8px;
+  }
+
+  .material-item .material-icon svg {
+    width: 22px;
+    height: 22px;
+  }
+
+  .material-title {
+    font-size: 0.85rem;
+    margin-bottom: 4px;
+  }
+
+  .material-desc {
+    display: none;
+    /* Ocultamos descripciones en las tarjetas pequeñas para limpiar visualmente */
   }
 }
 

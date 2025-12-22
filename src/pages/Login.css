@@ -389,3 +389,119 @@
     margin-bottom: 12px;
   }
 }
+
+/* 🟢 MATRIX REVOLUTION THEME 🟢 */
+.matrix-theme {
+  background: #000 !important;
+  border: 1px solid #00ff41 !important;
+  box-shadow: 0 0 20px rgba(0, 255, 65, 0.2) !important;
+  font-family: 'Courier New', Courier, monospace !important;
+  color: #00ff41 !important;
+  position: relative;
+  overflow: hidden;
+}
+
+.matrix-theme .info-header h2 {
+  color: #00ff41 !important;
+  text-shadow: 0 0 10px #00ff41;
+  letter-spacing: 2px;
+  font-weight: bold;
+}
+
+.matrix-theme .info-header p {
+  color: #00ff41 !important;
+  opacity: 0.8;
+}
+
+.matrix-theme .info-section h3 {
+  color: #00ff41 !important;
+  border-bottom: 1px solid rgba(0, 255, 65, 0.3);
+  padding-bottom: 4px;
+}
+
+.matrix-theme .info-list li, 
+.matrix-theme .spec-list li {
+  color: #00ff41 !important;
+  border-bottom-color: rgba(0, 255, 65, 0.1) !important;
+}
+
+.matrix-theme .icon-main,
+.matrix-theme .icon-small {
+  color: #00ff41 !important;
+  filter: drop-shadow(0 0 5px #00ff41);
+}
+
+.matrix-theme .warning-note {
+  background: rgba(0, 255, 65, 0.05) !important;
+  border: 1px solid rgba(0, 255, 65, 0.2) !important;
+}
+
+.matrix-theme .warning-note p {
+  color: #00ff41 !important;
+}
+
+.matrix-theme .info-portal-footer {
+  border-top-color: rgba(0, 255, 65, 0.2) !important;
+}
+
+.matrix-theme .info-portal-footer p {
+  color: #00ff41 !important;
+  opacity: 0.6;
+}
+
+.matrix-theme .close-btn {
+  background: rgba(0, 255, 65, 0.1) !important;
+  color: #00ff41 !important;
+  border: 1px solid rgba(0, 255, 65, 0.3) !important;
+}
+
+.matrix-theme .close-btn:hover {
+  background: rgba(0, 255, 65, 0.2) !important;
+  box-shadow: 0 0 10px #00ff41;
+}
+
+/* Scanline effect */
+.matrix-theme::before {
+  content: " ";
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+  z-index: 2;
+  background-size: 100% 4px, 3px 100%;
+  pointer-events: none;
+}
+
+/* Flicker effect */
+@keyframes matrix-flicker {
+  0% { opacity: 0.97611; }
+  5% { opacity: 0.95758; }
+  10% { opacity: 0.89922; }
+  15% { opacity: 0.92569; }
+  20% { opacity: 0.96345; }
+  25% { opacity: 0.94589; }
+  30% { opacity: 0.91234; }
+  35% { opacity: 0.88765; }
+  40% { opacity: 0.93456; }
+  45% { opacity: 0.95678; }
+  50% { opacity: 0.98765; }
+  55% { opacity: 0.89765; }
+  60% { opacity: 0.94321; }
+  65% { opacity: 0.92123; }
+  70% { opacity: 0.95678; }
+  75% { opacity: 0.91234; }
+  80% { opacity: 0.98765; }
+  85% { opacity: 0.92345; }
+  90% { opacity: 0.95678; }
+  95% { opacity: 0.91234; }
+  100% { opacity: 0.98765; }
+}
+
+.matrix-theme .info-scroll-container {
+  animation: matrix-flicker 0.15s infinite;
+  z-index: 3;
+  position: relative;
+}

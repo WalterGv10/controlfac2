@@ -76,31 +76,6 @@ export default function Perfil() {
           </div>
         </section>
 
-        {/* Grupo */}
-        <section className="material-section">
-          <label className="material-label">
-            <FaBuilding size={16} />
-            <span>División Tecnológica</span>
-          </label>
-
-          <select
-            value={selectedGroup}
-            onChange={(e) => updateGroup(e.target.value)}
-            className="material-select"
-          >
-            <option value="" disabled>
-              Selecciona un grupo
-            </option>
-            {GRUPOS_TECNOLOGICOS.map((g) => (
-              <option key={g} value={g}>
-                {g}
-              </option>
-            ))}
-          </select>
-
-          {saved && <small className="material-saved">✓ Guardado</small>}
-        </section>
-
         {/* Menu */}
         <nav className="material-menu-grid">
 

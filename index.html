@@ -1,60 +1,60 @@
 <!DOCTYPE html>
 <html lang="es">
-  <head>
-    <!-- 
+
+<head>
+  <!-- 
       🧠 METADATOS BÁSICOS DEL DOCUMENTO
       El DOCTYPE le dice al navegador que use la versión moderna de HTML5.
       El atributo "lang='es'" indica que el contenido está en español.
     -->
-    <meta charset="UTF-8" />
+  <meta charset="UTF-8" />
 
-    <!-- 
+  <!-- 
       📱 RESPONSIVE DESIGN
       "viewport" define cómo el sitio se adapta al tamaño del dispositivo (móvil, tablet, PC).
       Sin esta línea, en móviles el sitio se vería muy pequeño.
     -->
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <!-- 
+  <!-- 
       🧭 SEO Y APARIENCIA
       El "title" aparece en la pestaña del navegador.
       "meta description" ayuda a los motores de búsqueda como Google a entender de qué trata tu sitio.
     -->
-    <title>CONTROLFAC — Sistema de Facturación para Técnicos</title>
-    <meta name="description" content="Sistema web para registrar, consultar y generar reportes de facturas de parqueos. Desarrollado por Walter García.">
+  <title>CONTROLFAC — Sistema de Facturación para Técnicos</title>
+  <meta name="description"
+    content="Sistema web para registrar, consultar y generar reportes de facturas de parqueos. Desarrollado por Walter García.">
 
-    <!-- 
+  <!-- 
       🌈 FAVICON
       El ícono que aparece en la pestaña del navegador.
       Puedes reemplazar el archivo más adelante por tu propio logo.
     -->
-    <link rel="icon" type="image/png" href="/favicon.png" />
+  <link rel="icon" type="image/png" href="/favicon.png" />
 
-    <!-- 
+  <!-- 
       💅 TIPOGRAFÍA Y ESTILOS GLOBALES
       Aquí podrías enlazar fuentes o estilos CSS globales.
       Por ahora, dejamos limpio. Más adelante agregaremos Tailwind o CSS propio.
     -->
-      <link
-    rel="stylesheet"
-    href="/node_modules/@fortawesome/fontawesome-free/css/all.min.css"
-  />
-  
-  </head>
+  <link rel="stylesheet" href="/node_modules/@fortawesome/fontawesome-free/css/all.min.css" />
 
-  <body style="margin: 0; background-color: #0f1115; color: #e6e9ef;">
-    <!-- 
+</head>
+
+<body style="margin: 0; background-color: #0f1115; color: #e6e9ef;">
+  <!-- 
       ⚙️ PUNTO DE MONTAJE DE REACT
       Aquí React inserta toda la aplicación.
       No debemos poner HTML adicional fuera de este div.
     -->
-    <div id="root"></div>
+  <div id="root"></div>
 
-    <!-- 
+  <!-- 
       🚀 ARRANQUE DE LA APLICACIÓN
       "type='module'" indica que usaremos módulos ES (import/export).
       Vite se encarga de compilar e interpretar todo el JS de React.
     -->
-    <script type="module" src="/src/main.jsx"></script>
-  </body>
+  <script type="module" src="/src/main.jsx"></script>
+</body>
+
 </html>
