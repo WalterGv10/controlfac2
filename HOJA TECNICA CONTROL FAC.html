@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ficha Técnica - ControlFAC</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --bg-body: #0f172a;
+            --bg-card: #1e293b;
+            --primary: #3b82f6; /* Azul React */
+            --accent: #00ffc8;  /* Turquesa Neon */
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --border: #334155;
+        }
+
+        body {
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            margin: 0;
+            padding: 40px 20px;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background-color: var(--bg-card);
+            padding: 40px;
+            border-radius: 16px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+            border: 1px solid var(--border);
+        }
+
+        /* HEADER */
+        header {
+            border-bottom: 2px solid var(--border);
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .brand h1 {
+            margin: 0;
+            font-size: 2.5rem;
+            color: var(--text-main);
+            letter-spacing: 2px;
+        }
+
+        .brand span {
+            color: var(--accent);
+        }
+
+        .version-badge {
+            background: rgba(59, 130, 246, 0.1);
+            color: var(--primary);
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: bold;
+            border: 1px solid var(--primary);
+        }
+
+        /* SECTIONS */
+        h2 {
+            color: var(--accent);
+            font-size: 1.5rem;
+            margin-top: 0;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        /* SPECS LIST */
+        .specs-group {
+            background: rgba(0,0,0,0.2);
+            padding: 20px;
+            border-radius: 12px;
+        }
+
+        .spec-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .spec-item:last-child {
+            border-bottom: none;
+        }
+
+        .label {
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+
+        .value {
+            font-weight: 700;
+            text-align: right;
+            color: var(--text-main);
+        }
+
+        /* TECHNOLOGY STACK */
+        .tech-stack {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .tech-badge {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: #0f172a;
+            border: 1px solid var(--border);
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 0.95rem;
+        }
+        
+        .tech-badge i { color: var(--primary); }
+
+        /* BROWSER COMPATIBILITY TABLE */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+
+        th, td {
+            text-align: left;
+            padding: 12px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        th {
+            color: var(--accent);
+            font-weight: 600;
+        }
+
+        .check { color: #22c55e; }
+
+        /* FOOTER */
+        footer {
+            margin-top: 40px;
+            text-align: center;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            border-top: 1px solid var(--border);
+            padding-top: 20px;
+        }
+
+        .btn-print {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            margin-top: 20px;
+            transition: 0.2s;
+        }
+        .btn-print:hover { background: #2563eb; }
+
+        @media (max-width: 768px) {
+            .grid-2 { grid-template-columns: 1fr; }
+            .container { padding: 20px; }
+        }
+        
+        @media print {
+            body { background: white; color: black; }
+            .container { box-shadow: none; border: none; padding: 0; }
+            .tech-badge { border: 1px solid #ccc; }
+            h2, .brand span { color: #000; }
+            .btn-print { display: none; }
+            .label, .value, th, td { color: black; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <div class="brand">
+            <h1>Control<span>FAC</span></h1>
+            <div style="font-size: 0.9rem; color: var(--text-muted);"></div>
+        </div>
+        <div class="version-badge">v2.1.0 (Stable)</div>
+    </header>
+
+    <!-- SECCIÓN 1: ARQUITECTURA -->
+    <div class="grid-2">
+        <div>
+            <h2><i class="fas fa-layer-group"></i> Arquitectura</h2>
+            <div class="specs-group">
+                <div class="spec-item">
+                    <span class="label">Tipo de Aplicación</span>
+                    <span class="value">SPA (Single Page Application)</span>
+                </div>
+                <div class="spec-item">
+                    <span class="label">Frontend Framework</span>
+                    <span class="value">React 18 + Vite</span>
+                </div>
+                <div class="spec-item">
+                    <span class="label">Base de Datos</span>
+                    <span class="value">PostgreSQL (Cloud)</span>
+                </div>
+                <div class="spec-item">
+                    <span class="label">Autenticación</span>
+                    <span class="value">Google OAuth 2.0 / JWT</span>
+                </div>
+                <div class="spec-item">
+                    <span class="label">Almacenamiento</span>
+                    <span class="value">Cloud Object Storage (Imágenes)</span>
+                </div>
+            </div>
+        </div>
+
+        <div>
+            <h2><i class="fas fa-microchip"></i> Tecnologías Clave</h2>
+            <p style="color: var(--text-muted); margin-bottom: 15px;">Librerías principales utilizadas en el desarrollo:</p>
+            <div class="tech-stack">
+                <div class="tech-badge"><i class="fab fa-react"></i> React.js</div>
+                <div class="tech-badge"><i class="fas fa-database"></i> PostgreSQL</div>
+                <div class="tech-badge"><i class="fas fa-eye"></i> Tesseract.js (OCR)</div>
+                <div class="tech-badge"><i class="fas fa-file-pdf"></i> jsPDF (Reportes)</div>
+                <div class="tech-badge"><i class="fas fa-chart-bar"></i> Lucide Icons</div>
+                <div class="tech-badge"><i class="fab fa-google"></i> Google Auth</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SECCIÓN 2: REQUISITOS DE SISTEMA -->
+    <h2><i class="fas fa-mobile-alt"></i> Compatibilidad de Sistema</h2>
+    <div class="grid-2">
+        <div class="specs-group">
+            <h3 style="margin-top:0; color:white; font-size:1.1rem;">Dispositivos Móviles</h3>
+            <div class="spec-item">
+                <span class="label"><i class="fab fa-android"></i> Android</span>
+                <span class="value">Versión 8.0 (Oreo) o superior</span>
+            </div>
+            <div class="spec-item">
+                <span class="label"><i class="fab fa-apple"></i> iOS</span>
+                <span class="value">iOS 13.0 o superior</span>
+            </div>
+            <div class="spec-item">
+                <span class="label">Cámara</span>
+                <span class="value">Requerida (Mínimo 5MP)</span>
+            </div>
+        </div>
+        <div class="specs-group">
+            <h3 style="margin-top:0; color:white; font-size:1.1rem;">Escritorio (Web)</h3>
+            <div class="spec-item">
+                <span class="label"><i class="fab fa-windows"></i> Windows</span>
+                <span class="value">Windows 10 / 11</span>
+            </div>
+            <div class="spec-item">
+                <span class="label"><i class="fab fa-apple"></i> macOS</span>
+                <span class="value">macOS Catalina o superior</span>
+            </div>
+            <div class="spec-item">
+                <span class="label"><i class="fab fa-linux"></i> Linux</span>
+                <span class="value">Cualquier distribución moderna</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- SECCIÓN 3: NAVEGADORES -->
+    <h2><i class="fas fa-globe"></i> Navegadores Soportados</h2>
+    <p style="color: var(--text-muted);">La aplicación utiliza WebAssembly para el OCR y APIs modernas de cámara (`getUserMedia`), por lo que requiere navegadores actualizados.</p>
+    
+    <div class="specs-group">
+        <table>
+            <thead>
+                <tr>
+                    <th>Navegador</th>
+                    <th>Versión Mínima</th>
+                    <th>Estado</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><i class="fab fa-chrome"></i> Google Chrome</td>
+                    <td>v90+</td>
+                    <td class="check"><i class="fas fa-check-circle"></i> Soportado</td>
+                </tr>
+                <tr>
+                    <td><i class="fab fa-edge"></i> Microsoft Edge</td>
+                    <td>v90+</td>
+                    <td class="check"><i class="fas fa-check-circle"></i> Soportado</td>
+                </tr>
+                <tr>
+                    <td><i class="fab fa-safari"></i> Apple Safari</td>
+                    <td>v14+</td>
+                    <td class="check"><i class="fas fa-check-circle"></i> Soportado</td>
+                </tr>
+                <tr>
+                    <td><i class="fab fa-firefox"></i> Mozilla Firefox</td>
+                    <td>v88+</td>
+                    <td class="check"><i class="fas fa-check-circle"></i> Soportado</td>
+                </tr>
+                <tr>
+                    <td><i class="fab fa-internet-explorer"></i> Internet Explorer</td>
+                    <td>Cualquier versión</td>
+                    <td style="color: #ef4444;"><i class="fas fa-times-circle"></i> No Soportado</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div style="text-align: center;">
+        <button class="btn-print" onclick="window.print()">
+            <i class="fas fa-print"></i> Imprimir Ficha Técnica
+        </button>
+    </div>
+
+    <footer>
+        <p>© Walter Garcia - Documento de uso interno.</p>
+    </footer>
+</div>
+
+</body>
+</html>

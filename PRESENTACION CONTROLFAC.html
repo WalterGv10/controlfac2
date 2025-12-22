@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ControlFAC - Presentación Oficial</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        /* --- 1. CONFIGURACIÓN BASE & TEMA NEÓN --- */
+        :root {
+            --bg-color: #050505;
+            --neon-blue: #3b82f6;
+            --neon-turq: #00ffc8;
+            --text-main: #ffffff;
+            --text-gray: #9ca3af;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            /* Comportamiento de Scroll Magnético Vertical */
+            height: 100vh;
+            overflow-y: scroll;
+            scroll-snap-type: y mandatory;
+            scroll-behavior: smooth;
+        }
+
+        /* --- 2. ESTRUCTURA DE CADA DIAPOSITIVA --- */
+        section {
+            height: 100dvh; /* Altura completa del dispositivo */
+            width: 100%;
+            scroll-snap-align: start; /* El punto de anclaje */
+            
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 2rem;
+            position: relative;
+            overflow: hidden;
+            
+            /* Fondo Grid Tecnológico sutil */
+            background-image: 
+                linear-gradient(rgba(59, 130, 246, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(59, 130, 246, 0.03) 1px, transparent 1px);
+            background-size: 40px 40px;
+        }
+
+        /* Barra de progreso superior estilo Cyberpunk */
+        section::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; height: 4px;
+            background: linear-gradient(90deg, var(--neon-blue), var(--neon-turq));
+            box-shadow: 0 0 10px var(--neon-turq);
+        }
+
+        /* --- 3. TIPOGRAFÍA RESPONSIVA --- */
+        h1 {
+            font-size: clamp(3rem, 8vw, 6rem);
+            font-weight: 800;
+            text-transform: uppercase;
+            line-height: 1;
+            margin-bottom: 1rem;
+            text-shadow: 0 0 20px rgba(59, 130, 246, 0.6);
+        }
+
+        h2 {
+            font-size: clamp(2rem, 5vw, 4rem);
+            color: var(--neon-turq);
+            margin-bottom: 1.5rem;
+            text-transform: uppercase;
+            border-left: 5px solid var(--neon-blue);
+            padding-left: 15px;
+        }
+
+        p {
+            font-size: clamp(1rem, 2.5vw, 1.5rem);
+            color: var(--text-gray);
+            line-height: 1.6;
+            max-width: 800px;
+        }
+
+        .highlight { color: var(--text-main); font-weight: bold; }
+        .neon-text { color: var(--neon-turq); font-weight: bold; }
+
+        /* --- 4. CONTENEDOR FLEXIBLE (Móvil vs PC) --- */
+        .content-wrapper {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+            align-items: center;
+            width: 100%;
+            max-width: 1200px;
+        }
+
+        /* En Pantallas Grandes: Lado a Lado */
+        @media (min-width: 1024px) {
+            .content-wrapper {
+                flex-direction: row;
+                justify-content: space-between;
+                text-align: left;
+            }
+            .text-box { flex: 1; padding-right: 2rem; }
+            .visual-box { flex: 1; display: flex; justify-content: center; }
+            
+            /* Alinear textos a la izquierda en PC */
+            section { align-items: center; text-align: left; }
+        }
+
+        /* --- 5. COMPONENTES VISUALES --- */
+        .card-glass {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 2rem;
+            border-radius: 20px;
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
+            transition: transform 0.3s;
+        }
+        
+        .icon-large {
+            font-size: clamp(4rem, 8vw, 6rem);
+            color: var(--neon-blue);
+            margin-bottom: 1rem;
+            filter: drop-shadow(0 0 15px rgba(59, 130, 246, 0.4));
+        }
+
+        .feature-list {
+            list-style: none;
+            padding: 0;
+            text-align: left;
+        }
+        .feature-list li {
+            font-size: clamp(1rem, 2vw, 1.4rem);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            color: var(--text-main);
+        }
+        .feature-list i {
+            color: var(--neon-turq);
+            margin-right: 15px;
+            font-size: 1.2em;
+        }
+
+        .scroll-hint {
+            position: absolute;
+            bottom: 20px;
+            color: var(--text-gray);
+            font-size: 0.9rem;
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {transform: translateY(0);}
+            40% {transform: translateY(-10px);}
+            60% {transform: translateY(-5px);}
+        }
+
+        /* Botón estilo App */
+        .btn-app {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            background: var(--neon-turq);
+            color: #000;
+            padding: 15px 30px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 1.2rem;
+            transition: transform 0.2s, box-shadow 0.2s;
+            box-shadow: 0 0 20px rgba(0, 255, 200, 0.4);
+        }
+        .btn-app:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 30px rgba(0, 255, 200, 0.6);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- SLIDE 1: PORTADA -->
+    <section>
+        <div style="text-align: center;">
+            <p style="color: var(--neon-blue); letter-spacing: 4px; font-weight: bold; margin-bottom: 10px;">HERRAMIENTA INTERNA</p>
+            <h1>ControlFAC</h1>
+            <p class="highlight" style="font-size: 1.5rem;">Gestión Automatizada de Gastos Técnicos</p>
+            <div style="margin-top: 30px; display: inline-block; padding: 10px 25px; border: 1px solid var(--neon-turq); border-radius: 50px; color: var(--neon-turq);">
+                Implementación Gratuita
+            </div>
+        </div>
+        <div class="scroll-hint">Desliza para comenzar ↓</div>
+    </section>
+
+    <!-- SLIDE 2: OBJETIVO -->
+    <section>
+        <div class="content-wrapper">
+            <div class="text-box">
+                <h2>El Objetivo</h2>
+                <p>Mejorar la calidad de vida del técnico en campo.</p>
+                <br>
+                <p>Buscamos automatizar el proceso manual para permitirte llevar un <span class="neon-text">Control Anual y Mensual</span> preciso de tus gastos de parqueo sin perder tiempo administrativo.</p>
+            </div>
+            <div class="visual-box">
+                <i class="fas fa-chart-line icon-large"></i>
+            </div>
+        </div>
+    </section>
+
+    <!-- SLIDE 3: GESTIÓN CRUD -->
+    <section>
+        <div class="content-wrapper">
+            <div class="text-box">
+                <h2>Gestión Total</h2>
+                <p>Tu contabilidad personal, flexible y corregible.</p>
+                <br>
+                <ul class="feature-list">
+                    <li><i class="fas fa-eye"></i> <strong>Visualizar:</strong>  Historial completo en tiempo real.</li>
+                    <li><i class="fas fa-edit"></i> <strong>Editar:</strong> Corrige montos o descripciones antes del corte.</li>
+                    <li><i class="fas fa-trash-alt"></i> <strong>Borrar:</strong> Elimina registros duplicados fácilmente.</li>
+                </ul>
+            </div>
+            <div class="visual-box">
+                <div class="card-glass" style="text-align: center;">
+                    <i class="fas fa-mobile-alt icon-large" style="color: var(--neon-turq);"></i>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SLIDE 4: REIMPRESIÓN (SAT) -->
+    <section>
+        <div class="content-wrapper">
+            <div class="text-box">
+                <h2>¿Perdiste la Factura?</h2>
+                <p>No hay problema. El sistema captura exactamente lo necesario.</p>
+                <br>
+                <p>Almacenamos <span class="highlight">NIT, Serie, DTE, Fecha y Monto</span>. Con estos datos validados, puedes ingresar al portal de la SAT y <span class="neon-text">reimprimir el documento legal</span> sin errores.</p>
+            </div>
+            <div class="visual-box">
+                <i class="fas fa-print icon-large"></i>
+            </div>
+        </div>
+    </section>
+
+    <!-- SLIDE 5: MUNICIPALES -->
+    <section>
+        <div class="content-wrapper">
+            <div class="text-box">
+                <h2>Recibos Municipales</h2>
+                <p>La excepción a la regla.</p>
+                <br>
+                <p>Dado que los tickets de peaje o parqueo municipal <strong>NO</strong> se pueden reimprimir en la SAT, el sistema <span class="neon-text">exige guardar una FOTO</span> de alta calidad. Tu respaldo digital es tu garantía.</p>
+            </div>
+            <div class="visual-box">
+                <i class="fas fa-camera icon-large" style="color: #f97316;"></i>
+            </div>
+        </div>
+    </section>
+
+    <!-- SLIDE 6: SEGURIDAD -->
+    <section>
+        <div class="content-wrapper">
+            <div class="text-box">
+                <h2>Acceso Seguro</h2>
+                <p>Sin contraseñas nuevas que recordar.</p>
+                <br>
+                <ul class="feature-list">
+                    <li><i class="fab fa-google"></i> Login con cuenta corporativa Google.</li>
+                    <li><i class="fas fa-shield-alt"></i> Seguridad de infraestructura Google.</li>
+                    <li><i class="fas fa-check-circle"></i> Acceso inmediato y gratuito.</li>
+                </ul>
+            </div>
+            <div class="visual-box">
+                <i class="fab fa-google icon-large" style="color: white;"></i>
+            </div>
+        </div>
+    </section>
+
+    <!-- SLIDE 7: TECNOLOGÍA -->
+    <section>
+        <div class="content-wrapper">
+            <div class="text-box">
+                <h2>Tecnología Moderna</h2>
+                <p>Stack robusto para una experiencia fluida.</p>
+                <br>
+                <ul class="feature-list">
+                    <li><i class="fab fa-react" style="color: #61DAFB;"></i> <strong>React:</strong> Interfaz de usuario rápida.</li>
+                    <li><i class="fas fa-database" style="color: #336791;"></i> <strong>PostgreSQL:</strong> Base de datos confiable.</li>
+                    <li><i class="fas fa-brain" style="color: var(--neon-turq);"></i> <strong>Tesseract.js:</strong> Motor OCR en el navegador.</li>
+                    <li><i class="fab fa-google" style="color: white;"></i> <strong>Google Auth:</strong> Seguridad empresarial.</li>
+                </ul>
+            </div>
+            <div class="visual-box">
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px; text-align: center;">
+                    <div><i class="fab fa-react icon-large" style="color: #61DAFB; font-size: 5rem;"></i><br><span style="color: #888">Frontend</span></div>
+                    <div><i class="fas fa-database icon-large" style="color: #336791; font-size: 5rem;"></i><br><span style="color: #888">Backend</span></div>
+                    <div><i class="fas fa-robot icon-large" style="color: var(--neon-turq); font-size: 5rem;"></i><br><span style="color: #888">AI</span></div>
+                    <div><i class="fas fa-shield-alt icon-large" style="color: white; font-size: 5rem;"></i><br><span style="color: #888">Auth</span></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SLIDE 8: CIERRE -->
+    <section>
+        <div style="text-align: center;">
+            <i class="fas fa-rocket icon-large" style="color: var(--neon-turq); margin-bottom: 20px;"></i>
+            <h2>ControlFAC</h2>
+            <p style="font-size: 1.5rem; margin-bottom: 2rem;">Tu herramienta, tu control.</p>
+            
+            <a href="https://controlfac.netlify.app/" target="_blank" class="btn-app">
+                <span>Ingresar a la App</span>
+                <i class="fas fa-external-link-alt"></i>
+            </a>
+
+            <br><br><br>
+            <div style="font-size: 0.9rem; color: #555;">
+                © 2025 Con ❤️ Walter García Veliz
+            </div>
+        </div>
+    </section>
+
+</body>
+</html>

@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { useAuth } from "../context/AuthContext";
 import { FcGoogle } from "react-icons/fc";
+import { Presentation, ShieldCheck } from "lucide-react";
+import LoginInfoPortal from "../components/LoginInfoPortal";
 import "./Login.css";
 import logo from "../assets/logo.png";
 
@@ -8,6 +10,13 @@ export default function Login() {
   const { signInWithGoogle } = useAuth();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [infoOpen, setInfoOpen] = useState(false);
+  const [infoView, setInfoView] = useState("presentation"); // "presentation" o "tech"
+
+  const openInfo = (view) => {
+    setInfoView(view);
+    setInfoOpen(true);
+  };
 
   const handleLogin = async () => {
     setLoading(true);
@@ -56,7 +65,24 @@ export default function Login() {
         <p className="hint">
           Inicia sesión para registrar gastos y generar reportes.
         </p>
+
+        <div className="login-footer-info">
+          <button className="info-link" onClick={() => openInfo("presentation")}>
+            <Presentation size={14} />
+            Ver Presentación
+          </button>
+          <button className="info-link" onClick={() => openInfo("tech")}>
+            <ShieldCheck size={14} />
+            Ficha Técnica
+          </button>
+        </div>
       </section>
+
+      <LoginInfoPortal
+        isOpen={infoOpen}
+        onClose={() => setInfoOpen(false)}
+        view={infoView}
+      />
     </div>
   );
 }

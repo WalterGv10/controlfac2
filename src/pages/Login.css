@@ -9,7 +9,7 @@
   place-items: center;
   /* 🔑 CLAVE: Reducir el padding general para darle más espacio vertical
      a la tarjeta, especialmente en móviles. */
-  padding: 16px; 
+  padding: 16px;
   position: relative;
   overflow: hidden;
 }
@@ -28,10 +28,11 @@
 .login-card {
   /* 🔑 CLAVE: Estilos para móvil primero (Mobile First) */
   /* Ocupa todo el ancho disponible menos el padding del wrap */
-  width: 100%; 
+  width: 100%;
   /* Asegura que la tarjeta no exceda una altura razonable */
-  max-height: calc(100dvh - 32px); /* 100dvh - (2 * 16px de padding del wrap) */
-  
+  max-height: calc(100dvh - 32px);
+  /* 100dvh - (2 * 16px de padding del wrap) */
+
   /* Esto se mantiene igual para el aspecto visual */
   padding: 32px 28px;
   border-radius: 16px;
@@ -39,24 +40,24 @@
   border: 1px solid rgba(255, 255, 255, .06);
   box-shadow: 0 10px 40px rgba(0, 0, 0, .45);
   backdrop-filter: blur(10px);
-  position: relative; 
+  position: relative;
   z-index: 1;
   text-align: center;
-  
+
   /* Permite que el contenido se desplace dentro de la tarjeta si es necesario,
      aunque con este diseño minimalista es poco probable. */
-  overflow-y: auto; 
+  overflow-y: auto;
 }
 
 /* 💻 Media Query para Pantallas más Grandes (Tablets y Desktop) */
 @media (min-width: 500px) {
   .login-card {
     /* Restaura el ancho máximo para evitar que sea demasiado grande en desktop */
-    width: 420px; 
+    width: 420px;
     /* Elimina la altura máxima, ya que la limitación de 420px lo hace compacto */
-    max-height: none; 
+    max-height: none;
   }
-  
+
   /* Aumentar el padding para desktop/tablet, si se desea */
   .login-wrap {
     padding: 32px;
@@ -81,6 +82,7 @@
   margin: 0 0 4px;
   color: var(--color-text);
 }
+
 .subtitle {
   color: var(--color-muted);
   margin-bottom: 22px;
@@ -99,4 +101,291 @@
   text-align: center;
 }
 
-/* ... resto de estilos y animaciones ... */
+/* 📚 Footer Links */
+.login-footer-info {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  margin-top: 24px;
+  padding-top: 16px;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.info-link {
+  background: none;
+  border: none;
+  color: var(--neon-turq, #00ffc8);
+  font-size: 0.75rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  opacity: 0.7;
+  transition: opacity 0.2s, transform 0.2s;
+}
+
+.info-link:hover {
+  opacity: 1;
+  transform: translateY(-1px);
+}
+
+/* 🖼️ Portal Modal Styles */
+.info-portal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.85);
+  backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 20px;
+  animation: fadeIn 0.3s ease;
+}
+
+.info-portal-modal {
+  background: #111827;
+  width: 100%;
+  max-width: 600px;
+  max-height: 90vh;
+  border-radius: 20px;
+  position: relative;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+  animation: slideUp 0.3s ease;
+}
+
+.close-btn {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  background: rgba(255, 255, 255, 0.05);
+  border: none;
+  color: white;
+  padding: 8px;
+  border-radius: 50%;
+  cursor: pointer;
+  z-index: 10;
+  transition: background 0.2s;
+}
+
+.close-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.info-scroll-container {
+  overflow-y: auto;
+  padding: 40px 30px;
+  flex: 1;
+}
+
+.info-header {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.icon-main {
+  width: 48px;
+  height: 48px;
+  color: #3b82f6;
+  margin-bottom: 16px;
+}
+
+.info-header h2 {
+  font-size: 1.8rem;
+  margin-bottom: 8px;
+  color: white;
+}
+
+.info-header p {
+  color: #94a3b8;
+  font-size: 0.95rem;
+}
+
+.info-grid {
+  display: grid;
+  gap: 24px;
+}
+
+.info-grid.half {
+  grid-template-columns: 1fr 1fr;
+}
+
+@media (max-width: 500px) {
+  .info-grid.half {
+    grid-template-columns: 1fr;
+  }
+}
+
+.info-section h3 {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #3b82f6;
+  margin-bottom: 12px;
+  font-size: 1.1rem;
+}
+
+.icon-small {
+  width: 20px;
+  height: 20px;
+}
+
+.info-list {
+  list-style: none;
+  padding: 0;
+}
+
+.info-list li {
+  margin-bottom: 8px;
+  color: #cbd5e1;
+  font-size: 0.9rem;
+}
+
+.spec-list {
+  list-style: none;
+  padding: 0;
+}
+
+.spec-list li {
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  font-size: 0.85rem;
+}
+
+.spec-list li span {
+  color: #94a3b8;
+}
+
+.warning-note {
+  margin-top: 30px;
+  padding: 16px;
+  background: rgba(59, 130, 246, 0.05);
+  border-radius: 12px;
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  border: 1px solid rgba(59, 130, 246, 0.1);
+}
+
+.warning-note p {
+  font-size: 0.8rem;
+  color: #94a3b8;
+  margin: 0;
+}
+
+.info-portal-footer {
+  padding: 16px;
+  text-align: center;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.info-portal-footer p {
+  font-size: 0.75rem;
+  color: #4b5563;
+  margin: 0;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* 📱 Specific adjustments for small screens (e.g. 360x740) */
+@media (max-width: 400px) {
+  .login-card {
+    padding: 24px 20px;
+  }
+
+  .login-logo {
+    width: 90px;
+    margin-bottom: 0.8rem;
+  }
+
+  .title {
+    font-size: 1.4rem;
+  }
+
+  .subtitle {
+    font-size: 0.85rem;
+    margin-bottom: 16px;
+  }
+
+  .login-footer-info {
+    gap: 8px;
+    margin-top: 16px;
+    padding-top: 12px;
+  }
+
+  .info-link {
+    font-size: 0.7rem;
+  }
+
+  /* Portal Adjustments */
+  .info-portal-modal {
+    max-height: 95vh;
+  }
+
+  .info-scroll-container {
+    padding: 30px 20px;
+  }
+
+  .info-header h2 {
+    font-size: 1.4rem;
+  }
+
+  .info-header p {
+    font-size: 0.85rem;
+  }
+
+  .info-section h3 {
+    font-size: 1rem;
+    margin-bottom: 8px;
+  }
+
+  .info-list li,
+  .spec-list li {
+    font-size: 0.8rem;
+  }
+
+  .warning-note {
+    padding: 12px;
+    margin-top: 20px;
+  }
+}
+
+@media (max-height: 700px) {
+  .login-card {
+    padding: 20px;
+  }
+
+  .login-logo {
+    width: 80px;
+    margin-bottom: 0.5rem;
+  }
+
+  .subtitle {
+    margin-bottom: 12px;
+  }
+}
