@@ -68,7 +68,7 @@
   border-radius: 8px;
 }
 
-.rm-month-input, 
+.rm-month-input,
 .rm-search-input {
   background: transparent;
   border: none;
@@ -214,13 +214,32 @@
   background: rgba(255, 255, 255, 0.05);
 }
 
-.cell-emisor { font-weight: bold; color: white; }
-.cell-sub { font-size: 0.8rem; color: #888; }
-.cell-detail { font-size: 0.85rem; color: #aaa; }
-.text-right { text-align: right; }
-.font-bold { font-weight: bold; color: #00ffc8; }
+.cell-emisor {
+  font-weight: bold;
+  color: white;
+}
 
-.rm-loading, .rm-empty {
+.cell-sub {
+  font-size: 0.8rem;
+  color: #888;
+}
+
+.cell-detail {
+  font-size: 0.85rem;
+  color: #aaa;
+}
+
+.text-right {
+  text-align: right;
+}
+
+.font-bold {
+  font-weight: bold;
+  color: #00ffc8;
+}
+
+.rm-loading,
+.rm-empty {
   text-align: center;
   padding: 2rem;
   color: #888;
@@ -248,7 +267,7 @@
   background: #1a1a1a;
   width: 100%;
   max-width: 900px;
-  height: 90vh; 
+  height: 90vh;
   border-radius: 12px;
   border: 1px solid #333;
   display: flex;
@@ -279,7 +298,10 @@
   cursor: pointer;
   transition: 0.2s;
 }
-.pdf-close-btn:hover { color: white; }
+
+.pdf-close-btn:hover {
+  color: white;
+}
 
 .pdf-iframe-container {
   flex: 1;
@@ -310,7 +332,11 @@
   border-radius: 6px;
   cursor: pointer;
 }
-.pdf-cancel-btn:hover { background: #333; color: white; }
+
+.pdf-cancel-btn:hover {
+  background: #333;
+  color: white;
+}
 
 .pdf-download-btn {
   background: #00ffc8;
@@ -325,6 +351,7 @@
   gap: 8px;
   box-shadow: 0 0 10px rgba(0, 255, 200, 0.3);
 }
+
 .pdf-download-btn:hover {
   background: #00e6b4;
   transform: translateY(-1px);
@@ -348,13 +375,15 @@
 }
 
 .doc-badge.ticket {
-  background: rgba(249, 115, 22, 0.15); /* Naranja suave */
+  background: rgba(249, 115, 22, 0.15);
+  /* Naranja suave */
   color: #f97316;
   border: 1px solid rgba(249, 115, 22, 0.3);
 }
 
 .doc-badge.sat {
-  background: rgba(59, 130, 246, 0.15); /* Azul suave */
+  background: rgba(59, 130, 246, 0.15);
+  /* Azul suave */
   color: #60a5fa;
   border: 1px solid rgba(59, 130, 246, 0.3);
 }
@@ -369,4 +398,105 @@
   color: #888;
   font-size: 0.75rem;
   margin-top: 2px;
+}
+
+/* 📱 RESPONSIVE IMPROVEMENTS */
+@media (max-width: 768px) {
+  .rm-header {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 1rem;
+  }
+
+  .rm-title-box h2 {
+    font-size: 1.3rem;
+  }
+
+  .rm-controls {
+    flex-direction: column;
+    gap: 0.8rem;
+  }
+
+  .rm-search-input {
+    width: 100%;
+  }
+
+  .rm-stats-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .rm-stat-card {
+    padding: 1rem;
+  }
+
+  .stat-value {
+    font-size: 1.2rem;
+  }
+
+  .rm-export-btn {
+    min-height: 60px;
+  }
+
+  /* 📱 TABLA RESPONSIVA (Convertir a filas tipo card) */
+  .rm-table thead {
+    display: none;
+    /* Ocultar encabezados en móvil */
+  }
+
+  .rm-table tr {
+    display: block !important;
+    background: rgba(255, 255, 255, 0.03);
+    margin-bottom: 1rem;
+    padding: 1rem;
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+  }
+
+  .rm-table td {
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: flex-start !important;
+    padding: 8px 0 !important;
+    border: none !important;
+    text-align: left !important;
+  }
+
+  .rm-table td::before {
+    content: attr(data-label);
+    font-weight: bold;
+    color: #666;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    min-width: 80px;
+  }
+
+  .rm-table td.text-right {
+    justify-content: space-between !important;
+    text-align: right !important;
+  }
+
+  .cell-detail-main {
+    font-size: 0.85rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .pdf-modal-content {
+    height: 95vh;
+  }
+
+  .pdf-modal-header h3 {
+    font-size: 0.9rem;
+  }
+
+  .pdf-modal-footer {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .pdf-download-btn,
+  .pdf-cancel-btn {
+    width: 100%;
+    justify-content: center;
+  }
 }

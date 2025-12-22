@@ -4,12 +4,14 @@
 .nf-section {
   display: flex;
   justify-content: center;
-  align-items: flex-start; /* ← esto lo sube */
+  align-items: flex-start;
+  /* ← esto lo sube */
   padding-left: 1rem;
   padding-right: 1rem;
   padding-bottom: 1rem;
   width: 100%;
-  min-height: calc(100vh - 60px); /* ← evita que se corte si hay navbar */
+  min-height: calc(100vh - 60px);
+  /* ← evita que se corte si hay navbar */
 }
 
 /* =========================================
@@ -29,7 +31,7 @@
   box-shadow:
     0 0 6px rgba(0, 255, 200, 0.4),
     0 0 12px rgba(0, 255, 200, 0.25);
-  
+
   transition: 0.35s ease;
 }
 
@@ -111,14 +113,16 @@
 ========================================= */
 .nf-row {
   display: flex;
-  flex-direction: row;       /* Fuerza que vayan lado a lado */
+  flex-direction: row;
+  /* Fuerza que vayan lado a lado */
   gap: 0.5rem;
   margin-bottom: 0.5rem;
 }
 
 /* CADA CAMPO ocupa el 50% EXACTO */
 .nf-row .nf-field {
-  flex: 1;                   /* Ambos campos crecen igual */
+  flex: 1;
+  /* Ambos campos crecen igual */
 }
 
 /* En celular se vuelven uno encima del otro */
@@ -183,6 +187,62 @@
   right: 8px;
   bottom: 8px;
   opacity: 0.8;
+}
+
+/* 📱 OPTIMIZACIÓN EXTREMA PARA 360x740 */
+@media (max-width: 400px) {
+  .nf-section {
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+  }
+
+  .nf-card {
+    padding: 0.8rem;
+    border-radius: 0.75rem;
+  }
+
+  .nf-title {
+    font-size: 1.1rem;
+    gap: 0.4rem;
+  }
+
+  .nf-auto-info {
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+  }
+
+  .nf-badge {
+    padding: 0.3rem 0.6rem;
+    font-size: 0.75rem;
+  }
+
+  .nf-field label {
+    font-size: 0.7rem;
+  }
+
+  .nf-field input,
+  .nf-field select,
+  .nf-field textarea {
+    padding: 0.4rem;
+    font-size: 0.8rem;
+  }
+
+  .nf-status-btn {
+    padding: 0.5rem;
+    font-size: 0.8rem;
+  }
+
+  .nf-actions {
+    flex-direction: column;
+    gap: 0.6rem;
+  }
+
+  .nf-btn {
+    width: 100%;
+    text-align: center;
+    padding: 0.8rem;
+  }
 }
 
 .nf-field-error {
@@ -281,7 +341,8 @@
 }
 
 .nf-status-btn {
-  flex: 1; /* Que ocupen el 50% cada uno */
+  flex: 1;
+  /* Que ocupen el 50% cada uno */
   padding: 0.6rem;
   border-radius: 0.5rem;
   border: 1px solid rgba(255, 255, 255, 0.2);
@@ -305,7 +366,8 @@
 
 /* --- ESTADO: PENDIENTE (AMARILLO) --- */
 .nf-status-btn.pending.active {
-  border-color: #facc15; /* Amarillo intenso */
+  border-color: #facc15;
+  /* Amarillo intenso */
   color: #facc15;
   background: rgba(250, 204, 21, 0.1);
   box-shadow: 0 0 10px rgba(250, 204, 21, 0.4);
@@ -314,7 +376,8 @@
 
 /* --- ESTADO: PAGADA (VERDE) --- */
 .nf-status-btn.paid.active {
-  border-color: #4ade80; /* Verde neón */
+  border-color: #4ade80;
+  /* Verde neón */
   color: #4ade80;
   background: rgba(74, 222, 128, 0.1);
   box-shadow: 0 0 10px rgba(74, 222, 128, 0.4);

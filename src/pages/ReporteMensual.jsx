@@ -1,15 +1,15 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "../supabaseClient";
-import { useAuth } from "../context/AuthContext"; 
+import { useAuth } from "../context/AuthContext";
 import { ArrowLeft, Calendar, DollarSign, FileText, Download, Search, Eye, X, Tag } from "lucide-react";
 import jsPDF from "jspdf";
-import autoTable from "jspdf-autotable"; 
+import autoTable from "jspdf-autotable";
 import "./ReporteMensual.css";
 
 export default function ReporteMensual() {
   const navigate = useNavigate();
-  const { session } = useAuth(); 
+  const { session } = useAuth();
   const [loading, setLoading] = useState(true);
   const [facturas, setFacturas] = useState([]);
   const [filteredFacturas, setFilteredFacturas] = useState([]);
@@ -24,9 +24,9 @@ export default function ReporteMensual() {
     const month = String(now.getMonth() + 1).padStart(2, '0');
     return `${year}-${month}`;
   };
-  
+
   const [selectedMonth, setSelectedMonth] = useState(getCurrentMonth());
-  const [searchTerm, setSearchTerm] = useState(""); 
+  const [searchTerm, setSearchTerm] = useState("");
 
   const [resumen, setResumen] = useState({
     total: 0,
@@ -40,7 +40,7 @@ export default function ReporteMensual() {
   }, [selectedMonth, session]);
 
   useEffect(() => {
-    const filtradas = facturas.filter(f => 
+    const filtradas = facturas.filter(f =>
       f.tecnico?.toLowerCase().includes(searchTerm.toLowerCase()) ||
       f.punto_servicio?.toLowerCase().includes(searchTerm.toLowerCase())
     );
@@ -71,7 +71,7 @@ export default function ReporteMensual() {
         .select("*")
         .eq("id", session.user.id)
         .single();
-      
+
       if (!perfilError && perfilData) setPerfil(perfilData);
     } catch (error) {
       console.error("Error cargando datos:", error);
@@ -97,12 +97,12 @@ export default function ReporteMensual() {
   };
 
   const generatePDFBlob = () => {
-    const doc = new jsPDF(); 
+    const doc = new jsPDF();
     const nombreTecnico = searchTerm || perfil?.nombre_tecnico || "General";
     const division = perfil?.grupo_tecnico || "ÁREA TECNOLÓGICA";
     const cuenta = perfil?.numero_cuenta || "---";
-    const firmaImg = perfil?.firma_digital; 
-    
+    const firmaImg = perfil?.firma_digital;
+
     const firmaTecnico = perfil?.nombre_tecnico || "Solicitante";
     const firmaCoord = perfil?.nombre_coordinador || "Jefe Inmediato";
     const firmaSecre = perfil?.nombre_secretaria || "Administración";
@@ -111,37 +111,37 @@ export default function ReporteMensual() {
     doc.setTextColor(40);
     doc.setFont("helvetica", "bold");
     doc.text("REPORTE MENSUAL DE GASTOS", 105, 20, { align: "center" });
-    
+
     doc.setFontSize(9);
     doc.setFont("helvetica", "normal");
     doc.setTextColor(100);
     doc.text(`Periodo: ${selectedMonth}`, 14, 30);
     doc.text(`Técnico: ${nombreTecnico}`, 14, 35);
-    
+
     doc.setFontSize(10);
     doc.setTextColor(0, 150, 200);
     doc.text(division, 195, 30, { align: "right" });
-    
+
     doc.setFontSize(8);
     doc.setTextColor(100);
     doc.text(`Generado: ${new Date().toLocaleDateString()}`, 195, 35, { align: "right" });
 
     const tableColumn = ["Fecha", "Tipo / Documento", "Detalle del Servicio", "Monto (Q)"];
-    
+
     const tableRows = filteredFacturas.map(fac => {
       let docTypeInfo = "";
       if (isMunicipal(fac)) {
-         const tipoRecibo = fac.tipo || "RECIBO";
-         docTypeInfo = `${tipoRecibo}\nRecibo #: ${fac.serie}`;
+        const tipoRecibo = fac.tipo || "RECIBO";
+        docTypeInfo = `${tipoRecibo}\nRecibo #: ${fac.serie}`;
       } else {
-         docTypeInfo = `FACTURA\n${fac.serie}-${fac.dte}`;
+        docTypeInfo = `FACTURA\n${fac.serie}-${fac.dte}`;
       }
-      
+
       if (fac.nit_emisor) docTypeInfo += `\nNIT: ${fac.nit_emisor}`;
 
       // 🛑 Incluimos aquí la descripción / motivo de visita
       const detalles = `${fac.punto_servicio || ""}\n${fac.motivo_visita || ""}`;
-      
+
       return [
         formatDate(fac.fecha),
         docTypeInfo,
@@ -158,26 +158,26 @@ export default function ReporteMensual() {
       styles: { fontSize: 8, cellPadding: 3, valign: 'middle' },
       headStyles: { fillColor: [20, 20, 20], textColor: [255, 255, 255] },
       columnStyles: {
-        0: { cellWidth: 20 }, 
-        1: { cellWidth: 45 }, 
-        2: { cellWidth: 'auto' }, 
-        3: { cellWidth: 25, halign: 'right', fontStyle: 'bold' }, 
+        0: { cellWidth: 20 },
+        1: { cellWidth: 45 },
+        2: { cellWidth: 'auto' },
+        3: { cellWidth: 25, halign: 'right', fontStyle: 'bold' },
       }
     });
 
     const finalY = (doc.lastAutoTable && doc.lastAutoTable.finalY) || 100;
-    
+
     doc.setFontSize(12);
     doc.setTextColor(0);
     doc.setFont("helvetica", "bold");
     doc.text(`Total a Reembolsar: Q ${resumen.total.toFixed(2)}`, 14, finalY + 10);
-    
+
     doc.setFont("helvetica", "normal");
     doc.setFontSize(9);
     doc.setTextColor(100);
     doc.text(`Documentos adjuntos: ${resumen.cantidad}`, 14, finalY + 15);
 
-    let firmaY = finalY + 45; 
+    let firmaY = finalY + 45;
     if (firmaY > 260) { doc.addPage(); firmaY = 50; }
 
     const pageWidth = doc.internal.pageSize.getWidth();
@@ -189,35 +189,35 @@ export default function ReporteMensual() {
     const lineLen = 45;
 
     if (firmaImg) {
-        try {
-            const isJpeg = firmaImg.startsWith('data:image/jpeg');
-            const imgFormat = isJpeg ? 'JPEG' : 'PNG';
-            doc.addImage(firmaImg, imgFormat, margin + offset + 2, firmaY - 22, 40, 20); 
-        } catch (e) { console.error("Error imagen firma", e); }
+      try {
+        const isJpeg = firmaImg.startsWith('data:image/jpeg');
+        const imgFormat = isJpeg ? 'JPEG' : 'PNG';
+        doc.addImage(firmaImg, imgFormat, margin + offset + 2, firmaY - 22, 40, 20);
+      } catch (e) { console.error("Error imagen firma", e); }
     }
 
     doc.line(margin + offset, firmaY, margin + offset + lineLen, firmaY);
     doc.setFontSize(8); doc.setTextColor(0);
-    doc.text(firmaTecnico, margin + offset + (lineLen/2), firmaY + 5, { align: "center" });
-    
+    doc.text(firmaTecnico, margin + offset + (lineLen / 2), firmaY + 5, { align: "center" });
+
     doc.setFontSize(7); doc.setTextColor(80);
-    doc.text(division, margin + offset + (lineLen/2), firmaY + 9, { align: "center" });
-    doc.text("Banco Industrial", margin + offset + (lineLen/2), firmaY + 13, { align: "center" });
-    doc.text(`Cta: ${cuenta}`, margin + offset + (lineLen/2), firmaY + 17, { align: "center" });
+    doc.text(division, margin + offset + (lineLen / 2), firmaY + 9, { align: "center" });
+    doc.text("Banco Industrial", margin + offset + (lineLen / 2), firmaY + 13, { align: "center" });
+    doc.text(`Cta: ${cuenta}`, margin + offset + (lineLen / 2), firmaY + 17, { align: "center" });
 
     const x2 = margin + sectionWidth;
     doc.line(x2 + offset, firmaY, x2 + offset + lineLen, firmaY);
     doc.setFontSize(8); doc.setTextColor(0);
-    doc.text(firmaCoord, x2 + offset + (lineLen/2), firmaY + 5, { align: "center" });
+    doc.text(firmaCoord, x2 + offset + (lineLen / 2), firmaY + 5, { align: "center" });
     doc.setTextColor(100);
-    doc.text("Revisado por", x2 + offset + (lineLen/2), firmaY + 9, { align: "center" });
+    doc.text("Revisado por", x2 + offset + (lineLen / 2), firmaY + 9, { align: "center" });
 
     const x3 = margin + (sectionWidth * 2);
     doc.line(x3 + offset, firmaY, x3 + offset + lineLen, firmaY);
     doc.setTextColor(0);
-    doc.text(firmaSecre, x3 + offset + (lineLen/2), firmaY + 5, { align: "center" });
+    doc.text(firmaSecre, x3 + offset + (lineLen / 2), firmaY + 5, { align: "center" });
     doc.setTextColor(100);
-    doc.text("Vo.Bo.", x3 + offset + (lineLen/2), firmaY + 9, { align: "center" });
+    doc.text("Vo.Bo.", x3 + offset + (lineLen / 2), firmaY + 9, { align: "center" });
 
     return doc.output('bloburl');
   };
@@ -268,7 +268,7 @@ export default function ReporteMensual() {
             <div className="stat-info"><span className="stat-label">Documentos</span><span className="stat-value">{resumen.cantidad}</span></div>
           </div>
           <button className="rm-export-btn" onClick={handlePreview} disabled={filteredFacturas.length === 0}>
-              <Eye size={20} /> Vista Previa PDF
+            <Eye size={20} /> Vista Previa PDF
           </button>
         </div>
 
@@ -276,7 +276,7 @@ export default function ReporteMensual() {
           <h3 className="rm-subtitle">
             {searchTerm ? `Resultados para: "${searchTerm}"` : "Detalle de Gastos"}
           </h3>
-          
+
           {loading ? (
             <div className="rm-loading">Cargando datos...</div>
           ) : filteredFacturas.length === 0 ? (
@@ -297,29 +297,29 @@ export default function ReporteMensual() {
                     const isTicket = isMunicipal(fac);
                     return (
                       <tr key={fac.id} onClick={() => navigate(`/factura/${fac.id}`)} className="clickable-row">
-                        <td>{formatDate(fac.fecha)}</td>
-                        <td>
+                        <td data-label="Fecha">{formatDate(fac.fecha)}</td>
+                        <td data-label="Emisor">
                           <div className="cell-emisor">{fac.tecnico}</div>
                           <div className="cell-sub">{fac.nit_emisor ? `NIT: ${fac.nit_emisor}` : (isTicket ? 'MUNICIPAL' : 'C/F')}</div>
                         </td>
-                        <td>
+                        <td data-label="Documento">
                           <div className="cell-detail">
-                             {isTicket ? (
-                                <span className="doc-badge ticket"><Tag size={10} /> {fac.tipo || "RECIBO"}</span>
-                             ) : (
-                                <span className="doc-badge sat">FACTURA SAT</span>
-                             )}
+                            {isTicket ? (
+                              <span className="doc-badge ticket"><Tag size={10} /> {fac.tipo || "RECIBO"}</span>
+                            ) : (
+                              <span className="doc-badge sat">FACTURA SAT</span>
+                            )}
                           </div>
                           <div className="cell-detail-main">
-                             {isTicket ? `Recibo: ${fac.serie}` : `${fac.serie} - ${fac.dte}`}
+                            {isTicket ? `Recibo: ${fac.serie}` : `${fac.serie} - ${fac.dte}`}
                           </div>
                           <div className="cell-sub">{fac.punto_servicio}</div>
                           {/* 👇 Se agregó el motivo de visita aquí */}
                           <div className="cell-sub" style={{ fontStyle: 'italic', color: '#aaa', marginTop: '2px' }}>
-                             {fac.motivo_visita}
+                            {fac.motivo_visita}
                           </div>
                         </td>
-                        <td className="text-right font-bold">Q {Number(fac.monto).toFixed(2)}</td>
+                        <td data-label="Monto" className="text-right font-bold">Q {Number(fac.monto).toFixed(2)}</td>
                       </tr>
                     );
                   })}

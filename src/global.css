@@ -4,10 +4,12 @@
 :root {
   --color-bg: #0f1115;
   --color-surface: #161a22;
-  --color-primary: #00d1b2; /* Turquesa neón */
+  --color-primary: #00d1b2;
+  /* Turquesa neón */
   --color-text: #e6e9ef;
   --color-muted: #9aa4b2;
-  --ring: #00d1b255; /* Sombra de anillo/focus */
+  --ring: #00d1b255;
+  /* Sombra de anillo/focus */
   --radius: 12px;
   --shadow: 0 10px 30px #00000055;
   --transition: all 0.25s ease;
@@ -28,11 +30,11 @@ html {
 }
 
 body {
-  height: 100%;
+  min-height: 100vh;
+  min-height: 100dvh;
   width: 100%;
   background-color: var(--color-bg);
   color: var(--color-text);
-  /* Mantenemos tu fondo degradado */
   background:
     radial-gradient(1000px 600px at 10% -10%, #0b1a1a 0%, var(--color-bg) 45%) no-repeat,
     var(--color-bg);
@@ -51,13 +53,15 @@ a {
   text-decoration: none;
   transition: var(--transition);
 }
+
 a:hover {
   opacity: 0.85;
 }
 
 /* Botón base (usado por otros botones) */
 button {
-  font-family: inherit; /* Hereda la fuente */
+  font-family: inherit;
+  /* Hereda la fuente */
   font-weight: 600;
   border: none;
   border-radius: var(--radius);
@@ -67,13 +71,16 @@ button {
   background-color: var(--color-primary);
   padding: 0.6rem 1.2rem;
 }
+
 button:hover {
   transform: translateY(-2px);
   box-shadow: 0 0 10px rgba(0, 209, 178, 0.4);
 }
+
 button:active {
   transform: translateY(0);
 }
+
 button:disabled {
   opacity: 0.6;
   cursor: not-allowed;
@@ -93,14 +100,13 @@ h3 {
 /* .app-shell (eliminado, #root y .main lo manejan) */
 
 .main {
-  /* El contenido principal ocupa el espacio restante */
   flex-grow: 1;
   width: 100%;
   max-width: 1100px;
   padding: 24px;
   margin: 0 auto;
-  display: grid;
-  gap: 18px;
+  display: flex;
+  flex-direction: column;
 }
 
 /* Contenedor (opcional si usas .main) */
@@ -146,8 +152,10 @@ h3 {
 .muted {
   color: var(--color-muted);
 }
+
 .error-text {
-  color: #ff7676; /* Tono de error más brillante */
+  color: #ff7676;
+  /* Tono de error más brillante */
   margin-top: 12px;
   font-size: .9rem;
 }
@@ -160,6 +168,7 @@ h3 {
   font-weight: 700;
   padding: 10px 14px;
 }
+
 .btn-primary:hover {
   filter: brightness(1.08);
 }
@@ -171,6 +180,7 @@ h3 {
   padding: 8px 12px;
   border-radius: 10px;
 }
+
 .btn-ghost:hover {
   border-color: var(--color-primary);
 }
@@ -195,10 +205,12 @@ h3 {
   align-items: center;
   gap: 10px;
 }
+
 .brand {
   font-weight: 700;
   letter-spacing: .6px;
 }
+
 .brand-dot {
   width: 8px;
   height: 8px;
@@ -206,11 +218,13 @@ h3 {
   background: var(--color-primary);
   box-shadow: 0 0 10px var(--color-primary);
 }
+
 .nav-right {
   display: flex;
   align-items: center;
   gap: 10px;
 }
+
 .nav-link {
   background: transparent;
   border: 1px solid #2a3040;
@@ -223,24 +237,16 @@ h3 {
   font-size: 0.9rem;
   font-weight: 500;
 }
+
 .nav-link:hover,
 .nav-link.active {
   border-color: var(--color-primary);
   box-shadow: 0 0 0 4px var(--ring);
 }
+
 .user-chip {
   font-size: .9rem;
   opacity: .9;
-}
-
-/* ---------- Footer básico ---------- */
-footer {
-  border-top: 1px solid rgba(255, 255, 255, 0.08);
-  padding: 1rem;
-  text-align: center;
-  color: var(--color-muted);
-  /* Se pega al final si el contenido es corto */
-  margin-top: auto;
 }
 
 /* ---------- Responsive ---------- */
@@ -248,9 +254,11 @@ footer {
   .nav-right {
     gap: 6px;
   }
+
   .nav-link {
     padding: 6px 10px;
   }
+
   .main {
     padding: 16px;
   }
@@ -269,10 +277,12 @@ footer {
   border-bottom: 1px solid #23293a;
   margin-bottom: 12px;
 }
+
 .section-header h3 {
   font-size: 1.8rem;
   color: var(--color-text);
 }
+
 .section-header p {
   font-size: 1rem;
   color: var(--color-muted);
@@ -290,7 +300,8 @@ footer {
   margin-top: 16px;
   display: flex;
   gap: 10px;
-  flex-wrap: wrap; /* Para responsive */
+  flex-wrap: wrap;
+  /* Para responsive */
 }
 
 /* --- Estilos para Perfil.jsx (Dashboard) --- */
@@ -304,26 +315,31 @@ footer {
   border-radius: var(--radius);
   border: 1px solid #23293a;
 }
+
 .profile-header .avatar {
   width: 60px;
   height: 60px;
   border-radius: 50%;
   border: 2px solid var(--color-primary);
 }
+
 .profile-header .profile-info {
   flex-grow: 1;
 }
+
 .profile-header h4 {
   font-size: 1.2rem;
   margin: 0;
   color: var(--color-text);
 }
+
 .profile-header .btn-logout {
   display: flex;
   align-items: center;
   gap: 8px;
   background-color: #2a3040;
 }
+
 .profile-header .btn-logout:hover {
   border-color: #ff7676;
   color: #ff7676;
@@ -334,15 +350,19 @@ footer {
   transition: var(--transition);
   border-color: #23293a;
 }
+
 .dashboard-grid .card:hover {
   transform: translateY(-4px);
   border-color: var(--color-primary);
   box-shadow: 0 0 15px var(--ring);
 }
+
 .card-link {
   text-decoration: none;
-  color: inherit; /* Hereda el color del texto */
+  color: inherit;
+  /* Hereda el color del texto */
 }
+
 .card-icon {
   color: var(--color-primary);
   margin-bottom: 12px;
@@ -358,11 +378,9 @@ footer {
   justify-content: space-between;
   padding: 14px 28px;
   width: 100%;
-  background: linear-gradient(
-    135deg,
-    rgba(15, 17, 21, 0.85) 0%,
-    rgba(25, 28, 35, 0.7) 100%
-  );
+  background: linear-gradient(135deg,
+      rgba(15, 17, 21, 0.85) 0%,
+      rgba(25, 28, 35, 0.7) 100%);
   backdrop-filter: blur(14px);
   border-bottom: 1px solid rgba(0, 209, 178, 0.18);
   box-shadow: 0 4px 30px rgba(0, 209, 178, 0.08);
@@ -400,8 +418,17 @@ footer {
 
 /* 🔁 Animación leve del punto */
 @keyframes pulseDot {
-  0%, 100% { opacity: 0.8; transform: scale(1); }
-  50% { opacity: 1; transform: scale(1.4); }
+
+  0%,
+  100% {
+    opacity: 0.8;
+    transform: scale(1);
+  }
+
+  50% {
+    opacity: 1;
+    transform: scale(1.4);
+  }
 }
 
 /* 🟩 Navegación derecha */
@@ -474,28 +501,108 @@ footer {
   transform: translateY(-1px);
 }
 
-/* 📱 Responsive */
+/* 📱 Responsive Navbar Optimizado (360x740) */
 @media (max-width: 640px) {
   .navbar {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 10px;
-    padding: 12px 18px;
+    padding: 10px 14px;
+    flex-wrap: nowrap;
+    /* No queremos que rompa a varias líneas si es posible */
+    justify-content: space-between;
+    height: auto;
+    flex-direction: row;
+    /* Mantenemos horizontal pero más compacto */
   }
+
+  .nav-left .brand {
+    font-size: 0.95rem;
+    letter-spacing: 0;
+  }
+
+  .brand-dot {
+    width: 6px;
+    height: 6px;
+  }
+
   .nav-right {
-    flex-wrap: wrap;
-    gap: 8px;
+    gap: 6px;
+    flex-direction: row;
   }
+
   .nav-link {
-    font-size: 0.85rem;
+    font-size: 0.78rem;
+    padding: 5px 8px;
+    background: rgba(255, 255, 255, 0.05);
+  }
+
+  .user-area {
+    margin-left: 4px;
+    gap: 6px;
+  }
+
+  .user-chip {
+    display: none;
+    /* Escondemos el nombre completo en 360px para ahorrar espacio */
+  }
+
+  .btn-logout {
     padding: 5px 10px;
+    font-size: 0.78rem;
+    border-radius: 8px;
+    background: rgba(255, 118, 118, 0.1);
+    border-color: rgba(255, 118, 118, 0.4);
+    color: #ff7676;
+  }
+
+  .btn-logout:hover {
+    background: #ff7676;
+    color: #fff;
+    box-shadow: 0 0 10px #ff7676;
+  }
+}
+
+/* Ajuste extremo para pantallas extra pequeñas */
+@media (max-width: 380px) {
+  .navbar {
+    padding: 8px 10px;
+  }
+
+  .nav-right {
+    gap: 4px;
+  }
+
+  .nav-link {
+    padding: 4px 6px;
+    font-size: 0.75rem;
+  }
+
+  .nav-left .brand {
+    display: none;
+    /* Solo mostramos el punto en pantallas mínimas si no cabe el texto */
+  }
+
+  /* O mejor, mostramos el punto siempre y el texto si cabe */
+}
+
+/* Si el usuario prefiere ver el logo siempre */
+@media (max-width: 370px) {
+  .nav-left .brand {
+    display: block;
+    font-size: 0.85rem;
   }
 }
 
 @keyframes fade-in {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
+
 .animate-fade-in {
   animation: fade-in 0.6s ease-in-out;
 }

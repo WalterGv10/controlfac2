@@ -61,18 +61,18 @@ export default function App() {
       <main className="main">
         <Routes>
           <Route path="/" element={<PublicRoute><Login /></PublicRoute>} />
-          
+
           <Route path="/perfil" element={<PrivateRoute><Perfil /></PrivateRoute>} />
-          
+
           {/* MÓDULO FACTURAS */}
           <Route path="/facturas" element={<PrivateRoute><Facturas /></PrivateRoute>} />
           <Route path="/nueva-factura" element={<PrivateRoute><NuevaFactura /></PrivateRoute>} />
           <Route path="/recibo-municipal" element={<PrivateRoute><ReciboMunicipal /></PrivateRoute>} /> {/* 👈 NUEVA RUTA */}
-          
+
           <Route path="/mis-facturas" element={<PrivateRoute><MisFacturas /></PrivateRoute>} />
           <Route path="/factura/:id" element={<PrivateRoute><DetalleFactura /></PrivateRoute>} />
           <Route path="/importar-factura" element={<PrivateRoute><ImportarFactura /></PrivateRoute>} />
-          
+
           {/* MÓDULO REPORTES */}
           <Route path="/reportes" element={<PrivateRoute><Reportes /></PrivateRoute>} />
           <Route path="/reportes/mensual" element={<PrivateRoute><ReporteMensual /></PrivateRoute>} />
